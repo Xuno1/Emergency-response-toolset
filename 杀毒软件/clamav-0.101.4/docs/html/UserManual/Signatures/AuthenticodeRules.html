@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="trusted-and-revoked-certificates">Trusted and Revoked Certificates</h1>
+<p>Clamav 0.98 checks signed PE files for certificates and verifies each certificate in the chain against a database of trusted and revoked certificates. The signature format is</p>
+<pre><code>    Name;Trusted;Subject;Serial;Pubkey;Exponent;CodeSign;TimeSign;CertSign;
+    NotBefore;Comment[;minFL[;maxFL]]</code></pre>
+<p>where the corresponding fields are:</p>
+<ul>
+<li><p><code>Name:</code> name of the entry</p></li>
+<li><p><code>Trusted:</code> bit field, specifying whether the cert is trusted. 1 for trusted. 0 for revoked</p></li>
+<li><p><code>Subject:</code> sha1 of the Subject field in hex</p></li>
+<li><p><code>Serial:</code> the serial number as clamscan –debug –verbose reports</p></li>
+<li><p><code>Pubkey:</code> the public key in hex</p></li>
+<li><p><code>Exponent:</code> the exponent in hex. Currently ignored and hardcoded to 010001 (in hex)</p></li>
+<li><p><code>CodeSign:</code> bit field, specifying whether this cert can sign code. 1 for true, 0 for false</p></li>
+<li><p><code>TimeSign:</code> bit field. 1 for true, 0 for false</p></li>
+<li><p><code>CertSign:</code> bit field, specifying whether this cert can sign other certs. 1 for true, 0 for false</p></li>
+<li><p><code>NotBefore:</code> integer, cert should not be added before this variable. Defaults to 0 if left empty</p></li>
+<li><p><code>Comment:</code> comments for this entry</p></li>
+</ul>
+<p>The signatures for certs are stored inside <code>.crb</code> files.</p>
+</body>
+</html>

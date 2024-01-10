@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="extended-signature-format">Extended signature format</h1>
+<p>The extended signature format is ClamAV's most basic type of body-based signature since the deprecation of the original <code>.db</code> database format.</p>
+<p>Extended sigantures allow for specification of additional information beyond just hexidecimal content such as a file &quot;target type&quot;, virus offset, or engine functionality level (FLEVEL), making the detection more reliable.</p>
+<p>The format is:</p>
+<pre><code>    MalwareName:TargetType:Offset:HexSignature[:min_flevel:[max_flevel]]</code></pre>
+<p><code>MalwareName</code>: The virus name. Should conform to the standards defined <a href="../Signatures.html#Signature-names">here</a>.</p>
+<p><code>TargetType</code>: A number specifying the type of the target file: <a href="FileTypes.html#Target-Types">Target Types</a></p>
+<p><code>Offset</code>: An asterisk or a decimal number <code>n</code> possibly combined with a special modifier:</p>
+<ul>
+<li><code>*</code> = any</li>
+<li><code>n</code> = absolute offset</li>
+<li><code>EOF-n</code> = end of file minus <code>n</code> bytes</li>
+</ul>
+<p>Signatures for PE, ELF and Mach-O files additionally support:</p>
+<ul>
+<li><code>EP+n</code> = entry point plus n bytes (<code>EP+0</code> for <code>EP</code>)</li>
+<li><code>EP-n</code> = entry point minus n bytes</li>
+<li><code>Sx+n</code> = start of section <code>x</code>’s (counted from 0) data plus <code>n</code> bytes</li>
+<li><code>SEx</code> = entire section <code>x</code> (offset must lie within section boundaries)</li>
+<li><code>SL+n</code> = start of last section plus <code>n</code> bytes</li>
+</ul>
+<p>All the above offsets except <code>*</code> can be turned into <strong>floating offsets</strong> and represented as <code>Offset,MaxShift</code> where <code>MaxShift</code> is an unsigned integer. A floating offset will match every offset between <code>Offset</code> and <code>Offset+MaxShift</code>, eg. <code>10,5</code> will match all offsets from 10 to 15 and <code>EP+n,y</code> will match all offsets from <code>EP+n</code> to <code>EP+n+y</code>. Versions of ClamAV older than 0.91 will silently ignore the <code>MaxShift</code> extension and only use <code>Offset</code>. Optional <code>MinFL</code> and <code>MaxFL</code> parameters can restrict the signature to specific engine releases. All signatures in the extended format must be placed inside <code>*.ndb</code> files.</p>
+<p><code>HexSignature</code>: The body-based content matching <a href="BodySignatureFormat.html">format</a>.</p>
+<p><code>min_flevel</code>: (optional) The minimum ClamAV engine that the file type signature works with. See the <a href="FunctionalityLevels.html">FLEVEL reference</a> for details. To be used in the event that file type support has been recently added.</p>
+<p><code>max_flevel</code>: (optional, requires <code>min_flevel</code>) The maximum ClamAV engine that the file type signature works with. To be used in the event that file type support has been recently removed.</p>
+</body>
+</html>

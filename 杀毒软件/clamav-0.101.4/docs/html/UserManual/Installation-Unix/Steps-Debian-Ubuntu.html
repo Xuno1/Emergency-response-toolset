@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="installation-on-debian-and-ubuntu-linux-distributions">Installation on Debian and Ubuntu Linux Distributions</h1>
+<p>Below are the steps for installing ClamAV from source on Debian and Ubuntu Linux.</p>
+<h2 id="install-prerequisites">Install prerequisites</h2>
+<ol>
+<li>Install ClamAV dependencies
+<ol>
+<li><p>Install the developer tools</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install build-essential</code></pre></div></li>
+<li><p>Install library dependencies</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install openssl libssl-dev libcurl4-openssl-dev zlib1g-dev libpng-dev libxml2-dev libjson-c-dev libbz2-dev libpcre3-dev ncurses-dev</code></pre></div></li>
+<li><p>(very optional) Those wishing to use clamav-milter may wish to install the following</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install libmilter1.0.1 libmilter-dev</code></pre></div></li>
+</ol></li>
+<li><p>Install the unit testing dependencies</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get valgrind check</code></pre></div></li>
+</ol>
+<p><em>Note</em>: LLVM is also an optional dependency. LLVM will not provide any additional features, but is an alternative method for executing bytecode signatures versus using the built-in bytecode interpreter. Limited performance testing between LLVM and the bytecode interpreter did not yield conclusive evidence that one is &quot;better&quot; than the other. For the sake of simplicity, it is not recommended to install LLVM.</p>
+<h2 id="download-the-latest-stable-release">Download the latest stable release</h2>
+<ol>
+<li>Open a browser and navigate to <a href="http://www.clamav.net/downloads">the ClamAV downloads page</a></li>
+<li>Click <code>clamav-&lt;version&gt;.tar.gz</code> link to download the latest stable release.</li>
+</ol>
+<h2 id="extract-the-source-archive">Extract the source archive</h2>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">cd</span> ~/Downloads
+<span class="fu">tar</span> xzf clamav-<span class="op">&lt;</span>ver<span class="op">&gt;</span>.tar.gz
+<span class="bu">cd</span> clamav-<span class="op">&lt;</span>ver<span class="op">&gt;</span>.tar.gz</code></pre></div>
+<h2 id="configure-the-build">Configure the build</h2>
+<p>ClamAV's configure script should detect each of the above dependencies automatically.</p>
+<h3 id="typical-.configure-usage">Typical <code>./configure</code> usage</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --enable-check</code></pre></div>
+<p>Once <code>./configure</code> completes, it will print a summary. Verify that the packages you installed are in fact being detected.</p>
+<p>Example configure summary output:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">configure</span>: Summary of detected features follows
+              <span class="ex">OS</span>          : linux-gnu
+              <span class="ex">pthreads</span>    : yes (-lpthread)
+<span class="ex">configure</span>: Summary of miscellaneous features
+              <span class="ex">check</span>       : -lcheck_pic -pthread -lrt -lm -lsubunit
+              <span class="ex">fanotify</span>    : yes
+              <span class="ex">fdpassing</span>   : 1
+              <span class="ex">IPv6</span>        : yes
+<span class="ex">configure</span>: Summary of optional tools
+              <span class="ex">clamdtop</span>    : -lncurses (auto)
+              <span class="ex">milter</span>      : yes (disabled)
+              <span class="ex">clamsubmit</span>  : yes (libjson-c-dev found at /usr), <span class="ex">libcurl-devel</span> found at /usr)
+<span class="ex">configure</span>: Summary of engine performance features
+              <span class="ex">release</span> mode: yes
+              <span class="ex">llvm</span>        : no (disabled)
+              <span class="ex">mempool</span>     : yes
+<span class="ex">configure</span>: Summary of engine detection features
+              <span class="fu">bzip2</span>       : ok
+              <span class="ex">zlib</span>        : /usr
+              <span class="ex">unrar</span>       : yes
+              <span class="ex">preclass</span>    : yes (libjson-c-dev found at /usr)
+              <span class="ex">pcre</span>        : /usr
+              <span class="ex">libmspack</span>   : yes (Internal)
+              <span class="ex">libxml2</span>     : yes, from /usr
+              <span class="ex">yara</span>        : yes
+              <span class="ex">fts</span>         : yes (libc)</code></pre></div>
+<h3 id="additional-popular-.configure-options">Additional popular <code>./configure</code> options</h3>
+<ul>
+<li><p><code>--with-systemdsystemunitdir</code> - Do not install <code>systemd</code> socket files. This option disables systemd support, but will allow you to <code>make install</code> to a user-owned directory without requiring <code>sudo</code>/root privileges:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --with-systemdsystemunitdir=no</code></pre></div></li>
+<li><p><code>--sysconfdir</code> - Install the configuration files to <code>/etc</code> instead of <code>/usr/local/etc</code>:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> -–sysconfdir=/etc</code></pre></div></li>
+<li><code>--prefix</code> - Install ClamAV to a directory other than <code>/usr/local/</code>:
+<ul>
+<li><p>Example 1: Install to a local <code>./install</code> directory.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --prefix=<span class="kw">`</span><span class="bu">pwd</span><span class="kw">`</span>/install</code></pre></div></li>
+<li><p>Example 2: Install ClamAV locally on an unprivileged shell account.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --prefix=<span class="va">$HOME</span>/clamav --disable-clamav --with-systemdsystemunitdir=no</code></pre></div></li>
+</ul></li>
+<li><p><code>--disable-clamav</code> - <em>Don't</em> drop super-user priveleges to run <code>freshclam</code> or <code>clamd</code> as the <code>clamav</code>* user.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --disable-clamav</code></pre></div>
+*<em>Tip</em>: Using this <code>--disable-clamav</code> means that <code>freshclam</code> and <code>clamd</code> will run with <em>root privleges</em> if invoked using <code>sudo</code>. Running <code>clamd</code> or <code>clamscan</code> as root is <strong>not recommended</strong>. Instead of using this option, you can configure <code>freshclam</code> or <code>clamd</code> to drop to any other user by:
+<ul>
+<li>setting the <code>DatabaseOwner</code> option in <code>freshclam.conf</code> and</li>
+<li>setting the <code>User</code> option in <code>clamd.conf</code>.</li>
+</ul></li>
+</ul>
+<p>Please see the <code>./configure --help</code> for additional options.</p>
+<h3 id="compile-clamav">Compile ClamAV</h3>
+<p>Compile ClamAV with:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">make</span> -j2</code></pre></div>
+<h3 id="run-clamav-unit-tests-optional">Run ClamAV Unit Tests (Optional)</h3>
+<p>For peace of mind, it can be helpful to run a small suite of unit and system tests.</p>
+<p>Run:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">make</span> check</code></pre></div>
+<p>All tests should pass.* Output will look something like this:</p>
+<pre class="bash."><code>    ...
+PASS: check_clamav
+PASS: check_freshclam.sh
+PASS: check_sigtool.sh
+PASS: check_unit_vg.sh
+PASS: check1_clamscan.sh
+PASS: check2_clamd.sh
+PASS: check3_clamd.sh
+PASS: check4_clamd.sh
+PASS: check5_clamd_vg.sh
+PASS: check6_clamd_vg.sh
+SKIP: check7_clamd_hg.sh
+PASS: check8_clamd_hg.sh
+PASS: check9_clamscan_vg.sh
+    ...
+============================================================================
+Testsuite summary for ClamAV 0.100.2
+============================================================================
+# TOTAL: 13
+# PASS:  12
+# SKIP:  1
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0</code></pre>
+<p><em>Notes</em>:</p>
+<ul>
+<li>The <code>*.vg.sh</code> tests will be skipped unless you run <code>make check VG=1</code>.</li>
+<li>The <code>check7_clamd.hg.sh</code> (helgrind) is presently disabled and will be skipped.</li>
+<li>For details, see: <a href="https://github.com/Cisco-Talos/clamav-devel/commit/2a5d51809a56be9a777ded02969a7427a3c26713">the Git commit</a></li>
+</ul>
+<p>If you have a failure or an error in the unit tests, it could be that you are missing one or more of the prerequisites.</p>
+<p>If you are investigating a failure, please do the following:</p>
+<p><code>cd unit_tests</code></p>
+<p>Use <code>less</code> to read the log for the failed test.<br />
+Example:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">less</span> check4_clamd.sh.log<span class="kw">`</span></code></pre></div>
+<p>To submit a bug report regarding unit text failures, please follow these <a href="../Installation-Unix.html#Reporting-a-unit-test-failure-bug">bug reporting steps</a>.</p>
+<h3 id="install-clamav">Install ClamAV</h3>
+<p>Install ClamAV with:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">make</span> install</code></pre></div>
+<p><em>Tip</em>: If installing to the default or other system-owned directory, you may need to use <code>sudo</code>.</p>
+<h3 id="first-time-set-up">First time set-up</h3>
+<p><em>Note</em>: The following instructions assume you used the default install paths (i.e. <code>/usr/local</code>). If you modified the install locations using <code>--prefix</code> or <code>--sysconfdir</code> options, replace <code>/usr/local</code> with your chosen install path.</p>
+<h4 id="freshclam-config"><code>freshclam</code> config</h4>
+<p>Before you can use <code>freshclam</code> to download updates, you need to create a <code>freshclam</code> config. A sample config is provided for you.</p>
+<ol>
+<li><p>Copy the sample config. You may need to use <code>sudo</code>:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">cp</span> /usr/local/etc/freshclam.conf.sample /usr/local/etc/freshclam.conf</code></pre></div></li>
+<li>Modify the config file using your favourite text editor. Again, you may need to use <code>sudo</code>.
+<ul>
+<li>At a minimum, remove the <code>Example</code> line so <code>freshclam</code> can use the config.</li>
+</ul>
+<p>Take the time to look through the options. You can enable the sample options by deleting the <code>#</code> comment characters.</p>
+<p>Some popular options to enable include:</p>
+<ul>
+<li><code>LogTime</code></li>
+<li><code>LogRotate</code></li>
+<li><code>NotifyClamd</code></li>
+<li><code>DatabaseOwner</code></li>
+</ul></li>
+<li><p>Create the database directory. *Tip: <em>You may need to use <code>sudo</code>.</em></p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">mkdir</span> /usr/local/share/clamav</code></pre></div></li>
+</ol>
+<h4 id="clamd-config-optional"><code>clamd</code> config (optional)</h4>
+<p>You can run <code>clamscan</code> without setting the config options for <code>clamd</code>. However, the <code>clamd</code> scanning daemon allows you to use <code>clamdscan</code> to perform faster a-la-carte scans, allows you to run multi-threaded scans, and allows you to use <code>clamav-milter</code> if you want to use ClamAV as a mail filter if you host an email server.</p>
+<p>Additionally, if you are a running modern versions of Linux where the FANOTIFY kernel feature is enabled, <code>clamd</code> has a feature run with On-Access Scanning<em>. </em>When properly configured*, On-Access Scanning can scan files as they are accessed and optionally block access to the file in the event that a signature alerted.</p>
+<p><em>Note</em>: At this time, for On-Access Scanning to work, <code>clamd</code> must run with <code>sudo</code>/root privileges. For more details, please see our documentation on On-Access Scanning.</p>
+<ol>
+<li><p>Copy the sample config. You may need to use <code>sudo</code>:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">cp</span> /usr/local/etc/clamd.conf.sample /usr/local/etc/clamd.conf</code></pre></div></li>
+<li>Modify the config file using your favourite text editor. Again, you may need to use <code>sudo</code>.
+<ul>
+<li>At a minimum, remove the <code>Example</code> line so <code>freshclam</code> can use the config.</li>
+<li>You also <em>need</em> to select a Socket option for <code>clamd</code> so <code>clamdscan</code> and other utilities can communicate with <code>clamd</code>. You must enable <em>one</em> of the following.
+<ul>
+<li><code>LocalSocket</code></li>
+<li><code>TCPSocket</code></li>
+</ul></li>
+</ul>
+<p>Take the time to look through the options. You can enable the sample options by deleting the <code>#</code> comment characters.</p>
+<p>Some popular options to enable include:</p>
+<ul>
+<li><code>LogTime</code></li>
+<li><code>LogClean</code></li>
+<li><code>LogRotate</code></li>
+<li><code>User</code></li>
+<li><code>ScanOnAccess</code>
+<ul>
+<li><code>OnAccessIncludePath</code></li>
+<li><code>OnAccessExcludePath</code></li>
+<li><code>OnAccessPrevention</code></li>
+</ul></li>
+</ul></li>
+</ol>
+<h4 id="configure-selinux-for-clamav">Configure SELinux for ClamAV</h4>
+<p>Certain distributions (notably RedHat variants) when operating with SELinux enabled use the non-standard <code>antivirus_can_scan_system</code> SELinux option instead of <code>clamd_can_scan_system</code>.</p>
+<p>At this time, libclamav only sets the <code>clamd_can_scan_system</code> option, so you may need to manually enable <code>antivirus_can_scan_system</code>. If you don't perform this step, freshclam will log something like this when it tests the newly downloaded signature databases:</p>
+<pre><code>During database load : LibClamAV Warning: RWX mapping denied: Can&#39;t allocate RWX Memory: Permission denied</code></pre>
+<p>To allow ClamAV to operate under SELinux, run the following:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">setsebool</span> -P antivirus_can_scan_system 1</code></pre></div>
+<h4 id="download-update-the-signature-database">Download / Update the signature database</h4>
+<p>Before you can run a scan, you'll need to download the signature databases. Once again, you may need to run with <code>sudo</code>/root privileges.</p>
+<p>If you installed to a location in your system PATH:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">freshclam</span></code></pre></div>
+<p>If you installed to another location:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">/<span class="op">&lt;</span><span class="ex">path</span><span class="op">&gt;</span>/<span class="op">&lt;</span>to<span class="op">&gt;</span>/<span class="op">&lt;</span>clamav<span class="op">&gt;</span>/<span class="op">&lt;</span>bin<span class="op">&gt;</span>/freshclam</code></pre></div>
+<p><em>Important</em>: It is common on Ubuntu after a fresh install to see the following error the first time you use ClamAV:<br />
+<code>bash   $ freshclam   freshclam: error while loading shared libraries: libclamav.so.7: cannot open shared object   file: No such file or directory</code></p>
+<p>You can fix this error by using ldconfig to rebuild the library search path.<br />
+<code>bash   sudo ldconfig</code></p>
+<h4 id="users-and-on-user-privileges">Users and on user privileges</h4>
+<p>If you are running <code>freshclam</code> and <code>clamd</code> as root or with <code>sudo</code>, and you did not explicitely configure with <code>--disable-clamav</code>, you will want to ensure that the <code>DatabaseOwner</code> user specified in <code>freshclam.conf</code> owns the database directory so it can download signature udpates.</p>
+<p>The user that <code>clamd</code>, <code>clamdscan</code>, and <code>clamscan</code> run as may be the same user, but if it isn't -- it merely needs <em>read</em> access to the database directory.</p>
+<p>If you choose to use the default <code>clamav</code> user to run <code>freshclam</code> and <code>clamd</code>, you'll need to create the clamav group and the clamav user account the first time you install ClamAV.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">groupadd</span> clamav
+<span class="ex">useradd</span> -g clamav -s /bin/false -c <span class="st">&quot;Clam Antivirus&quot;</span> clamav</code></pre></div>
+<p>Finally, you will want to set user ownership of the database directory.<br />
+For example:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> chown -R clamav:clamav /usr/local/share/clamav</code></pre></div>
+<h3 id="usage">Usage</h3>
+<p>You should be all set up to run scans.</p>
+<p>Take a look at our <a href="../Usage.html">usage documentation</a> to learn about how to use ClamAV each of the utilities.</p>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="installing-clamav-on-unix-linux-macos-from-source">Installing ClamAV on Unix / Linux / macOS from Source</h1>
+<h2 id="the-tldr-step-by-step-instructions">The TL;DR Step-by-Step Instructions</h2>
+<ul>
+<li><a href="Installation-Unix/Steps-Debian-Ubuntu.html">Debian &amp; Ubuntu</a></li>
+<li><a href="Installation-Unix/Steps-REdhat-CentOS.html">Redhat &amp; CentOS</a></li>
+<li><a href="Installation-Unix/Steps-macOS.html">macOS</a></li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<p>The following is an overview of the tools, libraries, and steps needed to build ClamAV.</p>
+<p>Required tools:</p>
+<ul>
+<li><code>gcc</code> or <code>clang</code></li>
+<li>GNU Make (<code>gmake</code> on UNIX systems)</li>
+</ul>
+<p>Recommended tools:</p>
+<ul>
+<li><code>check</code> unit testing framework</li>
+</ul>
+<p><strong><em>Required</em></strong> libraries (including development sources (i.e. <code>...-dev</code> or <code>...-devel</code>)):</p>
+<ul>
+<li>zlib</li>
+<li>openssl version 0.9.8 or higher</li>
+</ul>
+<p><strong>Recommended</strong> libraries (including development sources (i.e. <code>...-dev</code> or <code>...-devel</code>)):</p>
+<ul>
+<li>pcre2</li>
+<li>bzip2</li>
+<li>libxml2</li>
+</ul>
+<p>Optional libraries (including development sources (i.e. <code>...-dev</code> or <code>...-devel</code>)):</p>
+<ul>
+<li>curl library: <em>required for clamsubmit</em></li>
+<li>json-c library: <em>required for clamsubmit</em></li>
+<li>ncurses library: <em>required for clamdtop</em></li>
+</ul>
+<p>ClamAV may execute Bytecode signatures using:</p>
+<ul>
+<li>ClamAV's built-in bytecode interpreter</li>
+<li>LLVM for Just-In-Time (JIT) compilation*</li>
+<li>System-installed LLVM library (3.2-3.6)</li>
+<li><p>ClamAV's built-in version of LLVM 2.8</p>
+<p>*The performance difference between using LLVM and using the interpeter is negligible. If you prefer to use LLVM / JIT for bytecode signature execution, be advised that we presently only support up to LLVM version 3.6.</p></li>
+</ul>
+<p>The following are thus optional, but <em>required</em> to use LLVM in place of the bytecode interpeter:</p>
+<ul>
+<li>LLVM 3.2 - 3.6</li>
+<li>A supported CPU for LLVM JIT, either of: X86, X86-64, PowerPC, PowerPC64</li>
+</ul>
+<p>The following are optional, but needed for the LLVM JIT unit tests:</p>
+<ul>
+<li>GNU Make (version 3.79, recommended 3.81 or newer)</li>
+<li>Python (version 2.5.4)</li>
+</ul>
+<h2 id="installing-clamav">Installing ClamAV</h2>
+<h3 id="private-installation-on-local-shell-account">Private installation on local shell account</h3>
+<p>To install ClamAV locally on an unprivileged shell account you need not create any additional users or groups. Assuming your home directory is <code>/home/gary</code> you should build it as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --prefix=/home/gary/clamav --disable-clamav
+<span class="fu">make</span><span class="kw">;</span> <span class="fu">make</span> install</code></pre></div>
+<p>The <code>--disable-clamav</code> switch disables the check for existence of the <code>clamav</code> user and group but <code>clamscan</code> would still require an unprivileged account to work in a superuser mode.</p>
+<h3 id="global-installation-in-system-owned-directories">Global installation in system-owned directories</h3>
+<h4 id="adding-new-system-user-and-group">Adding new system user and group</h4>
+<p>If installing to the system, it is recommended to set up at least one special user account to run <code>freshclam</code> and <code>clamd</code>. You may choose to set up two separate accounts, one for each. You only need to create these accounts the first time you install ClamAV.</p>
+<p>These are instructions specific to some popular operating systems:</p>
+<ul>
+<li><a href="Installation-Unix/Steps-Debian-Ubuntu.html#Users-and-on-user-privileges">Debian, Ubuntu, etc</a></li>
+<li><a href="Installation-Unix/Steps-Redhat-CentOS.html#Users-and-on-user-privileges">Redhat, CentOS, etc</a></li>
+<li><a href="Installation-Unix/Steps-macOS.html#Users-and-on-user-privileges">macOS</a></li>
+</ul>
+<p>If your operating system isn't specified above, and your OS does not have the <code>groupadd</code> and <code>useradd</code> utilities, consult a system manual. <strong>Don’t forget to lock access to the account!</strong></p>
+<h4 id="compiling-clamav-for-global-installation">Compiling ClamAV for global installation</h4>
+<p>Once you have created the clamav user and group, please extract the archive:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">tar</span> xzf clamav-<span class="op">&lt;</span>ver<span class="op">&gt;</span>.tar.gz
+<span class="bu">cd</span> clamav-<span class="op">&lt;</span>ver<span class="op">&gt;</span></code></pre></div>
+<p>Assuming you want to install the configuration files in <code>/etc</code>, configure and build the software as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --sysconfdir=/etc
+<span class="fu">make</span>
+<span class="fu">su</span> -c <span class="st">&quot;make install&quot;</span></code></pre></div>
+<p>In the last step, the software is installed into the <code>/usr/local</code> directory and the config files into <code>/etc</code>. <strong>WARNING: Never enable the SUID or SGID bits for Clam AntiVirus binaries.</strong></p>
+<h3 id="first-time-set-up">First-time set-up</h3>
+<p>First, create a database directory. This would be located under the install path <code>share/clamav</code>. For example:</p>
+<ul>
+<li><code>/usr/local/share/clamav</code></li>
+<li><code>~/clamav/share/clamav</code></li>
+</ul>
+<p>You will need to create <code>freshclam.conf</code> and <code>clamd.conf</code> files in the config directory. In the above example, we chose <code>/etc</code>, so run the following.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> cp /etc/freshclam.conf.sample /etc/freshclam.conf
+<span class="fu">sudo</span> cp /etc/clamd.conf.sample /etc/clamd.conf</code></pre></div>
+<p>At a minimum, you will need to edit each file and remove or comment-out the <code>Example</code> line. In addition, for <code>clamd.conf</code> you will need to enable either <code>LocalSocket</code> or <code>TCPSocket</code>.</p>
+<p>For additional recommendations, please read:</p>
+<ul>
+<li><a href="Installation-Unix/Steps-Debian-Ubuntu.html#First-time-set-up">Debian, Ubuntu, etc</a></li>
+<li><a href="Installation-Unix/Steps-Redhat-CentOS.html#First-time-set-up">Redhat, CentOS, etc</a></li>
+<li><a href="Installation-Unix/Steps-macOS.html#First-time-set-up">macOS</a></li>
+</ul>
+<h3 id="test-your-installation">Test your installation</h3>
+<p>To test your local installation execute:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">~/clamav/bin/freshclam</span>
+<span class="ex">~/clamav/bin/clamscan</span> ~</code></pre></div>
+<p>To test your system installation execute:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> freshclam
+<span class="fu">sudo</span> clamscan ~</code></pre></div>
+<h2 id="compilation-with-clamav-milter-enabled">Compilation with clamav-milter enabled</h2>
+<p>The <code>libmilter</code> package and its development files are required. To enable clamav-milter, configure ClamAV with</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --enable-milter</code></pre></div>
+<h2 id="using-a-system-installed-llvm-library">Using a system-installed LLVM library</h2>
+<p>To configure ClamAV to use a system-installed LLVM library:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --with-system-llvm=/myllvm/bin/llvm-config
+<span class="fu">make</span>
+<span class="fu">sudo</span> make install</code></pre></div>
+<p>The argument to <code>--with-system-llvm</code> indicates the path name of the LLVM configuration utility (llvm-config). Alternatively, you may use <code>--enable-llvm</code> and <code>./configure</code> will search for LLVM in /usr/local/ and then /usr.</p>
+<p>Recommended versions of LLVM are 3.2 - 3.6. Some installations have reported problems using earlier LLVM versions. Versions of LLVM beyond 3.6 are not currently supported in ClamAV.</p>
+<h2 id="running-unit-tests">Running unit tests</h2>
+<p>ClamAV includes unit tests that allow you to test that the compiled binaries work correctly on your platform.</p>
+<p>The first step is to use your OS’s package manager to install the <code>check</code> package. If your OS doesn’t have that package, you can download it from <a href="http://check.sourceforge.net/" class="uri">http://check.sourceforge.net/</a>, build it and install it.</p>
+<p>To help clamav’s configure script locate <code>check</code>, it is recommended that you install <code>pkg-config</code>, preferably using your OS’s package manager, or from <a href="http://pkg-config.freedesktop.org" class="uri">http://pkg-config.freedesktop.org</a>.</p>
+<p>The recommended way to run unit-tests is the following, which ensures you will get an error if unit tests cannot be built:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">./configure</span> --enable-check
+<span class="fu">make</span>
+<span class="fu">make</span> check</code></pre></div>
+<p>When <code>make check</code> is finished, you should get a message similar to this:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">==================
+<span class="ex">All</span> 8 tests passed
+==================</code></pre></div>
+<p>If a unit test fails, you get a message similar to the following. Note that in older versions of make check may report failures due to the absence of optional packages. Please make sure you have the latest versions of the components noted in section /refsec:components. See the next section on how to report a bug when a unit test fails.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">========================================
+<span class="ex">1</span> of 8 tests failed
+<span class="ex">Please</span> report to https://bugzilla.clamav.net/
+========================================</code></pre></div>
+<p>If unit tests are disabled (and you didn’t use -–enable-check), you will get this message:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">***</span> Unit tests disabled in this build
+<span class="ex">***</span> Use ./configure --enable-check to enable them
+
+<span class="ex">SKIP</span>: check_clamav
+<span class="ex">PASS</span>: check_clamd.sh
+<span class="ex">PASS</span>: check_freshclam.sh
+<span class="ex">PASS</span>: check_sigtool.sh
+<span class="ex">PASS</span>: check_clamscan.sh
+======================
+<span class="ex">All</span> 4 tests passed
+<span class="kw">(</span><span class="ex">1</span> tests were not run<span class="kw">)</span>
+======================</code></pre></div>
+<p>Running <code>./configure --enable-check</code> should tell you why.</p>
+<h2 id="reporting-a-unit-test-failure-bug">Reporting a unit test failure bug</h2>
+<p>If <code>make check</code> reports failed tests, we encourage you to report a bug on <a href="https://bugzilla.clamav.net">bugzilla</a>.</p>
+<p>When writing a bug report regarding failed unit tests, please provide the following:</p>
+<ul>
+<li>The exact output from <code>make check</code></li>
+<li>Output of <code>uname -mrsp</code></li>
+<li>your <code>config.log</code></li>
+<li>The following files from the <code>unit_tests/</code> directory:</li>
+<li><code>test.log</code></li>
+<li><code>clamscan.log</code></li>
+<li><p><code>clamdscan.log</code></p></li>
+<li><code>/tmp/clamd-test.log</code> if it exists</li>
+<li>where and how you installed the check package</li>
+<li>Output of <code>pkg-config check --cflags --libs</code></li>
+<li><p>Optionally if <code>valgrind</code> is available on your platform, the output of the following:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">make</span> check
+<span class="va">CK_FORK=</span>no <span class="ex">./libtool</span> --mode=execute valgrind unit_tests/check_clamav</code></pre></div></li>
+</ul>
+<h2 id="obtain-latest-clamav-anti-virus-signature-databases">Obtain Latest ClamAV anti-virus signature databases</h2>
+<p>Before you can run <code>clamd</code>, <code>clamdscan</code>, or <code>clamscan</code>, you must have ClamAV Virus Database (.cvd) file(s) installed in the appropriate location on your system. The default location for these database files are <code>/usr/local/share/clamav</code>.</p>
+<p>Here is a listing of currently available ClamAV Virus Database Files:</p>
+<ul>
+<li>bytecode.cvd (signatures to detect bytecode in files)</li>
+<li>main.cvd (main ClamAV virus database file)</li>
+<li>daily.cvd (daily update file for ClamAV virus databases)</li>
+<li>safebrowsing.cvd (virus signatures for safe browsing)</li>
+</ul>
+<p>These files should be downloaded using the <code>freshclam</code> utility on a periodic basis. While using HTTPS to directly download the CVDs is possible, using <code>freshclam</code> is the preferred method of keeping the ClamAV virus database files up to date. <code>freshclam</code> can download database difference files (<code>.cdiff</code>) to get the latest signature definitions without downloading whole CVD files. This saves a considerable amount of bandwidth.</p>
+<p>For more information on how to configure <code>freshclam</code> to do automatic/scheduled updates, see the <a href="Configuration.html#Setting-up-auto-updating">freshclam configuration section</a> of our Configuration guide.</p>
+<p>Please see the <a href="Usage.html#freshclam">freshclam usage section</a> for additional details on freshclam).</p>
+<h2 id="binary-packages">Binary packages</h2>
+<p>As an alternative to building and installing from source, most Linux package managers provide pre-compiled ClamAV packages.</p>
+<p>For more information about installing ClamAV via a Package Manager, please visit<br />
+the <a href="https://www.clamav.net/download.html#otherversions">&quot;other versions&quot; section on the ClamAV.net Downloads page</a>.</p>
+</body>
+</html>

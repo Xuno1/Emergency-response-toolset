@@ -1,0 +1,1 @@
+<ExternApi><Sign Type="Generic0" Scan="DADScan" Clean="DADClean" Path="DownAD_Dll.dll">DownAD</Sign><Sign Type="Generic1" Scan="fnScan" Clean="fnClean" Path="Virut.dll">ProcV</Sign></ExternApi>

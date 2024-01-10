@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="signature-testing-and-management">Signature Testing and Management</h1>
+<hr />
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<ul>
+<li><a href="#freshclam">freshclam</a></li>
+<li><a href="#sigtool">sigtool</a></li>
+<li><a href="#clambc">clambc</a></li>
+</ul>
+<!-- /TOC -->
+<hr />
+<h2 id="freshclam">freshclam</h2>
+<hr />
+<p>The tool <code>freshclam</code> is used to download and update ClamAV’s official virus signature databases. While easy to use in its base configuration, <code>freshclam</code> does require a working <a href="Configuration.html#freshclam"><code>freshclam.conf</code> configuration file</a> to run (the location of which can be passed in via command line if the default search location does not fit your needs).</p>
+<p>Once you have a valid configuration file, you can invoke freshclam with the following command:</p>
+<blockquote>
+<p>$ freshclam</p>
+</blockquote>
+<p>By default, <code>freshclam</code> will then attempt to connect to ClamAV's virus signature database distribution network. If no databases exist in the directory specified, <code>freshclam</code> will do a fresh download of the requested databases. Otherwise, <code>freshclam</code> will attempt to update existing databases, pairing them against downloaded cdiffs. If a database is found to be corrupted, it is not updated and instead replaced with a fresh download.</p>
+<p>Of course, all this behaviour--and more--can be changed to suit your needs by <a href="Configuration.html#freshclamconf">modifying <code>freshclam.conf</code> and/or using various command line options</a>.</p>
+<p>You can find more information about freshclam with the commands:</p>
+<blockquote>
+<p>$ <code>man freshclam</code></p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>$ <code>freshclam --help</code></p>
+</blockquote>
+<hr />
+<h2 id="sigtool">sigtool</h2>
+<hr />
+<p>ClamAV provides <code>sigtool</code> as a command-line testing tool for assisting users in their efforts creating and working with virus signatures. While sigtool has many uses--including crafting signatures--of particular note, is sigtool's ability to help users and analysts in determining if a file detected by <em>libclamav</em>'s virus signatures is a false positive.</p>
+<p>This can be accomplished by using the command:</p>
+<blockquote>
+<p>$ <code>sigtool --unpack=FILE</code></p>
+</blockquote>
+<p>Where FILE points to your virus signature databases. Then, once <code>sigtool</code> has finished unpacking the database into the directory from which you ran the command, you can search for the offending signature name (provided either by <a href="./Scanning.html#clamscan"><code>clamscan</code></a> scan reports or <a href="./Scanning.html#clamd"><code>clamd</code></a> logs). As an example:</p>
+<blockquote>
+<p>$ <code>grep &quot;Win.Test.EICAR&quot; ./*</code></p>
+</blockquote>
+<p>Or, do all that in one step with:</p>
+<blockquote>
+<p>$ <code>sigtool --find=&quot;Win.Test.EICAR&quot;</code></p>
+</blockquote>
+<p>This should give you the offending signature(s) in question, which can then be included as part of your <a href="https://www.clamav.net/reports/fp">false positive report</a>.</p>
+<p>To learn more in depth information on how <code>sigtool</code> can be used to help create virus signatures and work with malicious (and non-malicious) files please reference the many online tutorials on the topic.</p>
+<p>Otherwise, information on available sigtool functions can be easily referenced with:</p>
+<blockquote>
+<p>$ <code>sigtool --help</code></p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>$ <code>man sigtool</code></p>
+</blockquote>
+<hr />
+<h2 id="clambc">clambc</h2>
+<hr />
+<p><code>clambc</code> is Clam Anti-Virus’ bytecode signature testing tool. It can be used to test newly crafted bytecode signatures or to help verify existing bytecode is executing against a sample as expected.</p>
+<p>For more detailed help, please use:</p>
+<blockquote>
+<p>$ <code>man clambc</code></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+<p>$ <code>clambc --help</code></p>
+</blockquote>
+</body>
+</html>

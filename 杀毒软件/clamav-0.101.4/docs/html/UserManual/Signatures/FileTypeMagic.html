@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="file-type-magic">File Type Magic</h1>
+<p>ClamAV's primary mechanism for determining file types is to match the file with a File Type Magic signature. These file type signatures are compiled into ClamAV, and may also be overridden dynamically using the definition founds found in a <code>*.ftm</code> file.</p>
+<p>The ClamAV standard signature database includes these definitions in <code>daily.ftm</code>.</p>
+<p>The signature format is not too disimilar from NDB body-based signatures.</p>
+<p>The format is:</p>
+<pre><code>    magictype:offset:magicbytes:name:type:type[:min_flevel[:max_flevel]]</code></pre>
+<p>Where:</p>
+<p><code>magictype</code>: Supported magic types include:</p>
+<ul>
+<li>0 - direct memory comparison of <code>magicbytes</code> for file types</li>
+<li>1 - The <code>magicbytes</code> use the body-based content matching <a href="BodySignatureFormat.html">format</a>.</li>
+<li>4 - direct memory comparison of <code>magicbytes</code> for partition types (HFS+, HFSX)</li>
+</ul>
+<p><code>offset</code>: The offset from start of the file to match against. May be <code>*</code> if <code>magictype</code> is 1.</p>
+<p><code>name</code>: A descriptive name for the file type.</p>
+<p><code>rtype</code>: Usually CL_TYPE_ANY.</p>
+<p><code>type</code>: The CL_TYPE corresponding with the file type signature. See the <a href="ClamAVFileTypes.html">CL_TYPE reference</a> for details.</p>
+<p><code>min_flevel</code>: (optional) The minimum ClamAV engine that the file type signature works with. See the <a href="FunctionalityLevels.html">FLEVEL reference</a> for details. To be used in the event that file type support has been recently added.</p>
+<p><code>max_flevel</code>: (optional, requires <code>min_flevel</code>) The maximum ClamAV engine that the file type signature works with. To be used in the event that file type support has been recently removed.</p>
+</body>
+</html>

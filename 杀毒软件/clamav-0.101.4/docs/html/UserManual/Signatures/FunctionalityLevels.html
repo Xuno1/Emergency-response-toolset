@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="functionality-levels-flevels">Functionality Levels (FLEVELs)</h1>
+<p>The Functionality Level (or FLEVEL) is an integer that signatures may use to define which versions of ClamAV the signature features support. It is up to the signature writers to select the correct FLEVEL or range of FLEVELs when writing a signature so that it does not cause failures in older versions of ClamAV.</p>
+<p>Setting appropriate FLEVELs in signatures is particularly crucial when using features added in the last 3-4 major release versions.</p>
+<h2 id="clamav-version-to-flevel-chart">ClamAV Version to FLEVEL chart</h2>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="9%" />
+<col width="9%" />
+<col width="71%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>flevel</th>
+<th>version</th>
+<th>release</th>
+<th>new signature features</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>41</td>
+<td>0.95.0</td>
+<td>3/2009</td>
+<td>Ignores use ign format (including line number).</td>
+</tr>
+<tr class="even">
+<td>51</td>
+<td>0.96.0</td>
+<td>3/2010</td>
+<td>Bytecode &amp; CDB sigs. Start using ign2.</td>
+</tr>
+<tr class="odd">
+<td>56</td>
+<td>0.96.4</td>
+<td>10/2010</td>
+<td>Min level for bytecode sigs.</td>
+</tr>
+<tr class="even">
+<td>60</td>
+<td>0.97.0</td>
+<td>2/2011</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>74</td>
+<td>0.98.0</td>
+<td>9/2013</td>
+<td>ISO9660 scanning support. All-match feature.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td>Wild card bracket notation{} for body-based signatures.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td>&quot;SE&quot; offset modifier.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td>Target types 10 - 13: (PDF, (SWF) Flash, Java, Internal).</td>
+</tr>
+<tr class="odd">
+<td>76</td>
+<td>0.98.1</td>
+<td>1/2014</td>
+<td>XZ support and ForceToDisk scan option.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td>Libxml2, XAR, DMG, HFS+/HFSX.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td>FTM type 4 (in-buffer partition magic, analogous to type 0 for files).</td>
+</tr>
+<tr class="even">
+<td>79</td>
+<td>0.98.5</td>
+<td>11/2014</td>
+<td>File properties (preclass). Target type 13: for preclass feature.</td>
+</tr>
+<tr class="odd">
+<td>81</td>
+<td>0.99.0</td>
+<td>11/2015</td>
+<td>Yara and PCRE support. Target type 14: non-listed types (&quot;other&quot;).</td>
+</tr>
+<tr class="even">
+<td>82</td>
+<td>0.99.1</td>
+<td>2/2016</td>
+<td>Hangul Word Processor (HWP) type file parser.</td>
+</tr>
+<tr class="odd">
+<td>90</td>
+<td>0.100</td>
+<td>4/2018</td>
+<td>&quot;Intermediates&quot; logical sig expression option.</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td></td>
+<td>MHTML and PostScript types.</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td>Substring wildcard (*) fix: order matters, substrings can't overlap.</td>
+</tr>
+<tr class="even">
+<td>100</td>
+<td>0.101</td>
+<td>12/2018</td>
+<td>&quot;Byte-Compare&quot; Logical subsignature. Windows Shortcut (LNK) type.</td>
+</tr>
+</tbody>
+</table>
+<p>For more inforamtion on ClamAV file type support, see the <a href="FileTypes.html">File Types Reference</a>.</p>
+</body>
+</html>

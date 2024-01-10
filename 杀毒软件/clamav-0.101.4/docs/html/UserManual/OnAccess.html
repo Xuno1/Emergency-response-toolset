@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="on-access-scanning">On-Access Scanning</h1>
+<hr />
+<h2 id="purpose">Purpose</h2>
+<hr />
+<p>This guide is for users interested in leveraging and understanding ClamAV's On-Access Scanning feature. It will walk through how to set up and use the On-Access Scanner and step through some common issues and their solutions.</p>
+<hr />
+<h2 id="requirements">Requirements</h2>
+<hr />
+<p>On-Access is only available on Linux systems. On Linux, On-Access requires a <code>kernel version &gt;= 3.8</code>. This is because it leverages a kernel api called <a href="http://man7.org/linux/man-pages/man7/fanotify.7.html">fanotify</a> to perform its blocking.</p>
+<hr />
+<h2 id="general-use">General Use</h2>
+<hr />
+<p>To use ClamAV's On-Access Scanner, simply open <code>clamd.conf</code>, set the <code>ScanOnAccess</code> option to <code>yes</code>, and then specify the path(s) you would like to recursively watch with the <code>OnAccessIncludePath</code> option. Finally, set <code>OnAccessPrevention</code> to <code>yes</code>. Then, run <code>clamd</code> with elevated permissions (e.g. <code>sudo clamd</code>). If all went well, the On-Access scanner will now be actively protecting the specified path(s). You can test this by dropping an eicar file into the specified path, and attempting to read/access it (e.g. <code>cat eicar.txt</code>). This will result in an &quot;Operation not permitted&quot; message, triggered by fanotify blocking the access attempt at the kernel level.</p>
+<hr />
+<h2 id="troubleshooting">## Troubleshooting</h2>
+<p>Some OS distributors have disabled fanotify, despite kernel support. You can check for fanotify support on your kernel by running the command:</p>
+<blockquote>
+<p>$ cat /boot/config-<kernel_version> | grep FANOTIFY</p>
+</blockquote>
+<p>You should see the following:</p>
+<pre><code>CONFIG_FANOTIFY=y
+CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y</code></pre>
+<p>If you see:</p>
+<pre><code># CONFIG_FANOTIFY_ACCESS_PERMISSIONS is not set</code></pre>
+<p>Then ClamAV's On-Access Scanner will still function, scanning and alerting on files normally in real time. However, it will be unable to block access attempts on malicious files. We call this <code>notify-only</code> mode.</p>
+<hr />
+<p>ClamAV's On-Access Scanning system uses a scheme called Dynamic Directory Determination (DDD for short) which is a shorthand way of saying that it tracks the layout of every directory specified with <code>OnAccessIncludePath</code> dynamically, and recursively, in real time. It does this by leveraging <a href="http://man7.org/linux/man-pages/man7/inotify.7.html">inotify</a> which by default has a limited number of watchpoints available for use by a process at any given time. Given the complexity of some directory hierarchies, ClamAV may warn you that it has exhausted its supply of inotify watchpoints (8192 by default). To increase the number of inotify watchpoints available for use by ClamAV (to 524288), run the following command:</p>
+<blockquote>
+<p>$ echo 524288 | sudo tee -a /proc/sys/fs/inotify/max_user_watches</p>
+</blockquote>
+<hr />
+<p>The <code>OnAccessIncludePath</code> option will not accept <code>/</code> as a valid path. This is because fanotify works by blocking a process' access to a file until a access_ok or access_denied determination has been made by the original fanotify calling process. Thus, by placing fanotify watchpoints on the entire filesystem, key system files may have their access blocked at the kernel level, which will result in a system lockup.</p>
+<p>This restriction was made to prevent users from &quot;shooting themselves in the foot.&quot; However, clever users will find it's possible to circumvent this restriction by using multiple <code>OnAccessIncludePath</code> options to protect most all the filesystem anyways, or simply the paths they truly care about.</p>
+<hr />
+<p>The <code>OnAccessMountPath</code> option uses a different fanotify api configuration which makes it incompatible with <code>OnAccessIncludePath</code> and the DDD System. Therefore, inotify will not be a concern when using this option. Unfortunately, this also means <code>OnAccessExtraScanning</code> (which is built around catching inotify events), and <code>OnAccessExcludePath</code> (which is built upon the DDD System) cannot be used in conjunction with <code>OnAccessMountPath</code>.</p>
+<hr />
+<h2 id="configuration-and-recipes">Configuration and Recipes</h2>
+<hr />
+<p>More nuanced behavior can be coerced from ClamAV's On-Access Scanner via careful modification to <code>clamd.conf</code>. Each option related to On-Access Scanning is easily identified by looking for the <code>OnAccess</code> prefix pre-pended to each option. The default <code>clamd.conf</code> file contains descriptions of each option, along with any documented limitations or safety features.</p>
+<p>Below are examples of common use cases, recipes for the correct minimal configuration, and the expected behavioral result.</p>
+<hr />
+<h4 id="use-case-0x0">Use Case 0x0</h4>
+<ul>
+<li>User needs to watch the entire file system, but blocking malicious access attempts isn't a concern<br />
+<code>ScanOnAccess yes   OnAccessMountPath /   OnAccessExcludeRootUID yes</code></li>
+</ul>
+<p>This configuration will put the On-Access Scanner into <code>notify-only</code> mode. It will also ensure only non-root, non-clam, user processes will trigger scans against the filesystem.</p>
+<hr />
+<h4 id="use-case-0x1">Use Case 0x1</h4>
+<ul>
+<li>System Administrator needs to watch the home directory of multiple Users, but not all users. Blocking access attempts is un-needed.<br />
+<code>ScanOnAccess yes   OnAccessIncludePath /home   OnAccessExcludePath /home/user2   OnAccessExcludePath /home/user4</code></li>
+</ul>
+<p>With this configuration, the On-Access Scanner will watch the entirety of the <code>/home</code> directory recursively in <code>notify-only</code> mode. However, it will recursively exclude the <code>/home/user2</code> and <code>/home/user4</code> directories.</p>
+<hr />
+<h4 id="use-case-0x2">Use Case 0x2</h4>
+<ul>
+<li>The user needs to protect a single directory non-recursively and ensure all access attempts on malicious files are blocked.<br />
+<code>ScanOnAccess yes   OnAccessIncludePath /home/user/Downloads   OnAccessPrevention yes   OnAccessDisableDDD yes</code></li>
+</ul>
+<p>The configuration above will result in non-recursive real-time protection of the <code>/home/user/Downloads</code> directory by ClamAV's On-Access Scanner. Any access attempts that ClamAV detects on malicious files within the top level of the directory hierarchy will be blocked by fanotify at the kernel level.</p>
+<hr />
+</body>
+</html>

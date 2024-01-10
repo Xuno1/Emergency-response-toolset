@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="signatures-based-on-container-metadata">Signatures based on container metadata</h1>
+<p>ClamAV 0.96 allows creating generic signatures matching files stored inside different container types which meet specific conditions. The signature format is:</p>
+<pre><code>    VirusName:ContainerType:ContainerSize:FileNameREGEX:
+    FileSizeInContainer:FileSizeReal:IsEncrypted:FilePos:
+    Res1:Res2[:MinFL[:MaxFL]]</code></pre>
+<p>where the corresponding fields are:</p>
+<ul>
+<li><p><code>VirusName:</code> Virus name to be displayed when signature matches.</p></li>
+<li><code>ContainerType:</code> The file type containing the target file. For example:</li>
+<li><code>CL_TYPE_ZIP</code>,</li>
+<li><code>CL_TYPE_RAR</code>,</li>
+<li><code>CL_TYPE_ARJ</code>,</li>
+<li><code>CL_TYPE_MSCAB</code>,</li>
+<li><code>CL_TYPE_7Z</code>,</li>
+<li><code>CL_TYPE_MAIL</code>,</li>
+<li><code>CL_TYPE_(POSIX|OLD)_TAR</code>,</li>
+<li><p><code>CL_TYPE_CPIO_(OLD|ODC|NEWC|CRC)</code></p></li>
+</ul>
+<p>Use <code>*</code> as a wild card to indicate that container type may be any file type.<br />
+For a full list of ClamAV file types, see the <a href="ClamAVFileTypes.html">ClamAV File Types Reference</a>.</p>
+<ul>
+<li><p><code>ContainerSize:</code> size of the container file itself (eg. size of the zip archive) specified in bytes as absolute value or range <code>x-y</code>.</p></li>
+<li><p><code>FileNameREGEX:</code> regular expression describing name of the target file</p></li>
+<li><p><code>FileSizeInContainer:</code> usually compressed size; for MAIL, TAR and CPIO == <code>FileSizeReal</code>; specified in bytes as absolute value or range.</p></li>
+<li><p><code>FileSizeReal:</code> usually uncompressed size; for MAIL, TAR and CPIO == <code>FileSizeInContainer</code>; absolute value or range.</p></li>
+<li><p><code>IsEncrypted:</code> 1 if the target file is encrypted, 0 if it’s not and <code>*</code> to ignore</p></li>
+<li><p><code>FilePos:</code> file position in container (counting from 1); absolute value or range.</p></li>
+<li><p><code>Res1:</code> when <code>ContainerType</code> is <code>CL_TYPE_ZIP</code> or <code>CL_TYPE_RAR</code> this field is treated as a CRC sum of the target file specified in hexadecimal format; for other container types it’s ignored.</p></li>
+<li><p><code>Res2:</code> not used as of ClamAV 0.96.</p></li>
+</ul>
+<p>The signatures for container files are stored inside <code>.cdb</code> files.</p>
+</body>
+</html>

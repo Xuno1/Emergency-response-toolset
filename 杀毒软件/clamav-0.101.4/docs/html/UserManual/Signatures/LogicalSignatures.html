@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="logical-signatures">Logical signatures</h1>
+<p>Logical signatures allow combining of multiple signatures in extended format using logical operators. They can provide both more detailed and flexible pattern matching. The logical sigs are stored inside <code>*.ldb</code> files in the following format:</p>
+<pre><code>SignatureName;TargetDescriptionBlock;LogicalExpression;Subsig0;
+Subsig1;Subsig2;...</code></pre>
+<p>where:</p>
+<ul>
+<li><p><code>TargetDescriptionBlock</code> provides information about the engine and target file with comma separated <code>Arg:Val</code> pairs. For args where <code>Val</code> is a range, the minimum and maximum values should be expressed as <code>min-max</code>.</p></li>
+<li><p><code>LogicalExpression</code> specifies the logical expression describing the relationship between <code>Subsig0...SubsigN</code>. <strong>Basis clause:</strong> 0,1,...,N decimal indexes are SUB-EXPRESSIONS representing <code>Subsig0, Subsig1,...,SubsigN</code> respectively. <strong>Inductive clause:</strong> if <code>A</code> and <code>B</code> are SUB-EXPRESSIONS and <code>X, Y</code> are decimal numbers then <code>(A&amp;B)</code>, <code>(A|B)</code>, <code>A=X</code>, <code>A=X,Y</code>, <code>A&gt;X</code>, <code>A&gt;X,Y</code>, <code>A&lt;X</code> and <code>A&lt;X,Y</code> are SUB-EXPRESSIONS</p></li>
+<li><p><code>SubsigN</code> is n-th subsignature in extended format possibly preceded with an offset. There can be specified up to 64 subsigs.</p></li>
+</ul>
+<p>Keywords used in <code>TargetDescriptionBlock</code>:</p>
+<ul>
+<li><p><code>Target:X</code>: A number specifying the type of the target file: <a href="FileTypes.html#Target-Types">Target Types</a>.</p></li>
+<li><p><code>Engine:X-Y</code>: Required engine functionality level (range; 0.96). Note that if the <code>Engine</code> keyword is used, it must be the first one in the <code>TargetDescriptionBlock</code> for backwards compatibility. See the <a href="FunctionalityLevels.html">FLEVEL reference</a> for details.</p></li>
+<li><p><code>FileSize:X-Y</code>: Required file size (range in bytes; 0.96)</p></li>
+<li><p><code>EntryPoint</code>: Entry point offset (range in bytes; 0.96)</p></li>
+<li><p><code>NumberOfSections</code>: Required number of sections in executable (range; 0.96)</p></li>
+<li><p><code>Container:CL_TYPE_*</code>: File type of the container which stores the scanned file.</p></li>
+</ul>
+<p>Specifying <code>CL_TYPE_ANY</code> matches on root objects only (i.e. the target file is explicitely <em>not</em> in a container). Chances slim that you would want to use <code>CL_TYPE_ANY</code> in a signature, because placing the malicious file in an archive will then prevent it from alerting.</p>
+<p>Every ClamAV file type has the potential to be a container for additional files, although some are more likely than others. When a file is parsed and data in the file is identified to be scanned as a unique type, that parent file becomes a container the moment the embedded content is scanned. For a list of possible CL_TYPEs, refer to the <a href="ClamAVFileTypes.html">File Types Reference</a>.</p>
+<ul>
+<li><code>Intermediates:CL_TYPE_*&gt;CL_TYPE_*</code>: Specify one or more layers of file types containing the scanned file. <em>This is an alternative to using <code>Container</code>.</em></li>
+</ul>
+<p>You may specify up to 16 layers of file types separated by ’<code>&gt;</code>’ in top-down order. Note that the ’<code>&gt;</code>’ separator is not needed if you only specify a single container. The last type should be the immediate container containing the malicious file. Unlike with the <code>Container</code> option, <code>CL_TYPE_ANY</code> can be used as a wildcard file type. (expr; 0.100.0)</p>
+<p>For a list of possible CL_TYPEs, refer to the <a href="ClamAVFileTypes.html">File Types Reference</a>.</p>
+<ul>
+<li><p><code>IconGroup1</code>: Icon group name 1 from .idb signature Required engine functionality (range; 0.96)</p></li>
+<li><p><code>IconGroup2</code>: Icon group name 2 from .idb signature Required engine functionality (range; 0.96)</p></li>
+</ul>
+<p>Modifiers for subexpressions:</p>
+<ul>
+<li><p><code>A=X</code>: If the SUB-EXPRESSION A refers to a single signature then this signature must get matched exactly X times; if it refers to a (logical) block of signatures then this block must generate exactly X matches (with any of its sigs).</p></li>
+<li><p><code>A=0</code> specifies negation (signature or block of signatures cannot be matched)</p></li>
+<li><p><code>A=X,Y</code>: If the SUB-EXPRESSION A refers to a single signature then this signature must be matched exactly X times; if it refers to a (logical) block of signatures then this block must generate X matches and at least Y different signatures must get matched.</p></li>
+<li><p><code>A&gt;X</code>: If the SUB-EXPRESSION A refers to a single signature then this signature must get matched more than X times; if it refers to a (logical) block of signatures then this block must generate more than X matches (with any of its sigs).</p></li>
+<li><p><code>A&gt;X,Y</code>: If the SUB-EXPRESSION A refers to a single signature then this signature must get matched more than X times; if it refers to a (logical) block of signatures then this block must generate more than X matches <em>and</em> at least Y different signatures must be matched.</p></li>
+<li><p><code>A&lt;X</code>: Just like <code>A&gt;Z</code> above with the change of &quot;more&quot; to &quot;less&quot;.</p></li>
+</ul>
+<p>If the SUB-EXPRESSION A refers to a single signature then this signature must get matched less than X times; if it refers to a (logical) block of signatures then this block must generate less than X matches (with any of its sigs).</p>
+<ul>
+<li><code>A&lt;X,Y</code>: Similar to <code>A&gt;X,Y</code>. If the SUB-EXPRESSION A refers to a single signature then this signature must get matched less than X times; if it refers to a (logical) block of signatures then this block must generate less than X matches <em>and</em> at least Y different signatures must be matched.</li>
+</ul>
+<p>Examples:</p>
+<pre><code>Sig1;Target:0;(0&amp;1&amp;2&amp;3)&amp;(4|1);6b6f74656b;616c61;7a6f6c77;7374656
+6616e;deadbeef
+
+Sig2;Target:0;((0|1|2)&gt;5,2)&amp;(3|1);6b6f74656b;616c61;7a6f6c77;737
+46566616e
+
+Sig3;Target:0;((0|1|2|3)=2)&amp;(4|1);6b6f74656b;616c61;7a6f6c77;737
+46566616e;deadbeef
+
+Sig4;Engine:51-255,Target:1;((0|1)&amp;(2|3))&amp;4;EP+123:33c06834f04100
+f2aef7d14951684cf04100e8110a00;S2+78:22??232c2d252229{-15}6e6573
+(63|64)61706528;S3+50:68efa311c3b9963cb1ee8e586d32aeb9043e;f9c58
+dcf43987e4f519d629b103375;SL+550:6300680065005c0046006900</code></pre>
+<h2 id="subsignature-modifiers">Subsignature Modifiers</h2>
+<p>ClamAV (clamav-0.99) supports a number of additional subsignature<br />
+modifiers for logical signatures. This is done by specifying <code>::</code><br />
+followed by a number of characters representing the desired options.<br />
+Signatures using subsignature modifiers require <code>Engine:81-255</code> for<br />
+backwards-compatibility.</p>
+<ul>
+<li>Case-Insensitive [<code>i</code>]</li>
+</ul>
+<p>Specifying the <code>i</code> modifier causes ClamAV to match all alphabetic hex bytes as case-insensitive. All patterns in ClamAV are case-sensitive by default.</p>
+<ul>
+<li>Wide [<code>w</code>]</li>
+</ul>
+<p>Specifying the <code>w</code> causes ClamAV to match all hex bytes encoded with two bytes per character. Note this simply interweaves each character with NULL characters and does not truly support UTF-16 characters. Wildcards for ’wide’ subsignatures are not treated as wide (i.e. there can be an odd number of intermittent characters). This can be combined with <code>a</code> to search for patterns in both wide and ascii.</p>
+<ul>
+<li>Fullword [<code>f</code>]</li>
+</ul>
+<p>Match subsignature as a fullword (delimited by non-alphanumeric characters).</p>
+<ul>
+<li>Ascii [<code>a</code>]</li>
+</ul>
+<p>Match subsignature as ascii characters. This can be combined with <code>w</code> to search for patterns in both ascii and wide.</p>
+<p>Examples:</p>
+<pre><code>clamav-nocase-A;Engine:81-255,Target:0;0&amp;1;41414141::i;424242424242::i
+    -matches &#39;AAAA&#39;(nocase) and &#39;BBBBBB&#39;(nocase)
+
+clamav-fullword-A;Engine:81-255,Target:0;0&amp;1;414141;68656c6c6f::f
+    -matches &#39;AAA&#39; and &#39;hello&#39;(fullword)
+clamav-fullword-B;Engine:81-255,Target:0;0&amp;1;414141;68656c6c6f::fi
+    -matches &#39;AAA&#39; and &#39;hello&#39;(fullword nocase)
+
+clamav-wide-B2;Engine:81-255,Target:0;0&amp;1;414141;68656c6c6f::wa
+    -matches &#39;AAA&#39; and &#39;hello&#39;(wide ascii)
+clamav-wide-C0;Engine:81-255,Target:0;0&amp;1;414141;68656c6c6f::iwfa
+    -matches &#39;AAA&#39; and &#39;hello&#39;(nocase wide fullword ascii)</code></pre>
+<h2 id="special-subsignature-types">Special Subsignature Types</h2>
+<h3 id="macro-subsignatures">Macro subsignatures</h3>
+<p>Introduced in ClamAV 0.96</p>
+<p>Format: <code>${min-max}MACROID$</code></p>
+<p>Macro subsignatures are used to combine a number of existing extended<br />
+signatures (<code>.ndb</code>) into a on-the-fly generated alternate string logical<br />
+signature (<code>.ldb</code>). Signatures using macro subsignatures require<br />
+<code>Engine:51-255</code> for backwards-compatibility.</p>
+<p>Example:</p>
+<pre><code>      test.ldb:
+        TestMacro;Engine:51-255,Target:0;0&amp;1;616161;${6-7}12$
+
+      test.ndb:
+        D1:0:$12:626262
+        D2:0:$12:636363
+        D3:0:$30:626264</code></pre>
+<p>The example logical signature <code>TestMacro</code> is functionally equivalent<br />
+to:</p>
+<pre><code>`TestMacro;Engine:51-255,Target:0;0;616161{3-4}(626262|636363)`</code></pre>
+<ul>
+<li><p><code>MACROID</code> points to a group of signatures; there can be at most 32 macro groups.</p></li>
+<li><p>In the example, <code>MACROID</code> is <code>12</code> and both <code>D1</code> and <code>D2</code> are members of macro group <code>12</code>. <code>D3</code> is a member of separate macro group <code>30</code>.</p></li>
+<li><p><code>{min-max}</code> specifies the offset range at which one of the group signatures should match; the offset range is relative to the starting offset of the preceding subsignature. This means a macro subsignature cannot be the first subsignature.</p></li>
+<li><p>In the example, <code>{min-max}</code> is <code>{6-7}</code> and it is relative to the start of a <code>616161</code> match.</p></li>
+<li><p>For more information and examples please see <a href="https://bugzilla.clamav.net/show_bug.cgi?id=164" class="uri">https://bugzilla.clamav.net/show_bug.cgi?id=164</a>.</p></li>
+</ul>
+<h3 id="byte-compare-subsignatures">Byte Compare Subsignatures</h3>
+<p>Introduced in ClamAV 0.101</p>
+<p>Format: <code>subsigid_trigger(offset#byte_options#comparisons)</code></p>
+<p>Byte compare subsignatures can be used to evaluate a numeric value at a given offset from the start of another (matched) subsignature within the same logical signature. These are executed after all other subsignatures within the logical subsignature are fired, with the exception of PCRE subsignatures. They can evaluate offsets only from a single referenced subsignature, and that subsignature must give a valid match for the evaluation to occur.</p>
+<ul>
+<li><p><code>subsigid_trigger</code> is a required field and may refer to any single non-PCRE, non-Byte Compare subsignature within the lsig. The byte compare subsig will evaluate if <code>subsigid_trigger</code> matches. Triggering on multiple subsigs or logic based triggering is not currently supported.</p></li>
+<li><p><code>offset</code> is a required field that consists of an <code>offset_modifier</code> and a numeric <code>offset</code> (hex or decimal offsets are okay).</p></li>
+<li><p><code>offset_modifier</code> can be either <code>&gt;&gt;</code> or <code>&lt;&lt;</code> where the former denotes a positive offset and the latter denotes a negative offset. The offset is calculated from the start of <code>subsigid_trigger</code>, which allows for byte extraction before the specified match, after the match, and within the match itself.</p></li>
+<li><p><code>offset</code> must be a positive hex or decimal value. This will be the number of bytes from the start of the referenced <code>subsigid_trigger</code> match within the file buffer to begin the comparison.</p></li>
+<li><p><code>byte_options</code> are used to specify the numeric type and endianess of the extracted byte sequence in that order as well as the number of bytes to be read. By default ClamAV will attempt to matchup up to the number of byte specified, unless the <code>e</code> (exact) option is specified or the numeric type is <code>b</code> (binary). This field follows the form <code>[h|d|a|i][l|b][e]num_bytes</code></p></li>
+<li><p><code>h|d|a|i</code> where <code>h</code> specifies the byte sequence will be in hex, <code>d</code> decimal, <code>a</code> automatic detection of hex or decimal at runtime, and <code>i</code> signifies raw binary data.</p></li>
+<li><p><code>l|b</code> where <code>l</code> specifies the byte sequence will be in little endian order and <code>b</code> big endian. If decimal <code>d</code> is specified, big-endian is implied and using <code>l</code> will result in a malformed database error.</p></li>
+<li><p><code>e</code> specifies that ClamAV will only evaluate the comparison if it can extract the exact number of bytes specified. This option is implicitly declared when using the <code>i</code> flag.</p></li>
+<li><p><code>num_bytes</code> specifies the number of bytes to extract. This can be a hex or decimal value. If <code>i</code> is specified only 1, 2, 4, and 8 are valid options.</p></li>
+<li><p><code>comparisons</code> are a required field which denotes how to evaluate the extracted byte sequence. Each Byte Compare signature can have one or two <code>comparison_sets</code> separated by a comma. Each <code>comparison_set</code> consists of a <code>Comparison_symbol</code> and a <code>Comparison_value</code> and takes the form <code>Comparison_symbolComparison_value</code>. Thus, <code>comparisons</code> takes the form <code>comparison_set[,comparison_set]</code></p></li>
+<li><p><code>Comparison_symbol</code> denotes the type of comparison to be done. The supported comparison symbols are <code>&lt;</code>, <code>&gt;</code>, <code>=</code>.</p></li>
+<li><p><code>Comparison_value</code> is a required field which must be a numeric hex or decimal value. If all other conditions are met, the byte compare subsig will evalutate the extracted byte sequence against this number based on the provided <code>comparison_symbol</code>.</p></li>
+</ul>
+<h3 id="pcre-subsignatures">PCRE subsignatures</h3>
+<p>Introduced in ClamAV 0.99</p>
+<p>Format: <code>Trigger/PCRE/[Flags]</code></p>
+<p>PCRE subsignatures are used within a logical signature (<code>.ldb</code>) to specify regex matches that execute once triggered by a conditional based on preceding subsignatures. Signatures using PCRE subsignatures require <code>Engine:81-255</code> for backwards-compatibility.</p>
+<ul>
+<li><p><code>Trigger</code> is a required field that is a valid <code>LogicalExpression</code> and may refer to any subsignatures that precede this subsignature. Triggers cannot be self-referential and cannot refer to subsequent subsignatures.</p></li>
+<li><p><code>PCRE</code> is the expression representing the regex to execute. <code>PCRE</code> must be delimited by ’/’ and usage of ’/’ within the expression need to be escaped. For backward compatibility, ’;’ within the expression must be expressed as ’<code>\x3B</code>’. <code>PCRE</code> cannot be empty and (?UTF*) control sequence is not allowed. If debug is specified, named capture groups are displayed in a post-execution report.</p></li>
+<li><p><code>Flags</code> are a series of characters which affect the compilation and execution of <code>PCRE</code> within the PCRE compiler and the ClamAV engine. This field is optional.</p></li>
+<li><p><code>g [CLAMAV_GLOBAL]</code> specifies to search for ALL matches of PCRE (default is to search for first match). NOTE: INCREASES the time needed to run the PCRE.</p></li>
+<li><p><code>r [CLAMAV_ROLLING]</code> specifies to use the given offset as the starting location to search for a match as opposed to the only location; applies to subsigs without maxshifts. By default, in order to facilatate normal ClamAV offset behavior, PCREs are auto-anchored (only attempt match on first offset); using the rolling option disables the auto-anchoring.</p></li>
+<li><p><code>e [CLAMAV_ENCOMPASS]</code> specifies to CONFINE matching between the specified offset and maxshift; applies only when maxshift is specified. Note: DECREASES time needed to run the PCRE.</p></li>
+<li><p><code>i [PCRE_CASELESS]</code></p></li>
+<li><p><code>s [PCRE_DOTALL]</code></p></li>
+<li><p><code>m [PCRE_MULTILINE]</code></p></li>
+<li><p><code>x [PCRE_EXTENDED]</code></p></li>
+<li><p><code>A [PCRE_ANCHORED]</code></p></li>
+<li><p><code>E [PCRE_DOLLAR_ENODNLY]</code></p></li>
+<li><p><code>U [PCRE_UNGREEDY]</code></p></li>
+</ul>
+<p>Examples:</p>
+<pre><code>Find.All.ClamAV;Engine:81-255,Target:0;1;6265676c6164697427736e6f7462797465636f6465;0/clamav/g
+
+Find.ClamAV.OnlyAt.299;Engine:81-255,Target:0;2;7374756c747a67657473;7063726572656765786c6f6c;299:0&amp;1/clamav/
+
+Find.ClamAV.StartAt.300;Engine:81-255,Target:0;3;616c61696e;62756731393238;636c6f736564;300:0&amp;1&amp;2/clamav/r
+
+Find.All.Encompassed.ClamAV;Engine:81-255,Target:0;3;7768796172656e2774;796f757573696e67;79617261;200,300:0&amp;1&amp;2/clamav/ge
+
+Named.CapGroup.Pcre;Engine:81-255,Target:0;3;636f75727479617264;616c62756d;74657272696572;50:0&amp;1&amp;2/variable=(?&lt;nilshell&gt;.{16})end/gr
+
+Firefox.TreeRange.UseAfterFree;Engine:81-255,Target:0,Engine:81-255;0&amp;1&amp;2;2e766965772e73656c656374696f6e;2e696e76616c696461746553656c656374696f6e;0&amp;1/\x2Eview\x2Eselection.*?\x2Etree\s*\x3D\s*null.*?\x2Einvalidate/smi
+
+Firefox.IDB.UseAfterFree;Engine:81-255,Target:0;0&amp;1;4944424b657952616e6765;0/^\x2e(only|lowerBound|upperBound|bound)\x28.*?\x29.*?\x2e(lower|upper|lowerOpen|upperOpen)/smi
+
+Firefox.boundElements;Engine:81-255,Target:0;0&amp;1&amp;2;6576656e742e6
+26f756e64456c656d656e7473;77696e646f772e636c6f7365;0&amp;1/on(load|click)\s*=\s*\x22?window\.close\s*\x28/si</code></pre>
+<h2 id="signatures-for-version-information-vi-metadata-in-pe-files">Signatures for Version Information (VI) metadata in PE files</h2>
+<p>Starting with ClamAV 0.96 it is possible to easily match certain information built into PE files (executables and dynamic link libraries). Whenever you lookup the properties of a PE executable file in windows, you are presented with a bunch of details about the file itself.</p>
+<p>These info are stored in a special area of the file resources which goes under the name of <code>VS_VERSION_INFORMATION</code> (or versioninfo for short). It is divided into 2 parts. The first part (which is rather uninteresting) is really a bunch of numbers and flags indicating the product and file version. It was originally intended for use with installers which, after parsing it, should be able to determine whether a certain executable or library are to be upgraded/overwritten or are already up to date. Suffice to say, this approach never really worked and is generally never used.</p>
+<p>The second block is much more interesting: it is a simple list of key/value strings, intended for user information and completely ignored by the OS. For example, if you look at ping.exe you can see the company being <em>&quot;Microsoft Corporation&quot;</em>, the description <em>&quot;TCP/IP Ping command&quot;</em>, the internal name <em>&quot;ping.exe&quot;</em> and so on... Depending on the OS version, some keys may be given peculiar visibility in the file properties dialog, however they are internally all the same.</p>
+<p>To match a versioninfo key/value pair, the special file offset anchor <code>VI</code> was introduced. This is similar to the other anchors (like <code>EP</code> and <code>SL</code>) except that, instead of matching the hex pattern against a single offset, it checks it against each and every key/value pair in the file. The <code>VI</code> token doesn’t need nor accept a <code>+/-</code> offset like e.g. <code>EP+1</code>. As for the hex signature itself, it’s just the utf16 dump of the key and value. Only the <code>??</code> and <code>(aa|bb)</code> wildcards are allowed in the signature. Usually, you don’t need to bother figuring it out: each key/value pair together with the corresponding VI-based signature is printed by <code>clamscan</code> when the <code>--debug</code> option is given.</p>
+<p>For example <code>clamscan --debug freecell.exe</code> produces:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">[<span class="ex">...</span>]
+<span class="ex">Recognized</span> MS-EXE/DLL file
+<span class="kw">in</span> <span class="ex">cli_peheader</span>
+<span class="ex">versioninfo_cb</span>: type: 10, name: 1, lang: 410, rva: 9608
+<span class="ex">cli_peheader</span>: parsing version info @ rva 9608 (1/1)
+<span class="ex">VersionInfo</span> (d2de)<span class="bu">:</span> <span class="st">&#39;CompanyName&#39;</span>=<span class="st">&#39;Microsoft Corporation&#39;</span> -
+<span class="ex">VI</span>:43006f006d00700061006e0079004e0061006d006500000000004d006900
+<span class="ex">630072006f0073006f0066007400200043006f00720070006f0072006100740</span>
+<span class="ex">069006f006e000000</span>
+<span class="ex">VersionInfo</span> (d32a)<span class="bu">:</span> <span class="st">&#39;FileDescription&#39;</span>=<span class="st">&#39;Entertainment Pack</span>
+<span class="st">FreeCell Game&#39;</span> - VI:460069006c006500440065007300630072006900700
+<span class="ex">0740069006f006e000000000045006e007400650072007400610069006e006d</span>
+<span class="ex">0065006e00740020005000610063006b0020004600720065006500430065006</span>
+<span class="ex">c006c002000470061006d0065000000</span>
+<span class="ex">VersionInfo</span> (d396)<span class="bu">:</span> <span class="st">&#39;FileVersion&#39;</span>=<span class="st">&#39;5.1.2600.0 (xpclient.010817</span>
+<span class="st">-1148)&#39;</span> - VI:460069006c006500560065007200730069006f006e00000000
+<span class="ex">0035002e0031002e0032003600300030002e003000200028007800700063006</span>
+<span class="ex">c00690065006e0074002e003000310030003800310037002d00310031003400</span>
+<span class="ex">380029000000</span>
+<span class="ex">VersionInfo</span> (d3fa)<span class="bu">:</span> <span class="st">&#39;InternalName&#39;</span>=<span class="st">&#39;freecell&#39;</span> - VI:49006e007400
+<span class="ex">650072006e0061006c004e0061006d006500000066007200650065006300650</span>
+<span class="ex">06c006c000000</span>
+<span class="ex">VersionInfo</span> (d4ba)<span class="bu">:</span> <span class="st">&#39;OriginalFilename&#39;</span>=<span class="st">&#39;freecell&#39;</span> - VI:4f007200
+<span class="ex">6900670069006e0061006c00460069006c0065006e0061006d0065000000660</span>
+<span class="ex">0720065006500630065006c006c000000</span>
+<span class="ex">VersionInfo</span> (d4f6)<span class="bu">:</span> <span class="st">&#39;ProductName&#39;</span>=<span class="st">&#39;Sistema operativo Microsoft</span>
+<span class="st">Windows&#39;</span> - VI:500072006f0064007500630074004e0061006d00650000000
+<span class="ex">000530069007300740065006d00610020006f00700065007200610074006900</span>
+<span class="ex">76006f0020004d006900630072006f0073006f0066007400ae0020005700690</span>
+<span class="ex">06e0064006f0077007300ae000000</span>
+<span class="ex">VersionInfo</span> (d562)<span class="bu">:</span> <span class="st">&#39;ProductVersion&#39;</span>=<span class="st">&#39;5.1.2600.0&#39;</span> - VI:50007200
+<span class="ex">6f006400750063007400560065007200730069006f006e00000035002e00310</span>
+<span class="ex">02e0032003600300030002e0030000000</span>
+[<span class="ex">...</span>]</code></pre></div>
+<p>Although VI-based signatures are intended for use in logical signatures you can test them using ordinary <code>.ndb</code> files. For example:</p>
+<pre><code>    my_test_vi_sig:1:VI:paste_your_hex_sig_here</code></pre>
+<p>Final note. If you want to decode a VI-based signature into a human readable form you can use:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">echo</span> hex_string <span class="kw">|</span> <span class="ex">xxd</span> -r -p <span class="kw">|</span> <span class="fu">strings</span> -el</code></pre></div>
+<p>For example:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="bu">echo</span> 460069006c0065004400650073006300720069007000740069006f006e
+<span class="ex">000000000045006e007400650072007400610069006e006d0065006e007400200</span>
+<span class="ex">05000610063006b0020004600720065006500430065006c006c00200047006100</span>
+<span class="ex">6d0065000000</span> <span class="kw">|</span> <span class="ex">xxd</span> -r -p <span class="kw">|</span> <span class="fu">strings</span> -el
+<span class="ex">FileDescription</span>
+<span class="ex">Entertainment</span> Pack FreeCell Game</code></pre></div>
+<h2 id="icon-signatures-for-pe-files">Icon Signatures for PE files</h2>
+<p>While Icon Signatures are stored in a <code>.idb</code> file, they are a feature of Logical Signatures.</p>
+<p>ClamAV 0.96 includes an approximate/fuzzy icon matcher to help detecting malicious executables disguising themselves as innocent looking image files, office documents and the like.</p>
+<p>Icon matching is only triggered by Logical Signatures (<code>.ldb</code>) using the special attribute tokens <code>IconGroup1</code> or <code>IconGroup2</code>. These identify two (optional) groups of icons defined in a <code>.idb</code> database file. The format of the <code>.idb</code> file is:</p>
+<pre><code>    ICONNAME:GROUP1:GROUP2:ICON_HASH</code></pre>
+<p>where:</p>
+<ul>
+<li><p><code>ICON_NAME</code> is a unique string identifier for a specific icon,</p></li>
+<li><p><code>GROUP1</code> is a string identifier for the first group of icons (<code>IconGroup1</code>)</p></li>
+<li><p><code>GROUP2</code> is a string identifier for the second group of icons (<code>IconGroup2</code>),</p></li>
+<li><p><code>ICON_HASH</code> is a fuzzy hash of the icon image</p></li>
+</ul>
+<p>The <code>ICON_HASH</code> field can be obtained from the debug output of libclamav. For example:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">LibClamAV</span> debug: ICO SIGNATURE:
+<span class="ex">ICON_NAME</span>:GROUP1:GROUP2:18e2e0304ce60a0cc3a09053a30000414100057e000afe0000e 80006e510078b0a08910d11ad04105e0811510f084e01040c080a1d0b0021000a39002a41</code></pre></div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+; RDRVMP.INF
+;
+; Virtual R-Miniport Installation File.
+;
+; This installation file requests that a RdrVMP device be root
+; enumerated.
+;
+; Copyright (c) 2018, R-Tools Technology Inc.
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=SCSIAdapter
+ClassGUID={4D36E97B-E325-11CE-BFC1-08002BE10318}
+Provider=%RTT%
+CatalogFile=rdrvmp.cat
+DriverVer=07/20/2018,1.0.0.2
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[Manufacturer]
+%RTT%=RdrVMP, NTx86, NTamd64
+
+[RdrVMP.NTx86]
+%RdrVmpDeviceDesc%=RdrVmp_Device, %rootstr%
+
+[RdrVMP.NTamd64]
+%RdrVmpDeviceDesc%=RdrVmp_Device, %rootstr%
+
+[RdrVMP_Device]
+CopyFiles=@RdrVmp.sys
+
+[RdrVmp_Device.HW]
+AddReg = RdrVmp_Device_AddReg
+
+[RdrVmp_Device_AddReg]
+HKR, "ScsiPort", "NeedsSystemShutdownNotification", 0x00010001, 1
+
+[RdrVmp_Device.Services]
+AddService = RdrVmp, %SPSVCINST_ASSOCSERVICE%, Rdr_Service_Inst
+
+[SourceDisksNames.x86]
+0 = %DiskId1%,,,\i386
+
+[SourceDisksNames.amd64]
+0 = %DiskId1%,,,\amd64
+
+[SourceDisksFiles.x86]
+RdrVmp.sys = 0
+
+[SourceDisksFiles.amd64]
+RdrVmp.sys = 0
+
+[Rdr_Service_Inst]
+DisplayName    = %RdrVmpDeviceDesc%
+ServiceType    = %SERVICE_KERNEL_DRIVER%
+StartType      = %SERVICE_DEMAND_START%
+ErrorControl   = %SERVICE_ERROR_NORMAL%
+ServiceBinary  = %12%\RdrVmp.sys
+LoadOrderGroup = SCSI Miniport
+AddReg         = pnpsafe_isa_addreg
+
+[pnpsafe_isa_addreg]
+HKR,,"BreakOnEntry", %REG_DWORD%,  0x00000000
+HKR,"Parameters","BusType",%REG_DWORD%,0x0000000E
+
+[Strings]
+RTT = "R-Tools Technology Inc."
+SCSIClassName  = "SCSI and RAID controllers"
+RdrVmpDeviceDesc = "R-TT StorPort Virtual Adapter"
+DiskId1        = "R-TT Virtual Miniport Device Installation Disk #1"
+rootstr        = "root\RdrVMP"
+
+;*******************************************
+;Handy macro substitutions (non-localizable)
+SPSVCINST_ASSOCSERVICE = 0x00000002
+SERVICE_KERNEL_DRIVER  = 1
+SERVICE_DEMAND_START   = 3
+SERVICE_ERROR_NORMAL   = 1
+
+REG_DWORD              = 0x00010001
+REG_BINARY             = 0x00000001
+REG_SZ                 = 0x00000000

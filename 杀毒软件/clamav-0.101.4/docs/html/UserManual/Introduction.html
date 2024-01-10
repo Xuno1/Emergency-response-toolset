@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="introduction">Introduction</h1>
+<p>Clam AntiVirus is an open source (GPLv2) anti-virus toolkit, designed especially for e-mail scanning on mail gateways. It provides a number of utilities including a flexible and scalable multi-threaded daemon, a command line scanner and advanced tool for automatic database updates. The core of the package is an anti-virus engine available in a form of shared library.</p>
+<h2 id="features">Features</h2>
+<h3 id="capabilities">Capabilities</h3>
+<ul>
+<li>ClamAV is designed to scan files quickly.</li>
+<li>Real time protection (Linux only). Our scanning daemon supports on-access scanning on modern versions of Linux, including the ability to block file access until a file has been scanned.</li>
+<li>ClamAV detects over 1 million viruses, worms and trojans, including Microsoft Office macro viruses, mobile malware, and other threats.</li>
+<li>The built-in bytecode interpreter allows the ClamAV signature writers to create and distribute very complex detection routines and remotely enhance the scanner’s functionality.</li>
+<li>Signed signature databases ensure that ClamAV will only execute trusted signature definitions.</li>
+<li>ClamAV scans within archives and compressed files but also protects against archive bombs. Built-in archive extraction capabilities include:</li>
+<li>Zip (including SFX)</li>
+<li>RAR (including SFX)</li>
+<li>7Zip</li>
+<li>ARJ (including SFX)</li>
+<li>Tar</li>
+<li>CPIO</li>
+<li>Gzip</li>
+<li>Bzip2</li>
+<li>DMG</li>
+<li>IMG</li>
+<li>ISO 9660</li>
+<li>PKG</li>
+<li>HFS+ partition</li>
+<li>HFSX partition</li>
+<li>APM disk image</li>
+<li>GPT disk image</li>
+<li>MBR disk image</li>
+<li>XAR</li>
+<li>XZ</li>
+<li>MS OLE2</li>
+<li>MS Cabinet Files (including SFX)</li>
+<li>MS CHM (Compiled HTML)</li>
+<li>MS SZDD compression format</li>
+<li>BinHex</li>
+<li>SIS (SymbianOS packages)</li>
+<li>AutoIt</li>
+<li>InstallShield</li>
+<li>Supports Windows executable file parsing, also known as Portable Executables (PE) both 32/64-bit, including PE files that are compressed or obfuscated with:</li>
+<li>AsPack</li>
+<li>UPX</li>
+<li>FSG</li>
+<li>Petite</li>
+<li>PeSpin</li>
+<li>NsPack</li>
+<li>wwpack32</li>
+<li>MEW</li>
+<li>Upack</li>
+<li>Y0da Cryptor</li>
+<li>Supports ELF and Mach-O files (both 32- and 64-bit)</li>
+<li>Supports almost all mail file formats</li>
+<li>Support for other special files/formats includes:</li>
+<li>HTML</li>
+<li>RTF</li>
+<li>PDF</li>
+<li>Files encrypted with CryptFF and ScrEnc</li>
+<li>uuencode</li>
+<li>TNEF (winmail.dat)</li>
+<li>Advanced database updater with support for scripted updates, digital signatures and DNS based database version queries</li>
+</ul>
+<h3 id="license">License</h3>
+<p>ClamAV is licensed under the GNU General Public License, Version 2.</p>
+<h3 id="supported-platforms">Supported platforms</h3>
+<p>Clam AntiVirus is highly cross-platform. The development team cannot test every OS, so we have chosen to test ClamAV using the two most recent Long Term Support (LTS) versions of each of the most popular desktop operating systems. Our regularly tested operating systems include:</p>
+<ul>
+<li>GNU/Linux</li>
+<li>Ubuntu
+<ul>
+<li>16.04</li>
+<li>18.04</li>
+</ul></li>
+<li>Debian
+<ul>
+<li>7</li>
+<li>8</li>
+</ul></li>
+<li>CentOS
+<ul>
+<li>6</li>
+<li>7</li>
+</ul></li>
+<li>UNIX</li>
+<li>Solaris
+<ul>
+<li>11</li>
+</ul></li>
+<li>FreeBSD
+<ul>
+<li>10</li>
+<li>11</li>
+</ul></li>
+<li>macOS
+<ul>
+<li>10.13 (High Sierra)</li>
+<li>10.14 (Mojave)</li>
+</ul></li>
+<li>Windows</li>
+<li>7</li>
+<li>10</li>
+</ul>
+<h2 id="recommended-system-requirements">Recommended System Requirements</h2>
+<p>The following minimum recommended system requirements are for using <code>clamscan</code> or <code>clamd</code> and <code>clamdscan</code> binaries with the standard ClamAV signature database provided by Cisco.</p>
+<p>Minimum recommended RAM:</p>
+<ul>
+<li>FreeBSD and Linux server edition: 1 GiB+</li>
+<li>Linux non-server edition: 2 GiB+</li>
+<li>Windows 7 &amp; 10 32-bit: 2 GiB+</li>
+<li>Windows 7 &amp; 10 64-bit: 3 GiB+</li>
+<li>macOS: 3 GiB+</li>
+</ul>
+<p>Minimum recommended CPU:</p>
+<ul>
+<li>FreeBSD and Linux systems: 1 CPU 2.0 Ghz+</li>
+<li>Windows 7 &amp; 10: 1 CPU 2.0 Ghz+</li>
+<li>OSX: 2 CPUs at 2.0 Ghz+</li>
+</ul>
+<p>Minimum available hard disk space required:</p>
+<p>For the ClamAV application we recommend having 5 GB of free space available. This recommendation is in addition to the recommended disk space for each OS.</p>
+<p><em>Please note</em>: The tests to determine these minimum requirements were performed on systems that were not running other applications. If other applications are being run on the system, additional resources will be required in addition to our recommended minimums.</p>
+<h2 id="mailing-lists-and-irc-channel">Mailing lists and IRC channel</h2>
+<p>If you have a trouble installing or using ClamAV try asking on our mailing lists. There are four lists available:</p>
+<ul>
+<li><strong>clamav-announce*lists.clamav.net</strong> - info about new versions, moderated</li>
+<li><strong>clamav-users*lists.clamav.net</strong> - user questions</li>
+<li><strong>clamav-devel*lists.clamav.net</strong> - technical discussions</li>
+<li><strong>clamav-virusdb*lists.clamav.net</strong> - database update announcements, moderated</li>
+</ul>
+<p>You can subscribe and search the mailing list archives at: <a href="https://www.clamav.net/contact.html#ml" class="uri">https://www.clamav.net/contact.html#ml</a></p>
+<p>Alternatively you can try asking on the <code>#clamav</code> IRC channel - launch your favourite irc client and type:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">    <span class="ex">/server</span> irc.freenode.net
+    <span class="ex">/join</span> <span class="co">#clamav</span></code></pre></div>
+<h2 id="submitting-new-or-otherwise-undetected-malware">Submitting New or Otherwise Undetected Malware</h2>
+<p>If you've got a virus which is not detected by the current version of ClamAV using the latest signature databases, please submit the sample for review at our website:</p>
+<p><a href="https://www.clamav.net/reports/malware" class="uri">https://www.clamav.net/reports/malware</a></p>
+<p>Likewise, if you have a benign file that is flagging as a virus and you wish to report a False Positive, please submit the sample for review at our website:</p>
+<p><a href="https://www.clamav.net/reports/fp" class="uri">https://www.clamav.net/reports/fp</a></p>
+</body>
+</html>

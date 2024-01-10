@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="clamav-development">ClamAV Development</h1>
+<p>Table of Contents</p>
+<ul>
+<li><a href="#clamav-development">ClamAV Development</a>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#building-clamav-for-development">Building ClamAV for Development</a>
+<ul>
+<li><a href="#satisfying-build-dependencies">Satisfying Build Dependencies</a>
+<ul>
+<li><a href="#debianubuntu">Debian/Ubuntu</a></li>
+<li><a href="#centosrhelfedora">CentOS/RHEL/Fedora</a></li>
+<li><a href="#solaris-using-opencsw">Solaris (using OpenCSW)</a></li>
+<li><a href="#freebsd">FreeBSD</a></li>
+</ul></li>
+<li><a href="#download-the-source">Download the Source</a></li>
+<li><a href="#running-configure">Running ./configure</a></li>
+<li><a href="#running-make">Running make</a></li>
+<li><a href="#downloading-the-official-ruleset">Downloading the Official Ruleset</a></li>
+</ul></li>
+<li><a href="#general-debugging">General Debugging</a>
+<ul>
+<li><a href="#useful-clamscan-flags">Useful clamscan Flags</a></li>
+<li><a href="#using-gdb">Using gdb</a></li>
+</ul></li>
+<li><a href="#hunting-for-memory-leaks">Hunting for Memory Leaks</a></li>
+<li><a href="#computing-code-coverage">Computing Code Coverage</a></li>
+<li><a href="#profiling---flame-graphs">Profiling - Flame Graphs</a></li>
+<li><a href="#profiling---callgrind">Profiling - Callgrind</a></li>
+<li><a href="#system-call-tracing--fault-injection">System Call Tracing / Fault Injection</a></li>
+</ul></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>This page aims to provide information useful when developing, debugging, or profiling ClamAV.</p>
+<h2 id="building-clamav-for-development">Building ClamAV for Development</h2>
+<p>Below are some recommendations for building ClamAV so that it's easy to debug.</p>
+<h3 id="satisfying-build-dependencies">Satisfying Build Dependencies</h3>
+<p>To satisify all build dependencies:</p>
+<h4 id="debianubuntu">Debian/Ubuntu</h4>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install libxml2-dev libxml2 libbz2-dev bzip2 check make libssl-dev openssl zlib1g zlib1g-dev gcc gettext autoconf automake libtool cmake autoconf-archive pkg-config g++-multilib libmilter1.0.1 libmilter-dev valgrind libcurl4-openssl-dev libjson-c-dev ncurses-dev libpcre3-dev</code></pre></div>
+<h4 id="centosrhelfedora">CentOS/RHEL/Fedora</h4>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> yum install libxml2-devel libxml2 bzip2-devel bzip2 check make openssl-devel openssl zlib zlib-devel gcc gettext autoconf automake libtool cmake autoreconf pkg-config g++-multilib sendmail sendmail-devel libtool-ltdl-devel valgrind
+
+<span class="fu">sudo</span> yum groupinstall <span class="st">&quot;Development Tools&quot;</span></code></pre></div>
+<h4 id="solaris-using-opencsw">Solaris (using OpenCSW)</h4>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> /opt/csw/bin/pkgutil -y -i common coreutils automake autoconf libxml2_2 libxml2_dev bzip2 libbz2_dev libcheck0 libcheck_dev gmake cmake libssl1_0_0 libssl_dev openssl_utilslibgcc_s1 libiconv2 zlib1 libstdc++6 libpcre1 libltdl7 lzlib_stub zlib_stub libmilter libtool ggrep gsed pkgconfig ggettext gcc4core gcc4g++ libgcc_s1 libgccpp1
+
+<span class="fu">sudo</span> pkg install system/header
+
+<span class="fu">sudo</span> ln -sf /opt/csw/bin/gnm /usr/bin/nm
+<span class="fu">sudo</span> ln -sf /opt/csw/bin/gsed /usr/bin/sed
+<span class="fu">sudo</span> ln -sf /opt/csw/bin/gmake /usr/bin/make</code></pre></div>
+<p>If you receive an error message like <code>gcc: error: /opt/csw/lib/libstdc++.so: No such file or directory</code>, change versions with <code>/opt/csw/sbin/alternatives --config automake</code></p>
+<h4 id="freebsd">FreeBSD</h4>
+<p>The easiest way to install dependencies for FreeBSD is to just rely on ports:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="bu">cd</span> /usr/ports/security/clamav
+<span class="fu">make</span></code></pre></div>
+<h3 id="download-the-source">Download the Source</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">git</span> clone https://github.com/Cisco-Talos/clamav-devel.git
+<span class="bu">cd</span> clamav-devel</code></pre></div>
+<p>If you intend to make changes and submit a pull request, fork the clamav-devel repo first and then clone your fork of the repository.</p>
+<h3 id="running-.configure">Running ./configure</h3>
+<p>Suggestions:</p>
+<ul>
+<li><p>Modify the <code>CFLAGS</code> variable as follows (assuming you're build with gcc):</p></li>
+<li><p>Include <code>gdb</code> debugging information (<code>-ggdb</code>). This will make it easier to debug with <code>gdb</code>.</p></li>
+<li><p>Disable optimizations (<code>-O0</code>). This will ensure the line numbers you see in <code>gdb</code> match up with what is actually being executed.</p></li>
+<li><p>Run configure with the following options:</p></li>
+<li><p><code>--prefix=`pwd`/build</code>: This will cause <code>make install</code> to install into the specified directory to avoid potentially tainting a release install of ClamAV that you may have.</p></li>
+<li><p><code>--enable-debug</code>: This will define <em>CL_DEBUG</em>, which mostly just enables additional print statements that are useful for debugging.</p></li>
+<li><p><code>--enable-check</code>: Enables the unit tests, which can be run with <code>make check</code>.</p></li>
+<li><p><code>--enable-coverage</code>: If using gcc, sets <code>-fprofile-arcs -ftest-coverage</code> so that code coverage metrics will get generated when the program is run. Note that the code inserted to store program flow data may show up in any generated flame graphs or profiling output, so if you don't care about code coverage, omit this.</p></li>
+<li><p><code>--enable-libjson</code>: Enables <code>libjson</code>, which enables the <code>--gen-json</code> option. The json output contains additional metadata that might be helpful when debugging.</p></li>
+<li><p><code>--with-systemdsystemunitdir=no</code>: Don't try to register <code>clamd</code> as a <code>systemd</code> service (on systems that use <code>systemd</code>). You likely don't want this development build of <code>clamd</code> to register as a service, and this eliminates the need to run <code>make install</code> with <code>sudo</code>.</p></li>
+<li><p>You might want to include the following flags also so that the optional functionality is enabled: <code>--enable-experimental --enable-clamdtop --enable-libjson --enable-milter --enable-xml --enable-pcre</code>. Note that this may require you to install additional development libraries.</p></li>
+<li><p><code>--disable-llvm</code>: When enabled, LLVM provides the capability to just-in-time compile ClamAV bytecode signatures. Without LLVM, ClamAV uses a built-in bytecode interpreter to execute bytecode signatures. The mechanism is different, but the results are same and the performance overall is comparable. At present only LLVM versions up to LLVM 3.6.2 are supported by ClamAV, and LLVM 3.6.2 is old enough that newer distributions no longer provide it. Therefore, we recommend using the <code>--disable-llvm</code> configure option.</p></li>
+</ul>
+<p>Altogether, the following configure command can be used:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">CFLAGS=</span><span class="st">&quot;-ggdb -O0&quot;</span> <span class="ex">./configure</span> --prefix=<span class="kw">`</span><span class="bu">pwd</span><span class="kw">`</span>/installed --enable-debug --enable-check --enable-coverage --enable-libjson --with-systemdsystemunitdir=no --enable-experimental --enable-clamdtop --enable-libjson --enable-xml --enable-pcre --disable-llvm</code></pre></div>
+<p>NOTE: It is possible to build libclamav as a static library and have it statically linked into clamscan/clamd (to do this, run <code>./configure</code> with <code>--enable-static --disable-shared</code>). This is useful for using tools like <code>gprof</code> that do not support profiling code in shared objects. However, there are two drawbacks to doing this:</p>
+<ul>
+<li><p><code>clamscan</code>/<code>clamd</code> will not be able to extract files from RAR archives. Based on the software license of the unrar library that ClamAV uses, the library can only be dynamically loaded. ClamAV will attempt to dlopen the unrar library shared object and will continue on without RAR extraction support if the library can't be found (or if it doesn't get built, which is what happens if you indicate that shared libraries should not be built).</p></li>
+<li><p>If you make changes to libclamav, you'll need to <code>make clean</code>, <code>make</code>, and <code>make install</code> again to have <code>clamscan</code>/<code>clamd</code> rebuilt using the new <code>libclamav.a</code>. The makefiles don't seem to know to rebuild <code>clamscan</code>/<code>clamd</code> when <code>libclamav.a</code> changes (TODO, fix this).</p></li>
+</ul>
+<h3 id="running-make">Running make</h3>
+<p>Run the following to finishing building. <code>-j2</code> in the code below is used to indicate that the build process should use 2 cores. Increase this if your machine is more powerful.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">make</span> -j2
+<span class="fu">make</span> install</code></pre></div>
+<p>Also, you can run <code>make check</code> to run the unit tests</p>
+<h3 id="downloading-the-official-ruleset">Downloading the Official Ruleset</h3>
+<p>If you plan to use custom rules for testing, you can invoke <code>clamscan</code> via <code>./installed/bin/clamscan</code>, specifying your custom rule files via <code>-d</code> parameters.</p>
+<p>If you want to download the official ruleset to use with <code>clamscan</code>, do the following:</p>
+<ol>
+<li>Run <code>mkdir -p installed/share/clamav</code></li>
+<li>Comment out line 8 of etc/freshclam.conf.sample</li>
+<li>Run <code>./installed/bin/freshclam --config-file etc/freshclam.conf.sample</code></li>
+</ol>
+<h2 id="general-debugging">General Debugging</h2>
+<p>NOTE: Some of the debugging/profiling tools mentioned in the sections below are specific to Linux</p>
+<h3 id="useful-clamscan-flags">Useful clamscan Flags</h3>
+<p>The following are useful flags to include when debugging clamscan:</p>
+<ul>
+<li><p><code>--debug --verbose</code>: Print lots of helpful debug information</p></li>
+<li><p><code>--gen-json</code>: Print some additional debug information in a JSON format</p></li>
+<li><p><code>--statistics=pcre --statistics=bytecode</code>: Print execution statistics on any PCRE and bytecode rules that were evaluated</p></li>
+<li><p><code>--dev-performance</code>: Print per-file statistics regarding how long scanning took and the times spent in various scanning stages</p></li>
+<li><p><code>--detect-broken</code>: This will attempt to detect broken executable files. If an executable is determined to be broken, some functionality might not get invoked for the sample, and this could be an indication of an issue parsing the PE header or file. This causes those binary to generate an alert instead of just continuing on. NOTE: This will be renamed to <code>--alert-broken</code> starting in ClamAV 0.101.</p></li>
+<li><p><code>--max-filesize=2000M --max-scansize=2000M --max-files=2000000 --max-recursion=2000000 --max-embeddedpe=2000M --max-htmlnormalize=2000000 --max-htmlnotags=2000000 --max-scriptnormalize=2000000 --max-ziptypercg=2000000 --max-partitions=2000000 --max-iconspe=2000000 --max-rechwp3=2000000 --pcre-match-limit=2000000 --pcre-recmatch-limit=2000000 --pcre-max-filesize=2000M</code>:</p></li>
+</ul>
+<p>Effectively disables all file limits and maximums for scanning. This is useful if you'd like to ensure that all files in a set get scanned, and would prefer clam to just run slowly or crash rather than skip a file because it encounters one of these thresholds</p>
+<p>The following are useful flags to include when debugging rules that you're<br />
+writing:</p>
+<ul>
+<li><p><code>-d</code>: Allows you to specify a custom ClamAV rule file from the command line</p></li>
+<li><p><code>--bytecode-unsigned</code>: If you are testing custom bytecode rules, you'll need this flag so that <code>clamscan</code> actually runs the bytecode signature</p></li>
+<li><p><code>--all-match</code>: Allows multiple signatures to match on a file being scanned</p></li>
+<li><p><code>--leave-temps --tmpdir=/tmp</code>: By default, ClamAV will attempt to extract embedded files that it finds, normalize certain text files before looking for matches, and unpack packed executables that it has unpacking support for. These flags tell ClamAV to write these intermediate files out to the directory specified. Usually when a file is written, it will mention the file name in the --debug output, so you can have some idea at what stage in the scanning process a tmp file was created.</p></li>
+<li><p><code>--dump-certs</code>: For signed PE files that match a rule, display information about the certificates stored within the binary. Note - sigtool has this functionality as well and doesn't require a rule match to view the cert data</p></li>
+</ul>
+<h3 id="using-gdb">Using gdb</h3>
+<p>Given that you might want to pass a lot of arguments to <code>gdb</code>, consider taking advantage of the <code>--args</code> parameter. For example:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">gdb</span> --args ./installed/bin/clamscan -d /tmp/test.ldb -d /tmp/blacklist.crb -d --dumpcerts --debug --verbose --max-filesize=2000M --max-scansize=2000M --max-files=2000000 --max-recursion=2000000 --max-embeddedpe=2000M --max-iconspe=2000000 f8f101166fec5785b4e240e4b9e748fb6c14fdc3cd7815d74205fc59ce121515</code></pre></div>
+<p>When using ClamAV without libclamav statically linked, if you set breakpoints on libclamav functions by name, you'll need to make sure to indicate that the breakpoints should be resolved after libraries have been loaded.</p>
+<p>For other documentation about how to use <code>gdb</code>, check out the following resources:</p>
+<ul>
+<li><a href="http://www.cabrillo.edu/~shodges/cs19/progs/guide_to_gdb_1.1.pdf">A Guide to gdb</a></li>
+<li><a href="http://users.ece.utexas.edu/~adnan/gdb-refcard.pdf">gdb Quick Reference</a></li>
+</ul>
+<h2 id="hunting-for-memory-leaks">Hunting for Memory Leaks</h2>
+<p>You can easily hunt for memory leaks with valgrind. Check out this guide to get started: <a href="http://valgrind.org/docs/manual/quick-start.html">Valgrind Quick Start</a></p>
+<p>If checking for leaks, be sure to run <code>clamscan</code> with samples that will hit as many of the unique code paths in the code you are testing. An example invocation is as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">valgrind</span> --leak-check=full ./installed/bin/clamscan -d /tmp/test.ldb --leave-temps --tempdir /tmp/test --debug --verbose /tmp/upx-samples/ <span class="op">&gt;</span> /tmp/upx-results-2.txt <span class="op">2&gt;&amp;1</span></code></pre></div>
+<p>Alternatively, on Linux, you can use glibc's built-in leak checking functionality:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="va">MALLOC_CHECK_=</span>7 <span class="ex">./installed/bin/clamscan</span></code></pre></div>
+<p>See the <a href="http://manpages.ubuntu.com/manpages/trusty/man3/mallopt.3.html">mallopt man page</a> for more details</p>
+<h2 id="computing-code-coverage">Computing Code Coverage</h2>
+<p>gcov/lcov can be used to produce a code coverage report indicating which lines of code were executed on a single run or by multiple runs of <code>clamscan</code>. NOTE: for these metrics to be collected, ClamAV needs to have been configured with the <code>--enable-coverage</code> option.</p>
+<p>First, run the following to zero out all of the performance metrics:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">lcov</span> -z --directory . --output-file coverage.lcov.data</code></pre></div>
+<p>Next, run ClamAV through whatever test cases you have. Then, run lcov again to collect the coverage data as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">lcov</span> -c --directory . --output-file coverage.lcov.data</code></pre></div>
+<p>Finally, run the genhtml tool that ships with lcov to produce the code coverage report:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">genhtml</span> coverage.lcov.data --output-directory report</code></pre></div>
+<p>The report directory will have an <code>index.html</code> page which can be loaded into any web browser.</p>
+<p>For more information, visit the <a href="http://ltp.sourceforge.net/coverage/lcov.php">lcov webpage</a></p>
+<h2 id="profiling---flame-graphs">Profiling - Flame Graphs</h2>
+<p><a href="https://github.com/brendangregg/FlameGraph">FlameGraph</a> is a great tool for generating interactive flamegraphs based collected profiling data. The github page has thorough documentation on how to use the tool, but an overview is presented below:</p>
+<p>First, install <code>perf</code>, which on Linux can be done via:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">apt-get</span> install linux-tools-common linux-tools-generic linux-tools-<span class="kw">`</span><span class="fu">uname</span> -r<span class="kw">`</span></code></pre></div>
+<p>Modify the system settings to allow <code>perf</code> record to be run by a standard user:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">sudo</span> su     # Run the following as root
+<span class="fu">cat</span> /proc/sys/kernel/perf_event_paranoid
+<span class="bu">echo</span> <span class="st">&quot;1&quot;</span> <span class="op">&gt;</span> /proc/sys/kernel/perf_event_paranoid
+<span class="bu">exit</span></code></pre></div>
+<p>Invoke <code>clamscan</code> via <code>perf record</code> as follows, and run <code>perf script</code> to collect the profiling data:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">perf</span> record -F 100 -g -- ./installed/bin/clamscan -d /tmp/test.ldb /tmp/2aa6b18d509090c60c3e4ecdd8aeb16e5f149807e3404c86892112710eab576d
+<span class="ex">perf</span> script <span class="op">&gt;</span> out.perf</code></pre></div>
+<p>The <code>-F</code> parameter indicates how many samples should be collected during program execution. If your scan will take a long time to run, a lower value should be sufficient. Otherwise, consider choosing a higher value (on Ubuntu 18.04, 7250 is the max frequency, but it can be increased via <code>/proc/sys/kernel/perf_event_max_sample_rate</code>.</p>
+<p>Check out the FlameGraph project and run the following commands to generate the flame graph:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="fu">perl</span> stackcollapse-perf.pl ../clamav-devel/out.perf <span class="op">&gt;</span> /tmp/out.folded
+<span class="fu">perl</span> flamegraph.pl /tmp/out.folded <span class="op">&gt;</span> /tmp/test.svg</code></pre></div>
+<p>The SVG that is generated is interactive, but some viewers don't support this.<br />
+Be sure to open it in a web browser like Chrome to be able to take full advantage of it.</p>
+<h2 id="profiling---callgrind">Profiling - Callgrind</h2>
+<p>Callgrind is a profiling tool included with <code>valgrind</code>. This can be done by prepending <code>valgrind --tool=callgrind</code> to the <code>clamscan</code> command.</p>
+<p><a href="https://kcachegrind.github.io/html/Home.html">kcachegrind</a> is a follow-on tool that will graphically present the profiling data and allow you to explore it visually, although if you don't already use KDE you'll have to install lots of extra packages to use it.</p>
+<h2 id="system-call-tracing-fault-injection">System Call Tracing / Fault Injection</h2>
+<p>strace can be used to track the system calls that are performed and provide the number of calls / time spent in each system call. This can be done by prepending <code>strace -c</code> to a <code>clamscan</code> command. Results will look something like this:</p>
+<pre><code>% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 95.04    0.831430          13     62518           read
+  3.22    0.028172          14      2053           munmap
+  0.69    0.006005           3      2102           mmap
+  0.28    0.002420           7       344           pread64
+  0.16    0.001415           5       305         1 openat
+  0.13    0.001108           3       405           write
+  0.11    0.000932          23        40           mprotect
+  0.07    0.000632           2       310           close
+  0.07    0.000583           9        67        30 access
+  0.05    0.000395           1       444           lseek
+  0.04    0.000344           2       162           fstat
+  0.04    0.000338           1       253           brk
+  0.03    0.000262           1       422           fcntl
+  0.02    0.000218          16        14           futex
+  0.01    0.000119           1       212           getpid
+  0.01    0.000086          14         6           getdents
+  0.00    0.000043           7         6           dup
+  0.00    0.000040           1        31           unlink
+  0.00    0.000038          19         2           rt_sigaction
+  0.00    0.000037          19         2           rt_sigprocmask
+  0.00    0.000029           1        37           stat
+  0.00    0.000022          11         2           prlimit64
+  0.00    0.000021          21         1           sysinfo
+  0.00    0.000020           1        33           clock_gettime
+  0.00    0.000019          19         1           arch_prctl
+  0.00    0.000018          18         1           set_tid_address
+  0.00    0.000018          18         1           set_robust_list
+  0.00    0.000013           0        60           lstat
+  0.00    0.000011           0        65           madvise
+  0.00    0.000002           0        68           geteuid
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           uname
+  0.00    0.000000           0         1           getcwd
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.874790                 69970        31 total</code></pre>
+<p><code>strace</code> can also be used for cool things like system call fault injection. For instance, let's say you are curious whether the <code>read</code> bytecode API call is implemented in such a way that the underlying <code>read</code> system call could handle <code>EINTR</code> being returned (which can happen periodically). To test this, write the following bytecode rule:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">VIRUSNAME_PREFIX(<span class="st">&quot;BC.Heuristic.Test.Read.Passed&quot;</span>)
+VIRUSNAMES(<span class="st">&quot;&quot;</span>)
+TARGET(<span class="dv">0</span>)
+
+SIGNATURES_DECL_BEGIN
+DECLARE_SIGNATURE(zeroes)
+SIGNATURES_DECL_END
+
+SIGNATURES_DEF_BEGIN
+DEFINE_SIGNATURE(zeroes, <span class="st">&quot;0:0000&quot;</span>)
+SIGNATURES_DEF_END
+
+bool logical_trigger()
+{
+    <span class="cf">return</span> matches(Signatures.zeroes);
+}
+
+<span class="pp">#define READ_S(value, size) if (read(value, size) != size) return 0;</span>
+
+<span class="dt">int</span> entrypoint(<span class="dt">void</span>)
+{
+    <span class="dt">char</span> buffer[<span class="dv">65536</span>];
+    <span class="dt">int</span> i;
+
+    <span class="cf">for</span> (i = <span class="dv">0</span>; i &lt; <span class="dv">256</span>; i++)
+    {
+        debug(i);
+        debug(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>);
+        READ_S(buffer, <span class="kw">sizeof</span>(buffer));
+    }
+
+    foundVirus(<span class="st">&quot;&quot;</span>);
+    <span class="cf">return</span> <span class="dv">0</span>;
+}</code></pre></div>
+<p>Compiled the rule, and make a test file to match against it. Then run it under <code>strace</code> to determine what underlying read system call is being used for the bytecode <code>read</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">clambc-compiler</span> read_test.bc
+<span class="fu">dd</span> if=/dev/zero of=/tmp/zeroes bs=65535 count=256
+<span class="ex">strace</span> clamscan -d read_test.cbc --bytecode-unsigned /tmp/zeroes</code></pre></div>
+<p>It uses <code>pread64</code> under the hood, so the following command could be used for fault injection:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">strace</span> -e fault=pread64:error=EINTR:when=20+10 clamscan -d read_test.cbc --bytecode-unsigned /tmp/zeroes</code></pre></div>
+<p>This command tells <code>strace</code> to skip the first 20 <code>pread64</code> calls (these appear to be used by the loader, which didn't seem to handle <code>EINTR</code> correctly) but to inject <code>EINTR</code> for every 10th call afterward. We can see the injection in action and that the system call is retried successfully:</p>
+<pre><code>pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15007744) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15073280) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15138816) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15204352) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15269888) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15335424) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15400960) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15466496) = 65536
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15532032) = 65536
+pread64(3, 0x7f6a7ff43000, 65536, 15597568) = -1 EINTR (Interrupted system call) (INJECTED)
+pread64(3, &quot;\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;..., 65536, 15597568) = 65536</code></pre>
+<p>More documentation on using <code>strace</code> to perform system call fault injection, see <a href="https://archive.fosdem.org/2017/schedule/event/failing_strace/attachments/slides/1630/export/events/attachments/failing_strace/slides/1630/strace_fosdem2017_ta_slides.pdf">this presentation</a> from FOSDEM 2017.</p>
+</body>
+</html>

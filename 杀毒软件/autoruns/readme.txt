@@ -1,0 +1,3 @@
+启动项目管理工具，AutoRuns的作用就是检查开机自动加载的所有程序，例如硬件驱动程序，windows核心启动程序和应用程序。它比windows自带的[msconfig.exe]还要强大，通过它还可以看到一些在msconfig里面无法查看到的病毒和木马以及恶意插件程序，还能够详细的把启动项目加载的所有程序列出来。
+
+下载地址：https://github.com/p0w3rsh3ll/AutoRuns

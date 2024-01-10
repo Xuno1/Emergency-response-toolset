@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="scanning">Scanning</h1>
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<ul>
+<li><a href="#daemon">Daemon</a>
+<ul>
+<li><a href="#clamd">clamd</a></li>
+<li><a href="#clamdscan">clamdscan</a></li>
+<li><a href="#clamdtop">clamdtop</a></li>
+<li><a href="#on-access-scanning">On-Access Scanning</a></li>
+</ul></li>
+<li><a href="#one-time-scanning">One-Time Scanning</a>
+<ul>
+<li><a href="#clamscan">clamscan</a></li>
+</ul></li>
+</ul>
+<!-- /TOC -->
+<h2 id="daemon">Daemon</h2>
+<h3 id="clamd">clamd</h3>
+<p><code>clamd</code> is a multi-threaded daemon that uses <em>libclamav</em> to scan files for viruses. Scanning behaviour can be fully configured to fit most needs by modifying <code>clamd.conf</code>.</p>
+<p>As <code>clamd</code> requires a virus signature database to run, we recommend setting up ClamAV's official signatures before running <code>clamd</code> using <code>freshclam</code>.</p>
+<p>The daemon works by listening for commands on the sockets specified in <code>clamd.conf</code>. Listening is supported over both unix local sockets and TCP sockets.</p>
+<p><strong>IMPORTANT:</strong> <code>clamd</code> does not currently protect or authenticate traffic coming over the TCP socket, meaning it will accept any and all of the following commands listed from <em>any</em> source. Thus, we strongly recommend following best networking practices when setting up your <code>clamd</code> instance. I.e. don't expose your TCP socket to the Internet.</p>
+<p>Here is a quick list of the commands accepted by <code>clamd</code> over the socket.</p>
+<ul>
+<li><code>PING</code></li>
+<li><code>VERSION</code></li>
+<li><code>RELOAD</code></li>
+<li><code>SHUTDOWN</code></li>
+<li><code>SCAN</code> <em>file/directory</em></li>
+<li><code>RAWSCAN</code> <em>file/directory</em></li>
+<li><code>CONTSCAN</code> <em>file/directory</em></li>
+<li><code>MULTISCAN</code> <em>file/directory</em></li>
+<li><code>ALLMATCHSCAN</code> <em>file/directory</em></li>
+<li><code>INSTREAM</code></li>
+<li><code>FILDES</code></li>
+<li><code>STATS</code></li>
+<li><code>IDSESSION, END</code></li>
+</ul>
+<p>As with most ClamAV tools, you can find out more about these by invoking the command:</p>
+<blockquote>
+<p><code>$ man clamd</code></p>
+</blockquote>
+<p>The daemon also handles the following signals as so:</p>
+<ul>
+<li><code>SIGTERM</code> - perform a clean exit</li>
+<li><code>SIGHUP</code> - reopen the log file</li>
+<li><code>SIGUSR2</code> - reload the database</li>
+</ul>
+<p>It should be noted that <code>clamd</code> should not be started using the shell operator <code>&amp;</code> or other external tools which would start it as a background process. Instead, you should run <code>clamd</code> which will load the database and then daemonize itself (unless you have specified otherwise in <code>clamd.conf</code>). After that, clamd is ready to accept connections and perform file scanning.</p>
+<p>Once you have set up your configuration to your liking, and understand how you will be sending commands to the daemon, running <code>clamd</code> itself is simple. Simply execute the command:</p>
+<blockquote>
+<p><code>$ clamd</code></p>
+</blockquote>
+<h3 id="clamdscan">clamdscan</h3>
+<p><code>clamdscan</code> is a <code>clamd</code> client, which greatly simplifies the task of scanning files with <code>clamd</code>. It sends commands to the <code>clamd</code> daemon across the socket specified in <code>clamd.conf</code> and generates a scan report after all requested scanning has been completed by the daemon.</p>
+<p>Thus, <strong>to run <code>clamdscan</code>, you must have an instance of <code>clamd</code> already running</strong> as well.</p>
+<p>Please keep in mind, that as a simple scanning client, <code>clamdscan</code> cannot change scanning and engine configurations. These are tied to the <code>clamd</code> instance and the configuration you set up in <code>clamd.conf</code>. Therefore, while <code>clamdscan</code> will accept many of the same commands as its sister tool <code>clamscan</code>, it will simply ignore most of them as (by design) no mechanism exists to make ClamAV engine configuration changes over the <code>clamd</code> socket.</p>
+<p>Again, running <code>clamdscan</code>, once you have a working <code>clamd</code> instance, is simple:</p>
+<blockquote>
+<p><code>$ clamdscan [*options*] [*file/directory/-*]</code></p>
+</blockquote>
+<h3 id="clamdtop">clamdtop</h3>
+<p><code>clamdtop</code> is a tool to monitor one or multiple instances of <code>clamd</code>. It has a colorized <em>ncurses</em> interface, which shows each job queued, memory usage, and information about the loaded signature database for the connected <code>clamd</code> instance(s). By default it will attempt to connect to the local <code>clamd</code> as defined in <code>clamd.conf</code>. However, you can specify other <code>clamd</code> instances at the command line.</p>
+<p>To learn more, use the commands</p>
+<blockquote>
+<p><code>$ man clamdtop</code></p>
+</blockquote>
+<p>or</p>
+<blockquote>
+<p><code>$ clamdtop --help</code></p>
+</blockquote>
+<h3 id="on-access-scanning">On-Access Scanning</h3>
+<p>The ClamAV daemon can be configured to perform On-Access Scanning under Linux. ClamAV's On-Access Scanning runs <em>alongside</em> the <code>clamd</code> instance, and shares the same engine and virus signature database with the daemon used to kick it off. The On-Access Scanner is capable of blocking access to/from any malicious files it discovers, but by default it is configured to only alert the user if it detects a malicious file.</p>
+<p>You can can set-up On-Access Scanning <a href="Configuration.html#on-access-scanning">through <code>clamd.conf</code></a> and learn more about the options available to you by reading the <a href="../OnAccess.html">On-Access Scanning User Guide</a>.</p>
+<p>Once you have set up the On-Access Scanner (and <code>clamd</code>) to your liking, you will need to run <code>clamd</code> as <em>root</em> (or another user with elevated permissions) to start it:</p>
+<blockquote>
+<p><code>$ sudo clamd</code></p>
+</blockquote>
+<h2 id="one-time-scanning">One-Time Scanning</h2>
+<h3 id="clamscan">clamscan</h3>
+<p><code>clamscan</code> is a command line tool which uses <em>libclamav</em> to scan files and/or directories for viruses. Unlike <code>clamdscan</code>, <code>clamscan</code> does <em>not</em> require a running <code>clamd</code> instance to function. Instead, <code>clamscan</code> will create a new engine and load in the virus database each time it is run. It will then scan the files and/or directories specified at the command line, create a scan report, and exit.</p>
+<p>By default, when loading databases, <code>clamscan</code> will check the location to which <code>freshclam</code> installed the virus database signatures. This behaviour, along with a myriad of other scanning and engine controls, can be modified by providing flags and other options at the command line.</p>
+<p>There are too many options to list all of them here. So we'll only cover a few common and more interesting ones:</p>
+<ul>
+<li><code>--log=FILE</code> - save scan report to FILE</li>
+<li><code>--database=FILE/DIR</code> - load virus database from FILE or load all supported db files from DIR</li>
+<li><code>--official-db-only[=yes/no(*)]</code> - only load official signatures</li>
+<li><code>--max-filesize=#n</code> - files larger than this will be skipped and assumed clean</li>
+<li><code>--max-scansize=#n</code> - the maximum amount of data to scan for each container file</li>
+<li><code>--leave-temps[=yes/no(*)]</code>- do not remove temporary files</li>
+<li><code>--file-list=FILE</code> - scan files from FILE</li>
+<li><code>--quiet</code> - only output error messages</li>
+<li><code>--bell</code> - sound bell on virus detection</li>
+<li><code>--cross-fs[=yes(*)/no]</code> - scan files and directories on other filesystems</li>
+<li><code>--move=DIRECTORY</code> - move infected files into DIRECTORY</li>
+<li><code>--copy=DIRECTORY</code> - copy infected files into DIRECTORY</li>
+<li><code>--bytecode-timeout=N</code> - set bytecode timeout (in milliseconds)</li>
+<li><code>--heuristic-alerts[=yes(*)/no]</code> - toggles heuristic alerts</li>
+<li><code>--alert-encrypted[=yes/no(*)]</code> - alert on encrypted archives and documents</li>
+<li><code>--nocerts</code> - disable authenticode certificate chain verification in PE files</li>
+<li><code>--disable-cache</code> - disable caching and cache checks for hash sums of scanned files</li>
+</ul>
+<p>To learn more about the options available when using <code>clamscan</code> please reference:</p>
+<blockquote>
+<p><code>$ man clamscan</code></p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p><code>$ clamscan --help</code></p>
+</blockquote>
+<p>Otherwise, the general usage of clamscan is:</p>
+<blockquote>
+<p><code>clamscan [options] [file/directory/-]</code></p>
+</blockquote>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="file-hash-signatures">File hash signatures</h1>
+<p>The easiest way to create signatures for ClamAV is to use filehash checksums, however this method can be only used against static malware.</p>
+<h2 id="md5-hash-based-signatures">MD5 hash-based signatures</h2>
+<p>To create a MD5 signature for <code>test.exe</code> use the <code>--md5</code> option of<br />
+sigtool:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">zolw@localhost</span>:/tmp/test$ sigtool --md5 test.exe <span class="op">&gt;</span> test.hdb
+<span class="ex">zolw@localhost</span>:/tmp/test$ cat test.hdb
+<span class="ex">48c4533230e1ae1c118c741c0db19dfb</span>:17387:test.exe</code></pre></div>
+<p>That’s it! The signature is ready for use:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">zolw@localhost</span>:/tmp/test$ clamscan -d test.hdb test.exe
+<span class="ex">test.exe</span>: test.exe FOUND
+
+<span class="ex">-----------</span> SCAN SUMMARY -----------
+<span class="ex">Known</span> viruses: 1
+<span class="ex">Scanned</span> directories: 0
+<span class="ex">Engine</span> version: 0.92.1
+<span class="ex">Scanned</span> files: 1
+<span class="ex">Infected</span> files: 1
+<span class="ex">Data</span> scanned: 0.02 MB
+<span class="ex">Time</span>: 0.024 sec (0 m 0 s)</code></pre></div>
+<p>You can change the name (by default sigtool uses the name of the file) and place it inside a <code>*.hdb</code> file. A single database file can include any number of signatures. To get them automatically loaded each time <code>clamscan</code>/<code>clamd</code> starts just copy the database file(s) into the local virus database directory (eg. <code>/usr/local/share/clamav</code>).</p>
+<p><em>The hash-based signatures shall not be used for text files, HTML and any other data that gets internally preprocessed before pattern matching. If you really want to use a hash signature in such a case, run <code>clamscan</code> with <code>--debug</code> and <code>--leave-temps</code> flags as described above and create a signature for a preprocessed file left in <code>/tmp</code>. Please keep in mind that a hash signature will stop matching as soon as a single byte changes in the target file.</em></p>
+<h2 id="sha1-and-sha256-hash-based-signatures">SHA1 and SHA256 hash-based signatures</h2>
+<p>ClamAV 0.98 has also added support for SHA1 and SHA256 file checksums. The format is the same as for MD5 file checksum. It can differentiate between them based on the length of the hash string in the signature. For best backwards compatibility, these should be placed inside a <code>*.hsb</code> file. The format is:</p>
+<pre><code>HashString:FileSize:MalwareName</code></pre>
+<h2 id="hash-signatures-with-unknown-size">Hash signatures with unknown size</h2>
+<p>ClamAV 0.98 has also added support for hash signatures where the size is not known but the hash is. It is much more performance-efficient to use signatures with specific sizes, so be cautious when using this feature. For these cases, the ’*’ character can be used in the size field. To ensure proper backwards compatibility with older versions of ClamAV, these signatures must have a minimum functional level of 73 or higher. Signatures that use the wildcard size without this level set will be rejected as malformed.</p>
+<p>Sample .hsb signature matching any size:</p>
+<pre><code>    HashString:*:MalwareName:73</code></pre>
+<p>Sample .msb signature matching any size:</p>
+<pre><code>    *:PESectionHash:MalwareName:73</code></pre>
+<h2 id="pe-section-based-hash-signatures">PE section based hash signatures</h2>
+<p>You can create a hash signature for a specific section in a PE file. Such signatures shall be stored inside <code>.mdb</code> (MD5) and <code>.msb</code> files in the following format:</p>
+<pre><code>    PESectionSize:PESectionHash:MalwareName</code></pre>
+<p>The easiest way to generate MD5 based section signatures is to extract target PE sections into separate files and then run sigtool with the option <code>--mdb</code></p>
+<p>ClamAV 0.98 has also added support for SHA1 and SHA256 section based signatures. The format is the same as for MD5 PE section based signatures. It can differentiate between them based on the length of the hash string in the signature. For best backwards compatibility, these should be placed inside a <code>*.msb</code> file.</p>
+</body>
+</html>

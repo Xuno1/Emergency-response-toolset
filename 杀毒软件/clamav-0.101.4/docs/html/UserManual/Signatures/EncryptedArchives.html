@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="passwords-for-archive-files-experimental">Passwords for archive files [experimental]</h1>
+<p>ClamAV 0.99 allows for users to specify password attempts for certain password-compatible archives. Passwords will be attempted in order of appearance in the password signature file which use the extension of <code>.pwdb</code>. If no passwords apply or none are provided, ClamAV will default to the original behavior of parsing the file. Currently, as of ClamAV 0.99 [flevel 81], only <code>.zip</code> archives using the traditional PKWARE encryption are supported. The signature format is</p>
+<pre><code>SignatureName;TargetDescriptionBlock;PWStorageType;Password</code></pre>
+<p>where:</p>
+<ul>
+<li><p><code>SignatureName</code>: name to be displayed during debug when a password is successful</p></li>
+<li><code>TargetDescriptionBlock</code>: provides information about the engine and target file with comma separated Arg:Val pairs</li>
+<li><code>Engine:X-Y</code>: Required engine functionality level. See the <a href="FunctionalityLevels.html">FLEVEL reference</a> for details.</li>
+<li><p><code>Container:CL_TYPE_*</code>: File type of applicable containers</p></li>
+<li><code>PWStorageType</code>: determines how the password field is parsed</li>
+<li>0 = cleartext</li>
+<li><p>1 = hex</p></li>
+<li><p><code>Password</code>: value used in password attempt</p></li>
+</ul>
+<p>The signatures for password attempts are stored inside <code>.pwdb</code> files.</p>
+</body>
+</html>

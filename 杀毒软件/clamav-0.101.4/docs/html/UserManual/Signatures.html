@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="creating-signatures-for-clamav">Creating signatures for ClamAV</h1>
+<p>Table of Contents</p>
+<ul>
+<li><a href="#creating-signatures-for-clamav">Creating signatures for ClamAV</a>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#database-formats">Database formats</a>
+<ul>
+<li><a href="#settings-databases">Settings databases</a></li>
+<li><a href="#signature-databases">Signature databases</a>
+<ul>
+<li><a href="#body-based-signatures">Body-based Signatures</a></li>
+<li><a href="#hash-based-signatures">Hash-based Signatures</a></li>
+<li><a href="#alternative-signature-support">Alternative signature support</a></li>
+</ul></li>
+<li><a href="#other-database-files">Other database files</a></li>
+<li><a href="#signature-names">Signature names</a></li>
+</ul></li>
+<li><a href="#signature-writing-tips-and-tricks">Signature Writing Tips and Tricks</a>
+<ul>
+<li><a href="#testing-rules-with-clamscan">Testing rules with <code>clamscan</code></a></li>
+<li><a href="#debug-information-from-libclamav">Debug information from libclamav</a></li>
+<li><a href="#writing-signatures-for-special-files">Writing signatures for special files</a>
+<ul>
+<li><a href="#html">HTML</a></li>
+<li><a href="#text-files">Text files</a></li>
+<li><a href="#compressed-portable-executable-files">Compressed Portable Executable files</a></li>
+</ul></li>
+<li><a href="#using-sigtool">Using <code>sigtool</code></a></li>
+<li><a href="#inspecting-signatures-inside-a-cvd-file">Inspecting signatures inside a CVD file</a></li>
+<li><a href="#external-tools">External tools</a></li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>In order to detect malware and other file-based threats, ClamAV relies on signatures to differentiate clean and malicious/unwanted files. ClamAV signatures are primarily text-based and conform to one of the ClamAV-specific signature formats associated with a given method of detection. These formats are explained in the <a href="#signature-formats">Signature formats</a> section below. In addition, ClamAV 0.99 and above support signatures written in the YARA format. More information on this can be found in the <a href="#using-yara-rules-in-clamav">Using YARA rules in ClamAV</a> section.</p>
+<p>The ClamAV project distributes a collection of signatures in the form of CVD (ClamAV Virus Database) files. The CVD file format provides a digitally-signed container that encapsulates the signatures and ensures that they can't be modified by a malicious third-party. This signature set is actively maintained by <a href="https://www.talosintelligence.com/">Cisco Talos</a> and can be downloaded using the <code>freshclam</code> application that ships with ClamAV. For more details on this, see the <a href="#inspecting-signatures-inside-a-CVD-file">CVD file</a> section.</p>
+<h2 id="database-formats">Database formats</h2>
+<p>ClamAV CVD and CLD database archives may be unpacked to the current directory using <code>sigtool -u &lt;database name&gt;</code>. For more details on inspecting CVD and CLD files, see <a href="#inspecting-signatures-inside-a-cvd-file">Inspecting signatures inside a CVD file</a>. Once unpacked, you'll observe a large collection of database files with various extensions described below.</p>
+<p>The CVD and CLD database archives may be supplemented with custom database files in the formats described to gain additional detection functionality. This is done simply by adding files of the following formats to the database directory, typically <code>/usr/local/share/clamav</code> or <code>&quot;C:\Program Files\ClamAV\database&quot;</code>. Alternatively, <code>clamd</code> and <code>clamscan</code> can be instructed to load the database from an alternative database file or database directory manually using the <code>clamd</code> <code>DatabaseDirectory</code> config option or the <code>clamscan -d</code> command line option.</p>
+<h3 id="settings-databases">Settings databases</h3>
+<p>ClamAV provides a handful of configuration related databases along side the signature definitions.</p>
+<p><code>*.cfg</code>: <a href="Signatures/DynamicConfig.html">Dynamic config settings</a></p>
+<p><code>*.cat</code> <code>*.crb</code>: <a href="Signatures/AuthenticodeRules.html">Trusted and revoked PE certs</a></p>
+<p><code>*.ftm</code>: <a href="Signatures/FileTypeMagic.html">File Type Magic (FTM)</a></p>
+<h3 id="signature-databases">Signature databases</h3>
+<p><em>Note</em>: Signature databases with an extension ending in <code>u</code> are only loaded when Potentially Unwanted Application (PUA) signatures are enabled (default: off).</p>
+<h4 id="body-based-signatures">Body-based Signatures</h4>
+<p>Body-based signature content is a definition that matches not based on a hash but based on the specific sequences of bytes exhibited by the target file.</p>
+<p>ClamAV body-based signature content has a <a href="BodySignatureFormat.html">special format</a> to allow regex-like matching of data that is not entirely known. This format is used extensively in both Extended Signatures and Logical Signatures.</p>
+<p><code>*.ndb</code> <code>*.ndu</code>: <a href="Signatures/ExtendedSignatures.html">Extended signatures</a></p>
+<p><code>*.ldb</code> <code>*.ldu</code>; <code>*.idb</code>: <a href="Signatures/LogicalSignatures.html">Logical Signatures</a></p>
+<p><code>*.cdb</code>: <a href="Signatures/ContainerMetadata.html">Container Metadata Signatures</a></p>
+<p><code>*.cbc</code>: <a href="Signatures/BytecodeSignatures.html">Bytecode Signatures</a></p>
+<p><code>*.pdb</code> <code>*.gdb</code> <code>*.wdb</code>: <a href="Signatures/PhishSigs.html">Phishing URL Signatures</a></p>
+<h4 id="hash-based-signatures">Hash-based Signatures</h4>
+<p><code>*.hdb</code> <code>*.hsb</code> <code>*.hdu</code> <code>*.hsu</code>: File hash signatures</p>
+<p><code>*.mdb</code> <code>*.msb</code> <code>*.mdu</code> <code>*.msu</code>: PE section hash signatures</p>
+<p><a href="Signatures/HashSignatures.html">Hash-based Signature format</a></p>
+<h4 id="alternative-signature-support">Alternative signature support</h4>
+<p><code>*.yar</code> <code>*.yara</code>: <a href="Signatures/YaraRules.html">Yara rules</a></p>
+<h3 id="other-database-files">Other database files</h3>
+<p><code>*.fp</code> <code>*.sfp</code> <code>*.ign</code> <code>*.ign2</code>: <a href="Signatures/Whitelists.html">Whitelisted files, signatures</a></p>
+<p><code>*.pwdb</code>: <a href="Signatures/EncryptedArchives.html">Encrypted archive passwords</a></p>
+<p><code>*.info</code>: <a href="Signatures/DatabaseInfo.html">Database information</a>`</p>
+<h3 id="signature-names">Signature names</h3>
+<p>ClamAV uses the following prefixes for signature names:</p>
+<ul>
+<li><em>Worm</em> for Internet worms</li>
+<li><em>Trojan</em> for backdoor programs</li>
+<li><em>Adware</em> for adware</li>
+<li><em>Flooder</em> for flooders</li>
+<li><em>HTML</em> for HTML files</li>
+<li><em>Email</em> for email messages</li>
+<li><em>IRC</em> for IRC trojans</li>
+<li><em>JS</em> for Java Script malware</li>
+<li><em>PHP</em> for PHP malware</li>
+<li><em>ASP</em> for ASP malware</li>
+<li><em>VBS</em> for VBS malware</li>
+<li><em>BAT</em> for BAT malware</li>
+<li><em>W97M</em>, <em>W2000M</em> for Word macro viruses</li>
+<li><em>X97M</em>, <em>X2000M</em> for Excel macro viruses</li>
+<li><em>O97M</em>, <em>O2000M</em> for generic Office macro viruses</li>
+<li><em>DoS</em> for Denial of Service attack software</li>
+<li><em>DOS</em> for old DOS malware</li>
+<li><em>Exploit</em> for popular exploits</li>
+<li><em>VirTool</em> for virus construction kits</li>
+<li><em>Dialer</em> for dialers</li>
+<li><em>Joke</em> for hoaxes</li>
+</ul>
+<p>Important rules of the naming convention:</p>
+<ul>
+<li>always use a -zippwd suffix in the malware name for signatures of type zmd,</li>
+<li>always use a -rarpwd suffix in the malware name for signatures of type rmd,</li>
+<li>only use alphanumeric characters, dash (-), dot (.), underscores (_) in malware names, never use space, apostrophe or quote mark.</li>
+</ul>
+<h2 id="signature-writing-tips-and-tricks">Signature Writing Tips and Tricks</h2>
+<h3 id="testing-rules-with-clamscan">Testing rules with <code>clamscan</code></h3>
+<p>To test a new signature, first create a text file with the extension corresponding to the signature type (Ex: <code>.ldb</code> for logical signatures). Then, add the signature as it's own line within the file. This file can be passed to <code>clamscan</code> via the <code>-d</code> option, which tells ClamAV to load signatures from the file specified. If the signature is not formatted correctly, ClamAV will display an error - run <code>clamscan</code> with <code>--debug --verbose</code> to see additional information about the error message. Some common causes of errors include:</p>
+<ul>
+<li>The signature file has the incorrect extension type for the signatures contained within</li>
+<li>The file has one or more blank lines</li>
+<li>For logical signatures, a semicolon exists at the end of the file</li>
+</ul>
+<p>If the rule is formatted correctly, <code>clamscan</code> will load the signature(s) in and scan any files specified via the command line invocation (or all files in the current directory if none are specified). A successful detection will look like the following:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">clamscan</span> -d test.ldb text.exe
+<span class="ex">test.exe</span>: Win.Malware.Agent.UNOFFICIAL FOUND
+
+<span class="ex">-----------</span> SCAN SUMMARY -----------
+<span class="ex">Known</span> viruses: 1
+<span class="ex">Engine</span> version: 0.100.0
+<span class="ex">Scanned</span> directories: 0
+<span class="ex">Scanned</span> files: 1
+<span class="ex">Infected</span> files: 1
+<span class="ex">Data</span> scanned: 17.45 MB
+<span class="ex">Data</span> read: 17.45 MB (ratio 1.00:1)
+<span class="ex">Time</span>: 0.400 sec (0 m 0 s)</code></pre></div>
+<p>If the rule did not match as intended:</p>
+<ul>
+<li>The file may have exceeded one or more of the default scanning limits built-in to ClamAV. Try running <code>clamscan</code> with the following options to see if raising the limits addresses the issue: <code>--max-filesize=2000M --max-scansize=2000M --max-files=2000000 --max-recursion=2000000 --max-embeddedpe=2000M --max-htmlnormalize=2000000 --max-htmlnotags=2000000 --max-scriptnormalize=2000000 --max-ziptypercg=2000000 --max-partitions=2000000 --max-iconspe=2000000 --max-rechwp3=2000000 --pcre-match-limit=2000000 --pcre-recmatch-limit=2000000 --pcre-max-filesize=2000M</code>.</li>
+<li>If matching on HTML or text files, ClamAV might be performing normalization that causes the content of the scanned file to change. See the <a href="#html">HTML</a> and <a href="#text-file">Text file</a> sections for more details.</li>
+<li>libclamav may have been unable to unpack or otherwise process the file. See <a href="#debug-information-from-libclamav">Debug information from libclamav</a> for more details.</li>
+</ul>
+<p>NOTE: If you run <code>clamscan</code> with a <code>-d</code> flag, ClamAV will not load in the signatures downloaded via <code>freshclam</code>. This means that:</p>
+<ul>
+<li>some of ClamAV's unpacking support might be disabled, since some unpackers are implemented as bytecode signatures</li>
+<li>PE whitelisting based on Authenticode signatures won't work, since this functionality relies on <code>.crb</code> rules</li>
+</ul>
+<p>If any of this functionality is needed, load in the CVD files manually with additional <code>-d</code> flags.</p>
+<h3 id="debug-information-from-libclamav">Debug information from libclamav</h3>
+<p>In order to create efficient signatures for ClamAV it’s important to understand how the engine handles input files. The best way to see how it works is having a look at the debug information from libclamav. You can do it by calling <code>clamscan</code> with the <code>--debug</code> and <code>--leave-temps</code> flags. The first switch makes <code>clamscan</code> display all the interesting information from libclamav and the second one avoids deleting temporary files so they can be analyzed further.</p>
+<p>The now important part of the info is:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="ex">clamscan</span> --debug attachment.exe
+[<span class="ex">...</span>]
+<span class="ex">LibClamAV</span> debug: Recognized MS-EXE/DLL file
+<span class="ex">LibClamAV</span> debug: Matched signature for file type PE
+<span class="ex">LibClamAV</span> debug: File type: Executable</code></pre></div>
+<p>The engine recognized a windows executable.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">LibClamAV</span> debug: Machine type: 80386
+<span class="ex">LibClamAV</span> debug: NumberOfSections: 3
+<span class="ex">LibClamAV</span> debug: TimeDateStamp: Fri Jan 10 04:57:55 2003
+<span class="ex">LibClamAV</span> debug: SizeOfOptionalHeader: e0
+<span class="ex">LibClamAV</span> debug: File format: PE
+<span class="ex">LibClamAV</span> debug: MajorLinkerVersion: 6
+<span class="ex">LibClamAV</span> debug: MinorLinkerVersion: 0
+<span class="ex">LibClamAV</span> debug: SizeOfCode: 0x9000
+<span class="ex">LibClamAV</span> debug: SizeOfInitializedData: 0x1000
+<span class="ex">LibClamAV</span> debug: SizeOfUninitializedData: 0x1e000
+<span class="ex">LibClamAV</span> debug: AddressOfEntryPoint: 0x27070
+<span class="ex">LibClamAV</span> debug: BaseOfCode: 0x1f000
+<span class="ex">LibClamAV</span> debug: SectionAlignment: 0x1000
+<span class="ex">LibClamAV</span> debug: FileAlignment: 0x200
+<span class="ex">LibClamAV</span> debug: MajorSubsystemVersion: 4
+<span class="ex">LibClamAV</span> debug: MinorSubsystemVersion: 0
+<span class="ex">LibClamAV</span> debug: SizeOfImage: 0x29000
+<span class="ex">LibClamAV</span> debug: SizeOfHeaders: 0x400
+<span class="ex">LibClamAV</span> debug: NumberOfRvaAndSizes: 16
+<span class="ex">LibClamAV</span> debug: Subsystem: Win32 GUI
+<span class="ex">LibClamAV</span> debug: ------------------------------------
+<span class="ex">LibClamAV</span> debug: Section 0
+<span class="ex">LibClamAV</span> debug: Section name: UPX0
+<span class="ex">LibClamAV</span> debug: Section data (from headers - in memory)
+<span class="ex">LibClamAV</span> debug: VirtualSize: 0x1e000 0x1e000
+<span class="ex">LibClamAV</span> debug: VirtualAddress: 0x1000 0x1000
+<span class="ex">LibClamAV</span> debug: SizeOfRawData: 0x0 0x0
+<span class="ex">LibClamAV</span> debug: PointerToRawData: 0x400 0x400
+<span class="ex">LibClamAV</span> debug: Section<span class="st">&#39;s memory is executable</span>
+<span class="st">LibClamAV debug: Section&#39;</span>s memory is writeable
+<span class="ex">LibClamAV</span> debug: ------------------------------------
+<span class="ex">LibClamAV</span> debug: Section 1
+<span class="ex">LibClamAV</span> debug: Section name: UPX1
+<span class="ex">LibClamAV</span> debug: Section data (from headers - in memory)
+<span class="ex">LibClamAV</span> debug: VirtualSize: 0x9000 0x9000
+<span class="ex">LibClamAV</span> debug: VirtualAddress: 0x1f000 0x1f000
+<span class="ex">LibClamAV</span> debug: SizeOfRawData: 0x8200 0x8200
+<span class="ex">LibClamAV</span> debug: PointerToRawData: 0x400 0x400
+<span class="ex">LibClamAV</span> debug: Section<span class="st">&#39;s memory is executable</span>
+<span class="st">LibClamAV debug: Section&#39;</span>s memory is writeable
+<span class="ex">LibClamAV</span> debug: ------------------------------------
+<span class="ex">LibClamAV</span> debug: Section 2
+<span class="ex">LibClamAV</span> debug: Section name: UPX2
+<span class="ex">LibClamAV</span> debug: Section data (from headers - in memory)
+<span class="ex">LibClamAV</span> debug: VirtualSize: 0x1000 0x1000
+<span class="ex">LibClamAV</span> debug: VirtualAddress: 0x28000 0x28000
+<span class="ex">LibClamAV</span> debug: SizeOfRawData: 0x200 0x1ff
+<span class="ex">LibClamAV</span> debug: PointerToRawData: 0x8600 0x8600
+<span class="ex">LibClamAV</span> debug: Section<span class="st">&#39;s memory is writeable</span>
+<span class="st">LibClamAV debug: ------------------------------------</span>
+<span class="st">LibClamAV debug: EntryPoint offset: 0x8470 (33904)</span></code></pre></div>
+<p>The section structure displayed above suggests the executable is packed<br />
+with UPX.</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">LibClamAV</span> debug: ------------------------------------
+<span class="ex">LibClamAV</span> debug: EntryPoint offset: 0x8470 (33904)
+<span class="ex">LibClamAV</span> debug: UPX/FSG/MEW: empty section found - assuming
+                 <span class="ex">compression</span>
+<span class="ex">LibClamAV</span> debug: UPX: bad magic - scanning for imports
+<span class="ex">LibClamAV</span> debug: UPX: PE structure rebuilt from compressed file
+<span class="ex">LibClamAV</span> debug: UPX: Successfully decompressed with NRV2B
+<span class="ex">LibClamAV</span> debug: UPX/FSG: Decompressed data saved in
+                 <span class="ex">/tmp/clamav-90d2d25c9dca42bae6fa9a764a4bcede</span>
+<span class="ex">LibClamAV</span> debug: ***** Scanning decompressed file *****
+<span class="ex">LibClamAV</span> debug: Recognized MS-EXE/DLL file
+<span class="ex">LibClamAV</span> debug: Matched signature for file type PE</code></pre></div>
+<p>Indeed, libclamav recognizes the UPX data and saves the decompressed<br />
+(and rebuilt) executable into<br />
+<code>/tmp/clamav-90d2d25c9dca42bae6fa9a764a4bcede</code>. Then it continues by<br />
+scanning this new file:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">LibClamAV</span> debug: File type: Executable
+<span class="ex">LibClamAV</span> debug: Machine type: 80386
+<span class="ex">LibClamAV</span> debug: NumberOfSections: 3
+<span class="ex">LibClamAV</span> debug: TimeDateStamp: Thu Jan 27 11:43:15 2011
+<span class="ex">LibClamAV</span> debug: SizeOfOptionalHeader: e0
+<span class="ex">LibClamAV</span> debug: File format: PE
+<span class="ex">LibClamAV</span> debug: MajorLinkerVersion: 6
+<span class="ex">LibClamAV</span> debug: MinorLinkerVersion: 0
+<span class="ex">LibClamAV</span> debug: SizeOfCode: 0xc000
+<span class="ex">LibClamAV</span> debug: SizeOfInitializedData: 0x19000
+<span class="ex">LibClamAV</span> debug: SizeOfUninitializedData: 0x0
+<span class="ex">LibClamAV</span> debug: AddressOfEntryPoint: 0x7b9f
+<span class="ex">LibClamAV</span> debug: BaseOfCode: 0x1000
+<span class="ex">LibClamAV</span> debug: SectionAlignment: 0x1000
+<span class="ex">LibClamAV</span> debug: FileAlignment: 0x1000
+<span class="ex">LibClamAV</span> debug: MajorSubsystemVersion: 4
+<span class="ex">LibClamAV</span> debug: MinorSubsystemVersion: 0
+<span class="ex">LibClamAV</span> debug: SizeOfImage: 0x26000
+<span class="ex">LibClamAV</span> debug: SizeOfHeaders: 0x1000
+<span class="ex">LibClamAV</span> debug: NumberOfRvaAndSizes: 16
+<span class="ex">LibClamAV</span> debug: Subsystem: Win32 GUI
+<span class="ex">LibClamAV</span> debug: ------------------------------------
+<span class="ex">LibClamAV</span> debug: Section 0
+<span class="ex">LibClamAV</span> debug: Section name: .text
+<span class="ex">LibClamAV</span> debug: Section data (from headers - in memory)
+<span class="ex">LibClamAV</span> debug: VirtualSize: 0xc000 0xc000
+<span class="ex">LibClamAV</span> debug: VirtualAddress: 0x1000 0x1000
+<span class="ex">LibClamAV</span> debug: SizeOfRawData: 0xc000 0xc000
+<span class="ex">LibClamAV</span> debug: PointerToRawData: 0x1000 0x1000
+<span class="ex">LibClamAV</span> debug: Section contains executable code
+<span class="ex">LibClamAV</span> debug: Section<span class="st">&#39;s memory is executable</span>
+<span class="st">LibClamAV debug: ------------------------------------</span>
+<span class="st">LibClamAV debug: Section 1</span>
+<span class="st">LibClamAV debug: Section name: .rdata</span>
+<span class="st">LibClamAV debug: Section data (from headers - in memory)</span>
+<span class="st">LibClamAV debug: VirtualSize: 0x2000 0x2000</span>
+<span class="st">LibClamAV debug: VirtualAddress: 0xd000 0xd000</span>
+<span class="st">LibClamAV debug: SizeOfRawData: 0x2000 0x2000</span>
+<span class="st">LibClamAV debug: PointerToRawData: 0xd000 0xd000</span>
+<span class="st">LibClamAV debug: ------------------------------------</span>
+<span class="st">LibClamAV debug: Section 2</span>
+<span class="st">LibClamAV debug: Section name: .data</span>
+<span class="st">LibClamAV debug: Section data (from headers - in memory)</span>
+<span class="st">LibClamAV debug: VirtualSize: 0x17000 0x17000</span>
+<span class="st">LibClamAV debug: VirtualAddress: 0xf000 0xf000</span>
+<span class="st">LibClamAV debug: SizeOfRawData: 0x17000 0x17000</span>
+<span class="st">LibClamAV debug: PointerToRawData: 0xf000 0xf000</span>
+<span class="st">LibClamAV debug: Section&#39;</span>s memory is writeable
+<span class="ex">LibClamAV</span> debug: ------------------------------------
+<span class="ex">LibClamAV</span> debug: EntryPoint offset: 0x7b9f (31647)
+<span class="ex">LibClamAV</span> debug: Bytecode executing hook id 257 (0 hooks)
+<span class="ex">attachment.exe</span>: OK
+[<span class="ex">...</span>]</code></pre></div>
+<p>No additional files get created by libclamav. By writing a signature for the decompressed file you have more chances that the engine will detect the target data when it gets compressed with another packer.</p>
+<p>This method should be applied to all files for which you want to create signatures. By analyzing the debug information you can quickly see how the engine recognizes and preprocesses the data and what additional files get created. Signatures created for bottom-level temporary files are usually more generic and should help detecting the same malware in different forms.</p>
+<h3 id="writing-signatures-for-special-files">Writing signatures for special files</h3>
+<h4 id="html">HTML</h4>
+<p>ClamAV contains HTML normalization code which makes it easier to write signatures for HTML data that might differ based on white space, capitalization, and other insignificant differences. Running <code>sigtool --html-normalise</code> on a HTML file can be used to see what a file's contents will look like after normalization. This command should generate the following files:</p>
+<ul>
+<li><p>nocomment.html - the file is normalized, lower-case, with all comments and superfluous white space removed</p></li>
+<li><p>notags.html - as above but with all HTML tags removed</p></li>
+<li><p>javascript - any script contents are normalized and the results appended to this file</p></li>
+</ul>
+<p>The code automatically decodes JScript.encode parts and char ref’s (e.g. <code>&amp;#102;</code>). To create a successful signature for the input file type, the rule must match on the contents of one of the created files. Signatures matching on normalized HTML should have a target type of 3. For reference, see <a href="Signatures/FileTypes.html#Target-Types">Target Types</a>.</p>
+<h4 id="text-files">Text files</h4>
+<p>Similarly to HTML all ASCII text files get normalized (converted to lower-case, all superfluous white space and control characters removed, etc.) before scanning. Running <code>sigtool --ascii-normalise</code> on a text file will result in a normalized version being written to the file named 'normalised_text'. Rules matching on normalized ASCII text should have a target type of 7. For reference, see <a href="Signatures/FileTypes.html#Target-Types">Target Types</a>.</p>
+<h4 id="compressed-portable-executable-files">Compressed Portable Executable files</h4>
+<p>If the file is compressed with UPX, FSG, Petite or another PE packer supported by libclamav, ClamAV will attempt to automatically unpack the executable and evaluate signatures against the unpacked executable. To inspect the executable that results from ClamAV's unpacking process, run <code>clamscan</code> with <code>--debug --leave-temps</code>. Example output for a FSG compressed file:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">LibClamAV</span> debug: UPX/FSG/MEW: empty section found - assuming compression
+<span class="ex">LibClamAV</span> debug: FSG: found old EP @119e0
+<span class="ex">LibClamAV</span> debug: FSG: Unpacked and rebuilt executable saved in
+<span class="ex">/tmp/clamav-f592b20f9329ac1c91f0e12137bcce6c</span></code></pre></div>
+<p>In the example above, <code>/tmp/clamav-f592b20f9329ac1c91f0e12137bcce6c</code> is the unpacked executable, and a signature can be written based off of this file.</p>
+<h3 id="using-sigtool">Using <code>sigtool</code></h3>
+<p><code>sigtool</code> pulls in libclamav and provides shortcuts to doing tasks that <code>clamscan</code> does behind the scenes. These can be really useful when writing a signature or trying to get information about a signature that might be causing FPs or performance problems.</p>
+<p>The following <code>sigtool</code> flags can be especially useful for signature writing:</p>
+<ul>
+<li><p><code>--md5</code> / <code>--sha1</code> / <code>--sha256</code>: Generate the MD5/SHA1/SHA256 hash and calculate the file size, outputting both as a properly-formatted <code>.hdb</code>/<code>.hsb</code> signature</p></li>
+<li><p><code>--mdb</code>: Generate section hashes of the specified file. This is useful when generating <code>.mdb</code> signatures.</p></li>
+<li><p><code>--decode</code>: Given a ClamAV signature from STDIN, show a more user-friendly representation of it. An example usage of this flag is <code>cat test.ldb | sigtool --decode</code>.</p></li>
+<li><p><code>--hex-dump</code>: Given a sequence of bytes from STDIN, print the hex equivalent. An example usage of this flag is <code>echo -n &quot;Match on this&quot; | sigtool --hex-dump</code>.</p></li>
+<li><p><code>--html-normalise</code>: Normalize the specified HTML file in the way that <code>clamscan</code> will before looking for rule matches. Writing signatures off of these files makes it easier to write rules for target type HTML (you'll know what white space, capitalization, etc. to expect). See the <a href="#html">HTML</a> section for more details.</p></li>
+<li><p><code>--ascii-normalise</code>: Normalize the specified ASCII text file in the way that <code>clamscan</code> will before looking for rule matches. Writing signatures off of this normalized file data makes it easier to write rules for target type Txt (you'll know what white space, capitalization, etc. to expect). See the <a href="#text-files">Text files</a> sectino for more details.</p></li>
+<li><p><code>--print-certs</code>: Print the Authenticode signatures of any PE files specified.<br />
+This is useful when writing signature-based <code>.crb</code> rule files.</p></li>
+<li><p><code>--vba</code>: Extract VBA/Word6 macro code</p></li>
+<li><p><code>--test-sigs</code>: Given a signature and a sample, determine whether the signature matches and, if so, display the offset into the file where the match occurred. This can be useful for investigating false positive matches in clean files.</p></li>
+</ul>
+<h3 id="inspecting-signatures-inside-a-cvd-file">Inspecting signatures inside a CVD file</h3>
+<p>CVD (ClamAV Virus Database) is a digitally signed container that includes signature databases in various text formats. The header of the container is a 512 bytes long string with colon separated fields:</p>
+<pre><code>ClamAV-VDB:build time:version:number of signatures:functionality level required:MD5 checksum:digital signature:builder name:build time (sec)</code></pre>
+<p><code>sigtool --info</code> displays detailed information about a given CVD file:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">zolw@localhost</span>:/usr/local/share/clamav$ sigtool -i main.cvd
+<span class="ex">File</span>: main.cvd
+<span class="ex">Build</span> time: 09 Dec 2007 15:50 +0000
+<span class="ex">Version</span>: 45
+<span class="ex">Signatures</span>: 169676
+<span class="ex">Functionality</span> level: 21
+<span class="ex">Builder</span>: sven
+<span class="ex">MD5</span>: b35429d8d5d60368eea9630062f7c75a
+<span class="ex">Digital</span> signature: dxsusO/HWP3/GAA7VuZpxYwVsE9b+tCk+tPN6OyjVF/U8
+<span class="ex">JVh4vYmW8mZ62ZHYMlM903TMZFg5hZIxcjQB3SX0TapdF1SFNzoWjsyH53eXvMDY</span>
+<span class="ex">eaPVNe2ccXLfEegoda4xU2TezbGfbSEGoU1qolyQYLX674sNA2Ni6l6/CEKYYh</span>
+<span class="ex">Verification</span> OK.</code></pre></div>
+<p>The ClamAV project distributes a number of CVD files, including <code>main.cvd</code> and <code>daily.cvd</code>.</p>
+<p>To view the signature associated with a given detection name, the CVD files can be unpacked and the underlying text files searched for a rule definition using a tool like <code>grep</code>. To do this, use <code>sigtool</code>'s <code>--unpack</code> flag as follows:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">$ <span class="fu">mkdir</span> /tmp/clamav-sigs
+$ <span class="bu">cd</span> /tmp/clamav-sigs/
+$ <span class="ex">sigtool</span> --unpack /var/lib/clamav/main.cvd
+$ <span class="fu">ls</span>
+<span class="ex">COPYING</span>   main.fp   main.hsb   main.mdb  main.ndb
+<span class="ex">main.crb</span>  main.hdb  main.info  main.msb  main.sfp</code></pre></div>
+<h3 id="external-tools">External tools</h3>
+<p>Below are tools that can be helpful when writing ClamAV signatures:</p>
+<ul>
+<li><a href="https://github.com/Cisco-Talos/CASC">CASC</a> - CASC is a plugin for IDA Pro that allows the user to highlight sections of code and create a signature based on the underlying instructions (with options to ignore bytes associated with registers, addresses, and offsets). It also contains SigAlyzer, a tool to take an existing signature and locate the regions within the binary that match the subsignatures.</li>
+</ul>
+</body>
+</html>

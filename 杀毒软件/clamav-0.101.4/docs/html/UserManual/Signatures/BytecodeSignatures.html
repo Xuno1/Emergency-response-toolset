@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="bytecode-signatures">Bytecode Signatures</h1>
+<p>Bytecode Signatures are the means by which more complex matching can be performed by writing C code to parse sample content at various stages in file extraction.</p>
+<p>It is less complicated than it sounds. Essentially the signature author writes a function in C is compiled down to an intermediate language called &quot;bytecode&quot;. This bytecode is encoded in ASCII <code>.cbc</code> file and distributed in <code>bytecode.[cvd|cld]</code>. When the database is loaded, ClamAV can interpret this bytecode to execute the function.</p>
+<p>Bytecode functions are provided with a set of API's that may be used to access the sample data, and to access what metadata ClamAV already has concerning the sample.</p>
+<p>The function may at any time call an API to flag the sample as malicious, and may provide the signature/virus name at that time. This means a single bytecode signature (function) is written to handle a given file type and may trigger different alerts with different signature names as additional malicious characteristics for the file type are identified. That isn't to say that only one bytecode signature may be assigned to a given filetype, but that a single author may find it to be more efficient to use a bytecode signature to identify more than one type of malware.</p>
+<p>The specifics on how to write and compile bytecode signatures are outside of the scope of this documentation. Extensive documentation on ClamAV Bytecode Signatures are provided with the <a href="https://github.com/vrtadmin/clamav-bytecode-compiler">ClamAV Bytecode Compiler</a>.</p>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="body-based-signature-content-format">Body-based Signature Content Format</h1>
+<p>ClamAV stores all body-based signatures in a hexadecimal format. In this section by a hex-signature we mean a fragment of malware’s body converted into a hexadecimal string which can be additionally extended using various wildcards.</p>
+<h2 id="hexadecimal-format">Hexadecimal format</h2>
+<p>You can use <code>sigtool --hex-dump</code> to convert any data into a hex-string:</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">zolw@localhost</span>:/tmp/test$ sigtool --hex-dump
+<span class="ex">How</span> do I look in hex?
+<span class="ex">486f7720646f2049206c6f6f6b20696e206865783f0a</span></code></pre></div>
+<h2 id="wildcards">Wildcards</h2>
+<p>ClamAV supports the following wildcards for hex-signatures:</p>
+<ul>
+<li><code>??</code></li>
+</ul>
+<p>Match any byte.</p>
+<ul>
+<li><code>a?</code></li>
+</ul>
+<p>Match a high nibble (the four high bits).</p>
+<ul>
+<li><code>?a</code></li>
+</ul>
+<p>Match a low nibble (the four low bits).</p>
+<ul>
+<li><code>*</code></li>
+</ul>
+<p>Match any number of bytes.</p>
+<ul>
+<li><code>{n}</code></li>
+</ul>
+<p>Match <code>n</code> bytes.</p>
+<ul>
+<li><code>{-n}</code></li>
+</ul>
+<p>Match <code>n</code> or less bytes.</p>
+<ul>
+<li><code>{n-}</code></li>
+</ul>
+<p>Match <code>n</code> or more bytes.</p>
+<ul>
+<li><code>{n-m}</code></li>
+</ul>
+<p>Match between <code>n</code> and <code>m</code> bytes (where <code>m &gt; n</code>).</p>
+<ul>
+<li><code>HEXSIG[x-y]aa</code> or <code>aa[x-y]HEXSIG</code></li>
+</ul>
+<p>Match <code>aa</code> anchored to a hex-signature, see <a href="https://bugzilla.clamav.net/show_bug.cgi?id=776">Bugzilla ticket 776</a> for discussion and<br />
+examples.</p>
+<p>The range signatures <code>*</code> and <code>{}</code> virtually separate a hex-signature into two parts, eg. <code>aabbcc*bbaacc</code> is treated as two sub-signatures <code>aabbcc</code> and <code>bbaacc</code> with any number of bytes between them. It’s a requirement that each sub-signature includes a block of two static characters somewhere in its body. Note that there is one exception to this restriction; that is when the range wildcard is of the form <code>{n}</code> with <code>n&lt;128</code>. In this case, ClamAV uses an optimization and translates <code>{n}</code> to the string consisting of <code>n ??</code> character wildcards. Character wildcards do not divide hex signatures into two parts and so the two static character requirement does not apply.</p>
+<h2 id="character-classes">Character classes</h2>
+<p>ClamAV supports the following character classes for hex-signatures:</p>
+<ul>
+<li><code>(B)</code></li>
+</ul>
+<p>Match word boundary (including file boundaries).</p>
+<ul>
+<li><code>(L)</code></li>
+</ul>
+<p>Match CR, CRLF or file boundaries.</p>
+<ul>
+<li><code>(W)</code></li>
+</ul>
+<p>Match a non-alphanumeric character.</p>
+<h2 id="alternate-strings">Alternate strings</h2>
+<ul>
+<li>Single-byte alternates (clamav-0.96) <code>(aa|bb|cc|...)</code> or <code>!(aa|bb|cc|...)</code> Match a member from a set of bytes (eg: <code>aa</code>, <code>bb</code>, <code>cc</code>, ...).</li>
+<li>Negation operation can be applied to match any non-member, assumed to be one-byte in length.</li>
+<li><p>Signature modifiers and wildcards cannot be applied.</p></li>
+<li>Multi-byte fixed length alternates <code>(aaaa|bbbb|cccc|...)</code> or <code>!(aaaa|bbbb|cccc|...)</code> Match a member from a set of multi-byte alternates (eg: aaaa, bbbb, cccc, ...) of n-length.</li>
+<li>All set members must be the same length.</li>
+<li>Negation operation can be applied to match any non-member, assumed to be n-bytes in length (clamav-0.98.2).</li>
+<li><p>Signature modifiers and wildcards cannot be applied.</p></li>
+<li>Generic alternates (clamav-0.99) <code>(alt1|alt2|alt3|...)</code> Match a member from a set of alternates (eg: alt1, alt2, alt3, ...) that can be of variable lengths.</li>
+<li>Negation operation cannot be applied.</li>
+<li>Signature modifiers and nibble wildcards (eg: <code>??, a?, ?a</code>) can be applied.</li>
+<li><p>Ranged wildcards (eg: <code>{n-m}</code>) are limited to a fixed range of less than 128 bytes (eg: <code>{1} -&gt; {127}</code>).</p></li>
+</ul>
+<p>Note that using signature modifiers and wildcards classifies the alternate type to be a generic alternate. Thus single-byte alternates and multi-byte fixed length alternates can use signature modifiers and wildcards but will be classified as generic alternate. This means that negation cannot be applied in this situation and there is a slight performance impact.</p>
+</body>
+</html>

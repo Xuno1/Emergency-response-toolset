@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="usage">Usage</h1>
+<hr />
+<!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+<ul>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#purpose">Purpose</a></li>
+<li><a href="#daemon">Daemon</a></li>
+<li><a href="#scanner">Scanner</a></li>
+<li><a href="#signature-testing-and-management">Signature Testing and Management</a></li>
+<li><a href="#configuration">Configuration</a></li>
+</ul>
+<!-- /TOC -->
+<hr />
+<h2 id="purpose">Purpose</h2>
+<hr />
+<p>This User Guide presents an overview of the various ways that <em>libclamav</em> can be used through the tools provided by ClamAV. To learn more about how to better use each facet of ClamAV that interests you, please follow the links provided.</p>
+<hr />
+<h2 id="daemon">Daemon</h2>
+<hr />
+<p>The ClamAV Daemon, or <a href="Usage/Scanning.html#clamd"><code>clamd</code></a>, is a multi-threaded daemon that uses <em>libclamav</em> to <a href="Usage/Scanning.html">scan files for viruses</a>. ClamAV provides a number of tools which interface with this daemon. They are, as follows:</p>
+<ul>
+<li><a href="Usage/Scanning.html#clamdscan"><code>clamdscan</code></a> - a simple scanning client</li>
+<li><a href="Usage/Scanning.html#On-access-scanning"><code>on-access scanning</code></a> - provides real-time protection via a <code>clamd</code> instance</li>
+<li><a href="Usage/Scanning.html#clamdtop"><code>clamdtop</code></a> - a resource monitoring interface for <code>clamd</code></li>
+</ul>
+<hr />
+<h2 id="scanner">Scanner</h2>
+<hr />
+<p>ClamAV also provides a command-line tool for <a href="Usage/Scanning.html">simple scanning</a> tasks with <em>libclamav</em> called <a href="Usage/Scanning.html#clamscan"><code>clamscan</code></a>. Unlike the daemon, <code>clamscan</code> is not a persistent process and is best suited for use cases where one-time scanning with minimal setup is needed.</p>
+<hr />
+<h2 id="signature-testing-and-management">Signature Testing and Management</h2>
+<hr />
+<p>A number of tools allow for <a href="Usage/SignatureManagement.html">testing and management of signatures</a>. Of note are the following:</p>
+<ul>
+<li><a href="Usage/SignatureManagement.html#clambc"><code>clambc</code></a> - specifically for testing bytecode</li>
+<li><a href="Usage/SignatureManagement.html#sigtool"><code>sigtool</code></a> - for general signature testing and analysis</li>
+<li><a href="Usage/SignatureManagement.html#freshclam"><code>freshclam</code></a> - used to update signature database sets to the latest version</li>
+</ul>
+<hr />
+<h2 id="configuration">Configuration</h2>
+<hr />
+<p>The more complex tools ClamAV provides each require some degree of <a href="Usage/Configuration.html">configuration</a>. ClamAV supplies two example configuration files:</p>
+<ul>
+<li><a href="Usage/Configuration.html#clamdconf"><code>clamd.conf</code></a> - for configuring the behaviour of the ClamAV Daemon <code>clamd</code> and associated tools</li>
+<li><a href="Usage/Configuration.html#freshclamconf"><code>freschclam.conf</code></a> - for configuring the behaviour of the signature database update tool, <code>freshclam</code></li>
+</ul>
+<p>ClamAV also provides a mail filtering tool called <a href="Usage/Configuration.html#clamav-milter"><code>clamav-milter</code></a> which can be attached to a <code>clamd</code> instance for mail scanning purposes.</p>
+<p>Additionally, a tool called <a href="Usage/Configuration.html#clamconf"><code>clamconf</code></a> allows users to check the configurations used by each other tool, pulling information from the configuration files listed above, alongside other relevant information.</p>
+</body>
+</html>

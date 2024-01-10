@@ -1,0 +1,294 @@
+{
+       glibc-tls
+       Memcheck:Leak
+       fun:*
+       fun:_dl_allocate_tls
+}
+{
+       zlib-cond-jump-1.2.3
+       Memcheck:Cond
+       fun:inflateReset2
+       fun:inflateInit2_
+}
+{
+    llvm-01
+    Memcheck:Leak
+    fun:_Znwj
+    fun:*
+}
+{
+    llvm-02
+    Memcheck:Leak
+    fun:malloc
+    fun:_ZN4llvm12PassRegistry12registerPassERKNS_8PassInfoE
+    fun:*
+}
+{
+    llvm-03
+    Memcheck:Leak
+    fun:_Znwm
+    ...
+    fun:_ZN4llvm12PassRegistry12registerPassERKNS_8PassInfoE
+    ...
+}
+{
+    dl_catch_error-leak-1
+    Memcheck:Leak
+    ...
+    fun:dl_open_worker
+    fun:_dl_catch_error
+    ...
+}
+{
+    dl_catch_error-leak-2
+    Memcheck:Leak
+    ...
+    fun:_dl_close_worker
+    fun:_dl_close
+    fun:_dl_catch_error
+    ...
+}
+{
+    mbox-leak-01
+    Memcheck:Leak
+    ...
+    fun:tableInsert
+    fun:messageSetMimeType
+    fun:parseEmailHeader
+    ...
+}
+{
+    mbox-leak-02
+    Memcheck:Leak
+    ...
+    fun:tableInsert
+    fun:cli_parse_mbox
+    fun:cli_scanmail
+    ...
+}
+{
+    ubuntu-libc-getaddrinfo-01
+    Memcheck:Param
+    sendmsg(mmsg[0].msg_hdr)
+    fun:sendmmsg
+    ...
+}
+{
+    openssl-globals-01
+    Memcheck:Leak
+    ...
+    fun:cl_initialize_crypto
+    ...
+}
+{
+    openssl-globals-02
+    Memcheck:Leak
+    ...
+    fun:SSL_library_init
+}
+{
+   y0da-cached-virname
+   Memcheck:Cond
+   fun:cli_scanpe
+   fun:magic_scandesc
+   fun:cli_base_scandesc
+   fun:cli_magic_scandesc
+   fun:scan_common
+   fun:cl_scandesc_callback
+   fun:scanfile
+   fun:scanmanager
+   fun:main
+}
+{
+   dlopen-libcheck-overread4
+   Memcheck:Addr4
+   ...
+   fun:vm_open
+   fun:tryall_dlopen
+   fun:find_handle_callback
+   fun:foreach_dirinpath
+   ...
+}
+{
+   dlopen-libcheck-overread8
+   Memcheck:Addr8
+   ...
+   fun:vm_open
+   fun:tryall_dlopen
+   fun:find_handle_callback
+   fun:foreach_dirinpath
+   ...
+}
+{
+   lib-ltdl
+   Memcheck:Addr8
+   obj:/libexec/ld-elf*
+   ...
+   obj:/usr/*lib*/libltdl*
+   fun:lt_dlopen
+}
+{
+   bsd-iconv-openat
+   Memcheck:Param
+   openat(filename)
+   fun:_openat
+   ...
+   fun:__bsd_iconv_open
+   ...
+}
+{
+   bsd-iconv-strlen
+   Memcheck:Cond
+   fun:strlen
+   ...
+   fun:snprintf
+   ...
+   fun:__bsd_iconv_open
+   ...
+}
+{
+   bsd-iconv-openat2
+   Memcheck:Param
+   openat(filename)
+   fun:_openat
+   ...
+   fun:open
+   fun:_citrus_map_file
+   ...
+   fun:iconv_open_cached
+   fun:encoding_normalize_toascii
+   ...
+}
+{
+   bsd-iconv-strlen2
+   Memcheck:Cond
+   fun:strlen
+   ...
+   fun:snprintf
+   ...
+   fun:iconv_open_cached
+   fun:encoding_normalize_toascii
+   ...
+}
+{
+   bsd-jit-peephole
+   Memcheck:Cond
+   fun:_ZN12_GLOBAL__N_117PeepholeOptimizer20runOnMachineFunctionERN4llvm15MachineFunctionE
+   ...
+   fun:cli_bytecode_prepare_jit
+   ...
+}
+{
+   bsd-acceptloop-poll
+   Memcheck:Addr4
+   obj:/lib/libthr.so.3
+   obj:/lib/libthr.so.3
+   obj:/usr/local/lib/valgrind/memcheck-x86-freebsd
+   fun:fds_poll_recv
+   fun:acceptloop_th
+   obj:/lib/libthr.so.3
+}
+{
+   bsd-recvloop-poll1
+   Memcheck:Addr4
+   obj:/lib/libthr.so.3
+   obj:/lib/libthr.so.3
+   obj:/usr/local/lib/valgrind/memcheck-x86-freebsd
+   fun:send
+   fun:fds_poll_recv
+   fun:recvloop_th
+   obj:/lib/libthr.so.3
+}
+{
+   bsd-recvloop-poll2
+   Memcheck:Addr4
+   obj:/lib/libthr.so.3
+   obj:/lib/libthr.so.3
+   obj:/usr/local/lib/valgrind/memcheck-x86-freebsd
+   fun:poll
+   fun:fds_poll_recv
+   fun:recvloop_th
+   ...
+}
+{
+   bsd-lowering
+   Memcheck:Cond
+   fun:_ZNK4llvm17X86TargetLowering9LowerCallERNS_14TargetLowering16CallLoweringInfoERNS_15SmallVectorImplINS_7SDValueEEE
+   fun:_ZNK4llvm14TargetLowering11LowerCallToERNS0_16CallLoweringInfoE
+   fun:_ZN4llvm19SelectionDAGBuilder11LowerCallToENS_17ImmutableCallSiteENS_7SDValueEbPNS_17MachineBasicBlockE
+   fun:_ZN4llvm19SelectionDAGBuilder9visitCallERKNS_8CallInstE
+   fun:_ZN4llvm19SelectionDAGBuilder5visitEjRKNS_4UserE
+   fun:_ZN4llvm19SelectionDAGBuilder5visitERKNS_11InstructionE
+   fun:_ZN4llvm16SelectionDAGISel16SelectBasicBlockENS_14ilist_iteratorIKNS_11InstructionEEES4_Rb
+   fun:_ZN4llvm16SelectionDAGISel20SelectAllBasicBlocksERKNS_8FunctionE
+   fun:_ZN4llvm16SelectionDAGISel20runOnMachineFunctionERNS_15MachineFunctionE
+   fun:_ZN4llvm19MachineFunctionPass13runOnFunctionERNS_8FunctionE
+   fun:_ZN4llvm13FPPassManager13runOnFunctionERNS_8FunctionE
+   fun:_ZN4llvm23FunctionPassManagerImpl3runERNS_8FunctionE
+}
+{
+   bsd-lowering2
+   Memcheck:Cond
+   fun:_ZNK4llvm17X86TargetLowering9LowerCallERNS_14TargetLowering16CallLoweringInfoERNS_15SmallVectorImplINS_7SDValueEEE
+   fun:_ZNK4llvm14TargetLowering11LowerCallToERNS0_16CallLoweringInfoE
+   fun:_ZN4llvm12SelectionDAG9getMemcpyENS_7SDValueENS_8DebugLocES1_S1_S1_jbbNS_18MachinePointerInfoES3_
+   fun:_ZN4llvm19SelectionDAGBuilder18visitIntrinsicCallERKNS_8CallInstEj
+   fun:_ZN4llvm19SelectionDAGBuilder9visitCallERKNS_8CallInstE
+   fun:_ZN4llvm19SelectionDAGBuilder5visitEjRKNS_4UserE
+   fun:_ZN4llvm19SelectionDAGBuilder5visitERKNS_11InstructionE
+   fun:_ZN4llvm16SelectionDAGISel16SelectBasicBlockENS_14ilist_iteratorIKNS_11InstructionEEES4_Rb
+   fun:_ZN4llvm16SelectionDAGISel20SelectAllBasicBlocksERKNS_8FunctionE
+   fun:_ZN4llvm16SelectionDAGISel20runOnMachineFunctionERNS_15MachineFunctionE
+   fun:_ZN4llvm19MachineFunctionPass13runOnFunctionERNS_8FunctionE
+   fun:_ZN4llvm13FPPassManager13runOnFunctionERNS_8FunctionE
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_ZNK4llvm17X86TargetLowering9LowerCallERNS_14TargetLowering16CallLoweringInfoERNS_15SmallVectorImplINS_7SDValueEEE
+   fun:_ZNK4llvm14TargetLowering11LowerCallToERNS0_16CallLoweringInfoE
+   fun:_ZN4llvm12SelectionDAG9getMemsetENS_7SDValueENS_8DebugLocES1_S1_S1_jbNS_18MachinePointerInfoE
+   fun:_ZN4llvm19SelectionDAGBuilder18visitIntrinsicCallERKNS_8CallInstEj
+   fun:_ZN4llvm19SelectionDAGBuilder9visitCallERKNS_8CallInstE
+   fun:_ZN4llvm19SelectionDAGBuilder5visitEjRKNS_4UserE
+   fun:_ZN4llvm19SelectionDAGBuilder5visitERKNS_11InstructionE
+   fun:_ZN4llvm16SelectionDAGISel16SelectBasicBlockENS_14ilist_iteratorIKNS_11InstructionEEES4_Rb
+   fun:_ZN4llvm16SelectionDAGISel20SelectAllBasicBlocksERKNS_8FunctionE
+   fun:_ZN4llvm16SelectionDAGISel20runOnMachineFunctionERNS_15MachineFunctionE
+   fun:_ZN4llvm19MachineFunctionPass13runOnFunctionERNS_8FunctionE
+   fun:_ZN4llvm13FPPassManager13runOnFunctionERNS_8FunctionE
+}
+{
+   unrar-wcsrtombs
+   Memcheck:Cond
+   fun:internal_ascii_loop
+   fun:__gconv_transform_internal_ascii
+   fun:wcsrtombs
+   fun:wcsrtombs
+   ...
+}
+{
+   unrar-wcsrtombs-2
+   Memcheck:Cond
+   fun:__wcsnlen_avx2
+   fun:wcsrtombs
+   fun:wcsrtombs
+   ...
+}
+{
+   unrar-wcsrtombs-3
+   Memcheck:Cond
+   fun:__wcsnlen_sse4_1
+   fun:wcsrtombs
+   fun:wcsrtombs
+   ...
+}
+{
+   binhex-overlapping-memmove
+   Memcheck:Overlap
+   fun:__memcpy_chk
+   fun:memmove
+   fun:cli_binhex
+   ...
+}

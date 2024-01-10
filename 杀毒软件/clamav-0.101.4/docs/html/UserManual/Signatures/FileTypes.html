@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="clamav-file-types">ClamAV File Types</h1>
+<p>ClamAV maintains it's own file typing format and assigns these types using either:</p>
+<ul>
+<li>Evaluation of a unique sequence of bytes at the start of a file (<a href="Signatures/FileTypeMagic.html">File Type Magic</a>).</li>
+<li>File type indicators when parsing container files.</li>
+<li>For example:<br />
+CL_TYPE_SCRIPT may be assigned to data contained in a PDF when the PDF indicates that a stream of bytes is &quot;Javascript&quot;</li>
+<li>File type determination based on the names or characteristics contained within the file.</li>
+<li>For example:<br />
+CL_TYPE_OOXML_WORD may be assigned to a Zip file containing files with specific names.</li>
+</ul>
+<h2 id="target-types">Target Types</h2>
+<p>A Target Type is an integer that indicates which kind of file the signature will match against. Target Type notation was first created for the purposes writing efficient signatures. A signature with a target type of <code>0</code> will be run against every file type, and thus is not ideal. However, the Target Type notation is limited and it may be unavoidable.</p>
+<p>Although the newer CL_TYPE string name notation has replaced the Target Type for some signature formats, many signature formats require a target type number.</p>
+<p>This is the current list of available Targe Types:</p>
+<ul>
+<li>0 = any file</li>
+<li>1 = Portable Executable, both 32- and 64-bit.</li>
+<li>2 = OLE2 containers, including their specific macros. The OLE2 format is primarily used by MS Office and MSI installation files.</li>
+<li>3 = HTML (normalized)</li>
+<li>4 = Mail file</li>
+<li>5 = Graphics</li>
+<li>6 = ELF</li>
+<li>7 = ASCII text file (normalized)</li>
+<li>8 = Unused</li>
+<li>9 = Mach-O files</li>
+<li>10 = PDF files</li>
+<li>11 = Flash files</li>
+<li>12 = Java class files</li>
+</ul>
+<p>**<em>Important</em>: HTML, ASCII, Javascript are all normalized.</p>
+<ul>
+<li>ASCII:</li>
+<li>All lowercase.</li>
+<li>HTML:</li>
+<li>Whitespace transformed to spaces, tags/tag attributes normalized, all lowercase.</li>
+<li>Javascript:</li>
+<li>All strings are normalized (hex encoding is decoded), numbers are parsed and normalized, local variables/function names are normalized to ’n001’ format, argument to eval() is parsed as JS again, unescape() is handled, some simple JS packers are handled, output is whitespace normalized.</li>
+</ul>
+<h2 id="cl_types">CL_TYPEs</h2>
+<p>ClamAV Types are prefixed with <code>CL_TYPE_</code>. The following is an exhaustive list of all current CL_TYPE's.</p>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="71%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>CL_TYPE</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>CL_TYPE_7Z</code></td>
+<td>7-Zip Archive</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_7ZSFX</code></td>
+<td>Self-Extracting 7-Zip Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_APM</code></td>
+<td>Disk Image - Apple Partition Map</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_ARJ</code></td>
+<td>ARJ Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_ARJSFX</code></td>
+<td>Self-Extracting ARJ Archive</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_AUTOIT</code></td>
+<td>AutoIt Automation Executable</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_BINARY_DATA</code></td>
+<td>binary data</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_BINHEX</code></td>
+<td>BinHex Macintosh 7-bit ASCII email attachment encoding</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_BZ</code></td>
+<td>BZip Compressed File</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_CABSFX</code></td>
+<td>Self-Extracting Microsoft CAB Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_CPIO_CRC</code></td>
+<td>CPIO Archive (CRC)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_CPIO_NEWC</code></td>
+<td>CPIO Archive (NEWC)</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_CPIO_ODC</code></td>
+<td>CPIO Archive (ODC)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_CPIO_OLD</code></td>
+<td>CPIO Archive (OLD, Little Endian or Big Endian)</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_CRYPTFF</code></td>
+<td>Files encrypted by CryptFF malware</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_DMG</code></td>
+<td>Apple DMG Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_ELF</code></td>
+<td>ELF Executable (Linux/Unix program or library)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_GPT</code></td>
+<td>Disk Image - GUID Partition Table</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_GRAPHICS</code></td>
+<td>TIFF (Little Endian or Big Endian)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_GZ</code></td>
+<td>GZip Compressed File</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_HTML_UTF16</code></td>
+<td>Wide-Character / UTF16 encoded HTML</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_HTML</code></td>
+<td>HTML data</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_HWP3</code></td>
+<td>Hangul Word Processor (3.X)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_HWPOLE2</code></td>
+<td>Hangul Word Processor embedded OLE2</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_INTERNAL</code></td>
+<td>Internal properties</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_ISHIELD_MSI</code></td>
+<td>Windows Install Shield MSI installer</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_ISO9660</code></td>
+<td>ISO 9660 file system for optical disc media</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_JAVA</code></td>
+<td>Java Class File</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_LNK</code></td>
+<td>Microsoft Windows Shortcut File</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_MACHO_UNIBIN</code></td>
+<td>Universal Binary/Java Bytecode</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_MACHO</code></td>
+<td>Apple/NeXTSTEP Mach-O Executable file format</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_MAIL</code></td>
+<td>Email file</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_MBR</code></td>
+<td>Disk Image - Master Boot Record</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_MHTML</code></td>
+<td>MHTML Saved Web Page</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_MSCAB</code></td>
+<td>Microsoft CAB Archive</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_MSCHM</code></td>
+<td>Microsoft CHM help archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_MSEXE</code></td>
+<td>Microsoft EXE / DLL Executable file</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_MSOLE2</code></td>
+<td>Microsoft OLE2 Container file</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_MSSZDD</code></td>
+<td>Microsoft Compressed EXE</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_NULSFT</code></td>
+<td>NullSoft Scripted Installer program</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_OLD_TAR</code></td>
+<td>TAR archive (old)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_OOXML_HWP</code></td>
+<td>Hangul Office Open Word Processor (5.X)</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_OOXML_PPT</code></td>
+<td>Microsoft Office Open XML PowerPoint</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_OOXML_WORD</code></td>
+<td>Microsoft Office Open Word 2007+</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_OOXML_XL</code></td>
+<td>Microsoft Office Open Excel 2007+</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_PART_HFSPLUS</code></td>
+<td>Apple HFS+ partition</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_PDF</code></td>
+<td>Adobe PDF document</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_POSIX_TAR</code></td>
+<td>TAR archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_PS</code></td>
+<td>Postscript</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_RAR</code></td>
+<td>RAR Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_RARSFX</code></td>
+<td>Self-Extracting RAR Archive</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_RIFF</code></td>
+<td>Resource Interchange File Format container formatted file</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_RTF</code></td>
+<td>Rich Text Format document</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_SCRENC</code></td>
+<td>Files encrypted by ScrEnc malware</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_SCRIPT</code></td>
+<td>Generic type for scripts (Javascript, Python, etc)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_SIS</code></td>
+<td>Symbian OS Software Installation Script Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_SWF</code></td>
+<td>Adobe Flash File (LZMA, Zlib, or uncompressed)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_TEXT_ASCII</code></td>
+<td>ASCII text</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_TEXT_UTF16BE</code></td>
+<td>UTF-16BE text</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_TEXT_UTF16LE</code></td>
+<td>UTF-16LE text</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_TEXT_UTF8</code></td>
+<td>UTF-8 text</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_TNEF</code></td>
+<td>Microsoft Outlook &amp; Exchange email attachment format</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_UUENCODED</code></td>
+<td>UUEncoded (Unix-to-Unix) binary file (Unix email attachment)</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_XAR</code></td>
+<td>XAR Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_XDP</code></td>
+<td>Adobe XDP - Embedded PDF</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_XML_HWP</code></td>
+<td>Hangul Word Processor XML (HWPML) Document</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_XML_WORD</code></td>
+<td>Microsoft Word 2003 XML Document</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_XML_XL</code></td>
+<td>Microsoft Excel 2003 XML Document</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_XZ</code></td>
+<td>XZ Archive</td>
+</tr>
+<tr class="even">
+<td><code>CL_TYPE_ZIP</code></td>
+<td>Zip Archive</td>
+</tr>
+<tr class="odd">
+<td><code>CL_TYPE_ZIPSFX</code></td>
+<td>Self-Extracting Zip Archive</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

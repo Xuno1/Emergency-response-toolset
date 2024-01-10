@@ -1,0 +1,21 @@
+[submodule "0x06取证辅助工具/关键证据提取脚本/linux应急响应脚本/0x06取证辅助工具/关键证据提取脚本/linux应急响应脚本/LinuxCheck"]
+	path = 0x06取证辅助工具/关键证据提取脚本/linux应急响应脚本/0x06取证辅助工具/关键证据提取脚本/linux应急响应脚本/LinuxCheck
+	url = git@github.com:al0ne/LinuxCheck.git
+[submodule "0x06取证辅助工具/关键证据提取脚本/linux应急响应脚本/LinuxCheck"]
+	path = 0x06取证辅助工具/关键证据提取脚本/linux应急响应脚本/LinuxCheck
+	url = git@github.com:al0ne/LinuxCheck.git
+[submodule "0x05病毒木马分析工具/NeoPI"]
+	path = 0x05病毒木马分析工具/NeoPI
+	url = git://github.com/Neohapsis/NeoPI.git
+[submodule "0x05病毒木马分析工具/webshell-scan"]
+	path = 0x05病毒木马分析工具/webshell-scan
+	url = git@github.com:tstillz/webshell-scan.git
+[submodule "0x06取证辅助工具/关键证据提取脚本/windows应急响应脚本/dumpBCF"]
+	path = 0x06取证辅助工具/关键证据提取脚本/windows应急响应脚本/dumpBCF
+	url = git@github.com:jwhwan9/dumpBCF.git
+[submodule "0x06取证辅助工具/关键证据提取脚本/windows应急响应脚本/--force"]
+	path = 0x06取证辅助工具/关键证据提取脚本/windows应急响应脚本/--force
+	url = git://github.com/jwhwan9/dumpBCF.git
+[submodule "0x06取证辅助工具/whohk"]
+	path = 0x06取证辅助工具/whohk
+	url = git@github.com:heikanet/whohk.git

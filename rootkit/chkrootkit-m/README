@@ -1,0 +1,39 @@
+                           chkrootkit-m 0.2
+
+      chkrotkit-m is a chkrootkit Python port for mobile phones.
+
+Both chkrotkit-m and chkrotkit are available at:
+http://www.chkrootkit.org/
+
+NOTICE: This tool is in alpha stage, problems are expected.
+
+Install:
+
+chkrootkit-m is written in Python, so you'll need to install the
+Python environment on your mobile phone.
+
+For example, S60 based phones can download it at:
+http://opensource.nokia.com/projects/pythonfors60/
+
+Usage:
+
+If you have Python-Shell installed and Python is installed on your
+mobile phone c: drive, you just need to copy chkrootkit.py and
+chk.conf to the Python directory and select the "run scripts" option.
+
+If this procedure doesn't work try to run it manually:
+
+Start Python, select the Interactive console option and exec
+chkrootkit, for example:
+
+>>> exec file('c:\\python\\chkrootkit.py')
+
+after that use the [options] button and select 'Search Malwares'.
+
+
+I hope this helps.
+
+If your have any questions please send a e-mail to:
+Nelson Murilo <nelson@pangeia.com.br>
+
+# EOF

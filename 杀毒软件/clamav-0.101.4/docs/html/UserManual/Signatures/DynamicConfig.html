@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="dynamic-configuration-dconf">Dynamic Configuration (DCONF)</h1>
+<p>ClamAV supports a limited set of configuration options that may be enabled or disabled via settings in the <code>*.cfg</code> database. At this time, these settings are distributed in <code>daily.cfg</code>.</p>
+<p>The goal of DCONF is to enable the ClamAV team to rapidly disable new or experimental features for specific ClamAV versions if a significant defect is discovered after release.</p>
+<p>This database is small, and the settings are largely vestigial. The team has not had a need to disable many features in a long time, and so the ClamAV versions in the settings at this time should no longer be in use.</p>
+<p>The strings and values referenced in <code>daily.cfg</code> are best cross-referenced with the macros and structures defined here:</p>
+<ul>
+<li><a href="https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/libclamav/dconf.h#L49" class="uri">https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/libclamav/dconf.h#L49</a></li>
+<li><a href="https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/libclamav/dconf.c#L54" class="uri">https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/libclamav/dconf.c#L54</a></li>
+</ul>
+<p>The format for a DCONF signature is:</p>
+<pre><code>Category:Flags:StartFlevel:EndFlevel</code></pre>
+<p><code>Category</code> may be one of:</p>
+<ul>
+<li>PE</li>
+<li>ELF</li>
+<li>MACHO</li>
+<li>ARCHIVE</li>
+<li>DOCUMENT</li>
+<li>MAIL</li>
+<li>OTHER</li>
+<li>PHISHING</li>
+<li>BYTECODE</li>
+<li>STATS</li>
+<li>PCRE</li>
+</ul>
+<p><code>Flags</code>:</p>
+<p>Every feature that may be configured via DCONF is listed in <code>struct dconf_module modules</code> in <code>libclamav/dconf.c</code>. Any given feature may be default-on or default-off. Default-on features have the 4th field set to a <code>1</code> and default off are set to <code>0</code>. The <code>Flags</code> field for a given <code>Category</code> overrides the defaults for all of the options listed under that category.</p>
+<p>A settings of <code>0x0</code>, for example, means that all options the category be disabled.</p>
+<p>The macros listed in <code>libclamav/dconf.h</code> will help you identify which bits to set to get the desired results.</p>
+<p><code>StartFlevel</code>:</p>
+<p>This is the <a href="FunctionalityLevels.html">FLEVEL</a> of the minimum ClamAV engine for which you want the settings to be in effect.</p>
+<p><code>EndFlevel</code>:</p>
+<p>This is the <a href="FunctionalityLevels.html">FLEVEL</a> of the maximum ClamAV engine for which you want the settings to be in effect. You may wish to select <code>255</code> to override the defaults of future releases.</p>
+<h2 id="example">Example</h2>
+<p>Consider the <code>OTHER_CONF_PDFNAMEOBJ</code> option in the <code>category</code> <code>OTHER</code>.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="pp">#define OTHER_CONF_UUENC        0x1     </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_SCRENC       0x2     </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_RIFF         0x4     </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_JPEG         0x8     </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_CRYPTFF      0x10    </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_DLP          0x20    </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_MYDOOMLOG    0x40    </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_PREFILTERING 0x80    </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_PDFNAMEOBJ   0x100   </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_PRTNINTXN    0x200   </span><span class="co">// Default: 1</span>
+<span class="pp">#define OTHER_CONF_LZW          0x400   </span><span class="co">// Default: 1</span></code></pre></div>
+<p>All of the <code>OTHER</code> options, including <code>OTHER_CONF_PDFNAMEOBJ</code> are default-on. To disable the option for ClamAV v0.100.X but leave the other options in their default settings, we would need to set the flags to:</p>
+<pre class="binary"><code>0110 1111 1111
+   ^pdfnameobj off</code></pre>
+<p>Or in hex: <code>0x6FF</code></p>
+<p>The example setting to place in <code>daily.cfg</code> then woudl be:</p>
+<pre><code>OTHER:0x6FF:90:99</code></pre>
+</body>
+</html>

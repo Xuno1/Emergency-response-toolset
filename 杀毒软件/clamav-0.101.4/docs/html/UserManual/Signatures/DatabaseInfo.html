@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="database-info">Database Info</h1>
+<p>The <code>.info</code> file format specifies information about the other database files unpacked from a CVD or CLD database archive. This file exists for the purposes of validating the correctness of the official ClamAV database container files and cannot be loaded a la carte.</p>
+<p>The format is simply:</p>
+<pre><code>name:size:sha256</code></pre>
+<p><code>name</code>: The database file name.</p>
+<p><code>size</code>: The size in bytes of the database.</p>
+<p><code>sha256</code>: A SHA256 hash of the database.</p>
+</body>
+</html>

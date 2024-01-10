@@ -1,0 +1,3 @@
+[submodule "windows应急响应脚本/RecentFileCache.bcf提取/recentfilecache-parser"]
+	path = windows应急响应脚本/RecentFileCache.bcf提取/recentfilecache-parser
+	url = git@github.com:prolsen/recentfilecache-parser.git

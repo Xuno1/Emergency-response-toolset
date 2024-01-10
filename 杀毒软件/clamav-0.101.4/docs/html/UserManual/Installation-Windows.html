@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="installing-clamav-on-windows">Installing ClamAV on Windows</h1>
+<p>If you wish to build ClamAV from source using Visual Studio 2015, please head over to the <a href="win32/README.html">Win32 ClamAV Build Instructions</a> located in our source release materials on <a href="https://www.clamav.net/downloads">ClamAV.net</a> and on <a href="https://github.com/Cisco-Talos/clamav-devel">GitHub</a>.</p>
+<h2 id="install-using-the-clamav-windows-installer">Install using the ClamAV Windows Installer</h2>
+<p>Important: Installing ClamAV using the Installer will require Administrator privileges.</p>
+<ol>
+<li>Download: <a href="http://www.clamav.net/downloads/production/ClamAV-0.101.4.exe" class="uri">http://www.clamav.net/downloads/production/ClamAV-0.101.4.exe</a></li>
+<li>Locate the file in your Downloads directory.</li>
+<li>Right-click on <code>ClamAV-0.101.4.exe</code> and select <code>Run as administrator</code>. You may receive a warning message along the lines of &quot;Windows protected your PC&quot;. Select <code>More info</code> and then select <code>Run anyway</code>.</li>
+<li>Select <code>I accept the agreement</code> and click <code>Next</code>.</li>
+<li>Click <code>Next</code> again. If you've removed a previous installation of ClamAV, you may receive the prompt &quot;The folder ... already exists...&quot;. If you do, select <code>Yes</code>.</li>
+<li>Click <code>Install</code>.</li>
+<li>Click <code>Finish</code>.</li>
+<li>Press the Windows-key and type <code>powershell</code> but <em>DO NOT</em> press <code>Enter</code>. Right-click on <code>Windows PowerShell</code> at the top of the menu and select <code>Run as administrator</code>. Your computer may warn you <code>Do you want to allow this app to make changes to your device?</code> Click <code>Yes</code>.</li>
+<li><p>Verify that the prompt in the PowerShell window looks like this:</p>
+<pre class="powershell"><code>PS C:\WINDOWS\system32&gt;</code></pre></li>
+<li><p>In the Adminstrator PowerShell window, enter the following to navigate to the ClamAV install directory:</p>
+<pre class="powershell"><code>cd &quot;c:\program files\clamav&quot;</code></pre></li>
+</ol>
+<p>Continue on to &quot;First Time Set-Up&quot; below...</p>
+<h2 id="install-using-the-clamav-portable-install-package">Install using the ClamAV Portable Install Package</h2>
+<ol>
+<li>Download: <a href="https://www.clamav.net/downloads/production/clamav-0.101.4-win-x64-portable.zip" class="uri">https://www.clamav.net/downloads/production/clamav-0.101.4-win-x64-portable.zip</a></li>
+<li>Unzip it.</li>
+<li>Open the <code>clamav-0.101.4-win-x64-portable</code> directory.</li>
+<li>Hold down Shift and then right-click on the background in the current directory (but not on one of the files). Select <code>&quot;Open PowerShell window here&quot;</code>. If that option doesn't appear, try again.</li>
+</ol>
+<p>Continue on to &quot;First Time Set-Up&quot;...</p>
+<h2 id="first-time-set-up">First Time Set-Up</h2>
+<p>In the PowerShell window, perform the following tasks:</p>
+<ul>
+<li><p>Run:</p>
+<pre class="powershell"><code>copy .\conf_examples\freshclam.conf.sample .\freshclam.conf</code></pre></li>
+<li><p>Run:</p>
+<pre class="powershell"><code>write.exe .\freshclam.conf</code></pre></li>
+<li><p>WordPad will pop up. Delete the line that says &quot;Example&quot;. Save the file and close WordPad.</p></li>
+</ul>
+<h2 id="next-steps">Next Steps</h2>
+<h3 id="download-the-signature-databases">Download the Signature Databases</h3>
+<p>Before you can start the ClamAV scanning engine (using either <code>clamd</code> or <code>clamscan</code>), you must <em>first</em> have ClamAV Virus Database (.cvd) file(s) installed in the appropriate location on your system. The default location for these database files is C:\Program Files\ClamAV\database, the database directory of your ` (in Windows).</p>
+<p>Continuing in the PowerShell window:</p>
+<ol>
+<li><p>Run:</p>
+<pre class="powershell"><code>.\freshclam.exe</code></pre></li>
+<li>freshclam will download some files and drop them in the database directory. This can take a minute or two depending on how fast your internet connection is. The files are a pretty large.</li>
+<li><p>You are now ready to perform scans with ClamAV. If you using the portable install package, you may now copy the entire <code>clamav-0.100.1-win-x64-portable</code> directory to the computer(s) you wish to scan.</p></li>
+</ol>
+<h3 id="steps-to-perform-basic-scanning">Steps to Perform Basic Scanning</h3>
+<ul>
+<li><p>Run this to scan the files in the current directory:</p>
+<pre class="powershell"><code>.\clamscan.exe .</code></pre></li>
+</ul>
+<p>This will scan the current directory. At the end of the scan, it will display a summary. If you notice in the clamscan output, it only scanned something like 60 files, even though there are more files in subdirectories. By default, clamscan will only scan files in the current directory.</p>
+<ul>
+<li><p>Run this to scan all the files in the current directory:</p>
+<pre class="powershell"><code>.\clamscan.exe --recursive .</code></pre></li>
+<li><p>Run this to scan ALL the files on your C: drive, it will take <strong>quite</strong> a while. Keep in mind that you can cancel it at any time by pressing <code>Ctrl-C</code>:</p>
+<pre class="powershell"><code>.\clamscan --recursive C:\</code></pre></li>
+<li><p>For more information on ways you can use clamscan, run:</p>
+<pre class="powershell"><code>.\clamscan.exe --help</code></pre></li>
+</ul>
+<h3 id="faster-a-la-carte-scanning-with-clamd">Faster a-la-carte Scanning with <code>clamd</code></h3>
+<p>You may have noticed that <code>clamscan</code> takes a while to get started. This is because it loads the signature database each time you start a scan. If you require faster scanning of individual files, you will want to use <code>clamd</code> with <code>clamdscan</code> instead.</p>
+<p>Continuing in the PowerShell window:</p>
+<ol>
+<li><p>Run:</p>
+<pre class="powershell"><code>.\clamd.exe</code></pre>
+The application will take a moment to load and then appear to hang, but it is in fact waiting for scanning commands from <code>clamdscan</code>.</li>
+<li>Open a second PowerShell window as you did above, in the same directory.</li>
+<li><p>In the second PowerShell window, you can now run <code>clamdscan</code> much the same way you did with <code>clamscan</code> above.</p>
+<pre class="powershell"><code>.\clamdscan.exe .</code></pre></li>
+</ol>
+</body>
+</html>

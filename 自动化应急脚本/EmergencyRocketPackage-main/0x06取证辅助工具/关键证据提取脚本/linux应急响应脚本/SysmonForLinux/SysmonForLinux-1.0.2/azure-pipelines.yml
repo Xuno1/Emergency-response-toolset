@@ -1,0 +1,42 @@
+# Azure build pipelines for Sysmon
+
+resources:
+  repositories:
+  - repository: Sysmon
+    type: github
+    endpoint: sysinternals
+    name: sysinternals/SysmonforLinux
+
+trigger:
+    branches:
+      include:
+        - release/*
+        - main
+      exclude:
+        - dev/*
+        - test/*
+  
+pr:
+- main
+
+stages:
+ - stage: "Build"
+   jobs:
+    - job: "Build_Sysmon_Ubuntu_20_04"
+      pool: "Sysmon-Ubuntu-20.04-Pool"
+      steps:
+      - checkout: Sysmon
+        submodules: true
+
+      - script: |
+          wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          dpkg -i packages-microsoft-prod.deb
+          apt -y update
+          apt -y install sysinternalsebpf
+        displayName: "Install Sysinternalsebpf dependency"
+
+      - template: templates/build.yaml
+
+      - script: |
+          apt -y remove sysinternalsebpf
+        displayName: "Remove Sysinternalsebpf dependency"

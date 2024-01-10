@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/en/github.css" type="text/css" />
+</head>
+<body>
+<h1 id="whitelist-databases">Whitelist databases</h1>
+<h2 id="file-whitelists">File whitelists</h2>
+<p>To whitelist a specific file use the MD5 signature format and place it inside a database file with the extension of <code>.fp</code>. To whitelist a specific file with the SHA1 or SHA256 file hash signature format, place the signature inside a database file with the extension of <code>.sfp</code>.</p>
+<h2 id="signature-whitelists">Signature whitelists</h2>
+<p>To whitelist a specific signature from the database you just add the signature name into a local file with the <code>.ign2</code> extension and store it inside the database directory.</p>
+<p>E.g:</p>
+<pre><code>    Eicar-Test-Signature</code></pre>
+<p>Additionally, you can follow the signature name with the MD5 of the entire database entry for this signature. In such a case, the signature will no longer be whitelisted when its entry in the database gets modified (eg. the signature gets updated to avoid false alerts). E.g:</p>
+<pre><code>    Eicar-Test-Signature:bc356bae4c42f19a3de16e333ba3569c</code></pre>
+<p>Historically, signature whitelists were added to <code>.ign</code> files. This format is still functional, though it has been replaced by the <code>.ign2</code> database.</p>
+</body>
+</html>
