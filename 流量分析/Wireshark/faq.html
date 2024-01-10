@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>Wireshark Frequently Asked Questions</title>
+<link rel="stylesheet" href="./ws.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Wireshark Frequently Asked Questions</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_general_questions">General Questions</a>
+<ul class="sectlevel2">
+<li><a href="#_what_is_wireshark">What is Wireshark?</a></li>
+<li><a href="#wheretogethelp">Where can I get help?</a></li>
+<li><a href="#_what_kind_of_shark_is_wireshark">What kind of shark is Wireshark?</a></li>
+<li><a href="#_how_is_wireshark_pronounced_spelled_and_capitalized">How is Wireshark pronounced, spelled and capitalized?</a></li>
+<li><a href="#_how_much_does_wireshark_cost">How much does Wireshark cost?</a></li>
+<li><a href="#_but_i_just_paid_someone_on_ebay_for_a_copy_of_wireshark_did_i_get_ripped_off">But I just paid someone on eBay for a copy of Wireshark! Did I get ripped off?</a></li>
+<li><a href="#_can_i_use_wireshark_commercially">Can I use Wireshark commercially?</a></li>
+<li><a href="#_can_i_use_wireshark_as_part_of_my_commercial_product">Can I use Wireshark as part of my commercial product?</a></li>
+<li><a href="#_can_you_help_me_fill_out_this_compliance_form_so_that_i_can_use_wireshark">Can you help me fill out this compliance form so that I can use Wireshark?</a></li>
+<li><a href="#_can_you_sign_this_legal_agreement_so_that_i_can_use_wireshark">Can you sign this legal agreement so that I can use Wireshark?</a></li>
+<li><a href="#_what_protocols_are_currently_supported">What protocols are currently supported?</a></li>
+<li><a href="#_are_there_any_plans_to_support_your_favorite_protocol">Are there any plans to support {your favorite protocol}?</a></li>
+<li><a href="#_can_wireshark_read_capture_files_from_your_favorite_network_analyzer">Can Wireshark read capture files from {your favorite network analyzer}?</a></li>
+<li><a href="#_what_devices_can_wireshark_use_to_capture_packets">What devices can Wireshark use to capture packets?</a></li>
+<li><a href="#_does_wireshark_work_on_older_versions_of_windows_such_as_windows_7">Does Wireshark work on older versions of Windows such as Windows 7?</a></li>
+</ul>
+</li>
+<li><a href="#_installing_wireshark">Installing Wireshark</a>
+<ul class="sectlevel2">
+<li><a href="#_i_installed_the_wireshark_rpm_or_other_package_why_did_it_install_tshark_but_not_wireshark">I installed the Wireshark RPM (or other package); why did it install TShark but not Wireshark?</a></li>
+</ul>
+</li>
+<li><a href="#_building_wireshark">Building Wireshark</a>
+<ul class="sectlevel2">
+<li><a href="#_why_does_building_wireshark_fail_due_to_missing_headers_h_files">Why does building Wireshark fail due to missing headers (.h files)?</a></li>
+</ul>
+</li>
+<li><a href="#_crashes_and_other_fatal_errors">Crashes and other fatal errors</a>
+<ul class="sectlevel2">
+<li><a href="#_i_have_an_xxx_network_card_on_my_machine_if_i_try_to_capture_on_it_why_does_my_machine_crash_or_reset_itself">I have an <em>XXX</em> network card on my machine; if I try to capture on it, why does my machine crash or reset itself?</a></li>
+<li><a href="#_why_does_my_machine_crash_or_reset_itself_when_i_select_start_from_the_capture_menu_or_select_preferences_from_the_edit_menu">Why does my machine crash or reset itself when I select "Start" from the "Capture" menu or select "Preferences" from the "Edit" menu?</a></li>
+</ul>
+</li>
+<li><a href="#_capturing_packets">Capturing packets</a>
+<ul class="sectlevel2">
+<li><a href="#promiscsniff">When I use Wireshark to capture packets, why do I see only packets to and from my machine, or not see all the traffic I&#8217;m expecting to see from or to the machine I&#8217;m trying to monitor?</a></li>
+<li><a href="#_when_i_capture_with_wireshark_why_cant_i_see_any_tcp_packets_other_than_packets_to_and_from_my_machine_even_though_another_analyzer_on_the_network_sees_those_packets">When I capture with Wireshark, why can&#8217;t I see any TCP packets other than packets to and from my machine, even though another analyzer on the network sees those packets?</a></li>
+<li><a href="#_why_am_i_only_seeing_arp_packets_when_i_try_to_capture_traffic">Why am I only seeing ARP packets when I try to capture traffic?</a></li>
+<li><a href="#_why_am_i_not_seeing_any_traffic_when_i_try_to_capture_traffic">Why am I not seeing any traffic when I try to capture traffic?</a></li>
+<li><a href="#_how_do_i_put_an_interface_into_promiscuous_mode">How do I put an interface into promiscuous mode?</a></li>
+<li><a href="#_i_can_set_a_display_filter_just_fine_why_dont_capture_filters_work">I can set a display filter just fine; why don&#8217;t capture filters work?</a></li>
+<li><a href="#_how_can_i_capture_packets_with_crc_errors">How can I capture packets with CRC errors?</a></li>
+<li><a href="#_how_can_i_capture_entire_frames_including_the_fcs">How can I capture entire frames, including the FCS?</a></li>
+<li><a href="#_im_capturing_packets_on_a_machine_on_a_vlan_why_dont_the_packets_im_capturing_have_vlan_tags">I&#8217;m capturing packets on a machine on a VLAN; why don&#8217;t the packets I&#8217;m capturing have VLAN tags?</a></li>
+<li><a href="#_why_does_wireshark_hang_after_i_stop_a_capture">Why does Wireshark hang after I stop a capture?</a></li>
+</ul>
+</li>
+<li><a href="#_capturing_packets_on_windows">Capturing packets on Windows</a>
+<ul class="sectlevel2">
+<li><a href="#capprobwin">I&#8217;m running Wireshark on Windows; why does some network interface on my machine not show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start", and/or why does Wireshark give me an error if I try to capture on that interface?</a></li>
+<li><a href="#_im_running_wireshark_on_windows_why_do_no_network_interfaces_show_up_in_the_list_of_interfaces_in_the_interface_field_in_the_dialog_box_popped_up_by_capturestart">I&#8217;m running Wireshark on Windows; why do no network interfaces show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start"?</a></li>
+<li><a href="#_im_running_wireshark_on_windows_why_am_i_not_seeing_any_traffic_being_sent_by_the_machine_running_wireshark">I&#8217;m running Wireshark on Windows; why am I not seeing any traffic being sent by the machine running Wireshark?</a></li>
+<li><a href="#_when_i_capture_on_windows_in_promiscuous_mode_i_can_see_packets_other_than_those_sent_to_or_from_my_machine_however_those_packets_show_up_with_a_short_frame_indication_unlike_packets_to_or_from_my_machine_what_should_i_do_to_arrange_that_i_see_those_packets_in_their_entirety">When I capture on Windows in promiscuous mode, I can see packets other than those sent to or from my machine; however, those packets show up with a "Short Frame" indication, unlike packets to or from my machine. What should I do to arrange that I see those packets in their entirety?</a></li>
+<li><a href="#_im_trying_to_capture_802_11_traffic_on_windows_why_am_i_not_seeing_any_packets">I&#8217;m trying to capture 802.11 traffic on Windows; why am I not seeing any packets?</a></li>
+<li><a href="#_im_trying_to_capture_802_11_traffic_on_windows_why_am_i_seeing_packets_received_by_the_machine_on_which_im_capturing_traffic_but_not_packets_sent_by_that_machine">I&#8217;m trying to capture 802.11 traffic on Windows; why am I seeing packets received by the machine on which I&#8217;m capturing traffic, but not packets sent by that machine?</a></li>
+<li><a href="#_im_trying_to_capture_ethernet_vlan_traffic_on_windows_and_im_capturing_on_a_raw_ethernet_device_rather_than_a_vlan_interface_so_that_i_can_see_the_vlan_headers_why_am_i_seeing_packets_received_by_the_machine_on_which_im_capturing_traffic_but_not_packets_sent_by_that_machine">I&#8217;m trying to capture Ethernet VLAN traffic on Windows, and I&#8217;m capturing on a "raw" Ethernet device rather than a "VLAN interface", so that I can see the VLAN headers; why am I seeing packets received by the machine on which I&#8217;m capturing traffic, but not packets sent by that machine?</a></li>
+</ul>
+</li>
+<li><a href="#_capturing_packets_on_unxes">Capturing packets on UN*Xes</a>
+<ul class="sectlevel2">
+<li><a href="#capprobunix">I&#8217;m running Wireshark on a UNIX-flavored OS; why does some network interface on my machine not show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start", and/or why does Wireshark give me an error if I try to capture on that interface?</a></li>
+<li><a href="#_im_running_wireshark_on_a_unix_flavored_os_why_do_no_network_interfaces_show_up_in_the_list_of_interfaces_in_the_interface_field_in_the_dialog_box_popped_up_by_capturestart">I&#8217;m running Wireshark on a UNIX-flavored OS; why do no network interfaces show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start"?</a></li>
+<li><a href="#_im_capturing_packets_on_linux_why_do_the_time_stamps_have_only_100ms_resolution_rather_than_1us_resolution">I&#8217;m capturing packets on Linux; why do the time stamps have only 100ms resolution, rather than 1us resolution?</a></li>
+</ul>
+</li>
+<li><a href="#_capturing_packets_on_wireless_lans">Capturing packets on wireless LANs</a>
+<ul class="sectlevel2">
+<li><a href="#_how_can_i_capture_raw_802_11_frames_including_non_data_management_beacon_frames">How can I capture raw 802.11 frames, including non-data (management, beacon) frames?</a></li>
+<li><a href="#_how_do_i_capture_on_an_802_11_device_in_monitor_mode">How do I capture on an 802.11 device in monitor mode?</a></li>
+</ul>
+</li>
+<li><a href="#_viewing_traffic">Viewing traffic</a>
+<ul class="sectlevel2">
+<li><a href="#_why_am_i_seeing_lots_of_packets_with_incorrect_tcp_checksums">Why am I seeing lots of packets with incorrect TCP checksums?</a></li>
+<li><a href="#_ive_just_installed_wireshark_and_the_traffic_on_my_local_lan_is_boring_where_can_i_find_more_interesting_captures">I&#8217;ve just installed Wireshark, and the traffic on my local LAN is boring. Where can I find more interesting captures?</a></li>
+<li><a href="#_why_doesnt_wireshark_correctly_identify_rtp_packets_it_shows_them_only_as_udp">Why doesn&#8217;t Wireshark correctly identify RTP packets? It shows them only as UDP.</a></li>
+<li><a href="#_why_doesnt_wireshark_show_yahoo_messenger_packets_in_captures_that_contain_yahoo_messenger_traffic">Why doesn&#8217;t Wireshark show Yahoo Messenger packets in captures that contain Yahoo Messenger traffic?</a></li>
+</ul>
+</li>
+<li><a href="#_filtering_traffic">Filtering traffic</a>
+<ul class="sectlevel2">
+<li><a href="#_i_saved_a_filter_and_tried_to_use_its_name_to_filter_the_display_why_do_i_get_an_unexpected_end_of_filter_string_error">I saved a filter and tried to use its name to filter the display; why do I get an "Unexpected end of filter string" error?</a></li>
+<li><a href="#_how_can_i_search_for_or_filter_packets_that_have_a_particular_string_anywhere_in_them">How can I search for, or filter, packets that have a particular string anywhere in them?</a></li>
+<li><a href="#_how_do_i_filter_a_capture_to_see_traffic_for_virus_xxx">How do I filter a capture to see traffic for virus XXX?</a></li>
+</ul>
+</li>
+<li><a href="#_questions_which_are_still_notable_even_though_they_arent_asked_much_any_more">Questions Which Are Still Notable Even Though They Aren’t Asked Much Any More</a>
+<ul class="sectlevel2">
+<li><a href="#_whats_up_with_the_name_change_is_wireshark_a_fork">What&#8217;s up with the name change? Is Wireshark a fork?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_general_questions">General Questions</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_what_is_wireshark">What is Wireshark?</h3>
+<div class="paragraph">
+<p>Wireshark® is a network protocol analyzer. It lets you capture and
+interactively browse the traffic running on a computer network. It has a
+rich and powerful feature set and is world&#8217;s most popular tool of its
+kind. It runs on most computing platforms including Windows, macOS,
+Linux, and UNIX. Network professionals, security experts, developers,
+and educators around the world use it regularly. It is freely available
+as open source, and is released under the GNU General Public License
+version 2.</p>
+</div>
+<div class="paragraph">
+<p>It is developed and maintained by a global team of protocol experts,
+and it is an example of a
+<a href="https://en.wikipedia.org/wiki/Disruptive_technology">disruptive
+technology</a>.</p>
+</div>
+<div class="paragraph">
+<p>Wireshark used to be known as Ethereal®. See the next question for
+details about the name change. If you&#8217;re still using Ethereal, it is
+strongly recommended that you upgrade to Wireshark as Ethereal is
+unsupported and has known security vulnerabilities.</p>
+</div>
+<div class="paragraph">
+<p>For more information, please see the
+<a href="https://www.wireshark.org/about.html">About Wireshark</a> page.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="wheretogethelp">Where can I get help?</h3>
+<div class="paragraph">
+<p>Community support is available on the
+<a href="https://ask.wireshark.org/">Q&amp;A site</a>
+and on the wireshark-users mailing list.
+Subscription information and archives for all of Wireshark&#8217;s mailing lists can be found at
+<a href="https://www.wireshark.org/mailman/listinfo">https://www.wireshark.org/mailman/listinfo</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_kind_of_shark_is_wireshark">What kind of shark is Wireshark?</h3>
+<div class="paragraph">
+<p><em>carcharodon photoshopia</em>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_is_wireshark_pronounced_spelled_and_capitalized">How is Wireshark pronounced, spelled and capitalized?</h3>
+<div class="paragraph">
+<p>Wireshark is pronounced as the word <em>wire</em> followed immediately by
+the word <em>shark</em>. Exact pronunciation and emphasis may vary depending on
+your locale (e.g. Arkansas).</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s spelled with a capital <em>W</em>, followed by a lower-case <em>ireshark</em>.
+It is not a CamelCase word, i.e., <em>WireShark</em> is incorrect.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_much_does_wireshark_cost">How much does Wireshark cost?</h3>
+<div class="paragraph">
+<p>Wireshark is "free software"; you can download it without paying any
+license fee. The version of Wireshark you download isn&#8217;t a "demo"
+version, with limitations not present in a "full" version; it <em>is</em> the
+full version.</p>
+</div>
+<div class="paragraph">
+<p>The license under which Wireshark is issued is
+<a href="https://www.gnu.org/licenses/gpl-2.0.html">the GNU General Public License
+version 2</a>. See
+<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0-faq.html">the GNU GPL
+FAQ</a> for some more information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_but_i_just_paid_someone_on_ebay_for_a_copy_of_wireshark_did_i_get_ripped_off">But I just paid someone on eBay for a copy of Wireshark! Did I get ripped off?</h3>
+<div class="paragraph">
+<p>That depends. Did they provide any sort of value-added product or
+service, such as installation support, installation media, training,
+trace file analysis, or funky-colored shark-themed socks? Probably not.</p>
+</div>
+<div class="paragraph">
+<p>Wireshark is <a href="https://www.wireshark.org/download.html">available for
+anyone to download, absolutely free, at any time</a>. Paying for a copy
+implies that you should get something for your money.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_can_i_use_wireshark_commercially">Can I use Wireshark commercially?</h3>
+<div class="paragraph">
+<p>Yes, if, for example, you mean "I work for a commercial organization;
+can I use Wireshark to capture and analyze network traffic in our
+company&#8217;s networks or in our customer&#8217;s networks?"</p>
+</div>
+<div class="paragraph">
+<p>If you mean "Can I use Wireshark as part of my commercial product?",
+see <a href="#derived_work_gpl">the next entry in the FAQ</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_can_i_use_wireshark_as_part_of_my_commercial_product">Can I use Wireshark as part of my commercial product?</h3>
+<div class="paragraph">
+<p>As noted, Wireshark is licensed under
+<a href="https://www.gnu.org/licenses/gpl-2.0.html">the GNU General Public
+License, version 2</a>. The GPL imposes conditions on your use of GPL&#8217;ed
+code in your own products; you cannot, for example, make a "derived
+work" from Wireshark, by making modifications to it, and then sell the
+resulting derived work and not allow recipients to give away the
+resulting work. You must also make the changes you&#8217;ve made to the
+Wireshark source available to all recipients of your modified version;
+those changes must also be licensed under the terms of the GPL. See the
+<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0-faq.html">GPL FAQ</a> for
+more details; in particular, note the answer to
+<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0-faq.html#GPLCommercially">the
+question about modifying a GPLed program and selling it commercially</a>,
+and
+<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0-faq.html#LinkingWithGPL">the
+question about linking GPLed code with other code to make a proprietary
+program</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can combine a GPLed program such as Wireshark and a commercial
+program as long as they communicate "at arm&#8217;s length", as per
+<a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0-faq.html#GPLInProprietarySystem">this
+item in the GPL FAQ</a>.</p>
+</div>
+<div class="paragraph">
+<p>We recommend keeping Wireshark and your product completely separate,
+communicating over sockets or pipes. If you&#8217;re loading any part of
+Wireshark as a DLL, you&#8217;re probably doing it wrong.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_can_you_help_me_fill_out_this_compliance_form_so_that_i_can_use_wireshark">Can you help me fill out this compliance form so that I can use Wireshark?</h3>
+<div class="paragraph">
+<p>If you need help filling out individual items in the form, you’re certainly free to <a href="#wheretogethelp">ask the community</a> for help.
+If you want someone within the project to fill out the form for you, we simply can’t help you.
+Wireshark is developed by a team of volunteers, and while we try to make sure that it’s as easy as possible to obtain and use, filling out a form would mean taking precious time away from other aspects of the project.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_can_you_sign_this_legal_agreement_so_that_i_can_use_wireshark">Can you sign this legal agreement so that I can use Wireshark?</h3>
+<div class="paragraph">
+<p>Probably not.
+As with the previous question, we really do want you to be able to use Wireshark.
+However, while we&#8217;ve been fortunate enough to have developers, educators, and networking experts volunteer their time, so far we haven&#8217;t had any attorneys volunteer to review contracts for us pro bono.
+Asking us to sign a contract is asking us to spend time reviewing that contract and/or paying for an attorney to do so that you can use Wireshark for free.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_protocols_are_currently_supported">What protocols are currently supported?</h3>
+<div class="paragraph">
+<p>There are currently hundreds of supported protocols and media.
+Details can be found in the
+<a href="https://www.wireshark.org/docs/man-pages/wireshark.html">wireshark(1)</a>
+man page.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_are_there_any_plans_to_support_your_favorite_protocol">Are there any plans to support {your favorite protocol}?</h3>
+<div class="paragraph">
+<p>Support for particular protocols is added to Wireshark as a result of
+people contributing that support; no formal plans for adding support for
+particular protocols in particular future releases exist.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_can_wireshark_read_capture_files_from_your_favorite_network_analyzer">Can Wireshark read capture files from {your favorite network analyzer}?</h3>
+<div class="paragraph">
+<p>Support for particular capture file formats is added to Wireshark as
+a result of people contributing that support; no formal plans for adding
+support for particular capture file formats in particular future
+releases exist.</p>
+</div>
+<div class="paragraph">
+<p>If a network analyzer writes out files in a format already supported by
+Wireshark (e.g., in libpcap format), Wireshark may already be able to
+read them, unless the analyzer has added its own proprietary extensions
+to that format.</p>
+</div>
+<div class="paragraph">
+<p>If a network analyzer writes out files in its own format, or has added
+proprietary extensions to another format, in order to make Wireshark
+read captures from that network analyzer, we would either have to have a
+specification for the file format, or the extensions, sufficient to give
+us enough information to read the parts of the file relevant to
+Wireshark, or would need at least one capture file in that format <strong>AND</strong>
+a detailed textual analysis of the packets in that capture file (showing
+packet time stamps, packet lengths, and the top-level packet header) in
+order to reverse-engineer the file format.</p>
+</div>
+<div class="paragraph">
+<p>Note that there is no guarantee that we will be able to
+reverse-engineer a capture file format.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_what_devices_can_wireshark_use_to_capture_packets">What devices can Wireshark use to capture packets?</h3>
+<div class="paragraph">
+<p>Wireshark can read live data from Ethernet, Token-Ring, FDDI, serial
+(PPP and SLIP) (if the OS on which it&#8217;s running allows Wireshark to do
+so), 802.11 wireless LAN (if the OS on which it&#8217;s running allows
+Wireshark to do so), ATM connections (if the OS on which it&#8217;s running
+allows Wireshark to do so), and the "any" device supported on Linux by
+recent versions of libpcap.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://gitlab.com/wireshark/wireshark/-/wikis/CaptureSetup/NetworkMedia">the list of
+supported capture media on various OSes</a> for details (several items in
+there say "Unknown", which doesn&#8217;t mean "Wireshark can&#8217;t capture on
+them", it means "we don&#8217;t know whether it can capture on them"; we
+expect that it will be able to capture on many of them, but we haven&#8217;t
+tried it ourselves - if you try one of those types and it works, please
+update the wiki page accordingly.</p>
+</div>
+<div class="paragraph">
+<p>It can also read a variety of capture file formats, including:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>pcap, used by libpcap, tcpdump and various other tools</p>
+</li>
+<li>
+<p>Oracle (previously Sun) snoop and atmsnoop captures</p>
+</li>
+<li>
+<p>Finisar (previously Shomiti) Surveyor captures</p>
+</li>
+<li>
+<p>Microsoft Network Monitor captures</p>
+</li>
+<li>
+<p>Novell LANalyzer captures</p>
+</li>
+<li>
+<p>AIX&#8217;s iptrace captures</p>
+</li>
+<li>
+<p>Cinco Networks NetXRay captures</p>
+</li>
+<li>
+<p>NETSCOUT (previously Network Associates/Network General) Windows-based
+Sniffer captures</p>
+</li>
+<li>
+<p>Network General/Network Associates DOS-based Sniffer captures
+(compressed or uncompressed)</p>
+</li>
+<li>
+<p>LiveAction (previously WildPackets/Savvius) *Peek/EtherHelp/Packet Grabber
+captures</p>
+</li>
+<li>
+<p>RADCOM&#8217;s WAN/LAN analyzer captures</p>
+</li>
+<li>
+<p>Viavi (previously Network Instruments) Observer captures</p>
+</li>
+<li>
+<p>Lucent/Ascend router debug output</p>
+</li>
+<li>
+<p>Toshiba&#8217;s ISDN routers dump output</p>
+</li>
+<li>
+<p>captures from HP-UX nettl</p>
+</li>
+<li>
+<p>the output from i4btrace from the ISDN4BSD project</p>
+</li>
+<li>
+<p>traces from the EyeSDN USB S0</p>
+</li>
+<li>
+<p>the IPLog format output from the Cisco Secure Intrusion Detection System</p>
+</li>
+<li>
+<p>pppd logs (pppdump format)</p>
+</li>
+<li>
+<p>the text output from VMS&#8217;s TCPIPtrace/TCPtrace/UCX$TRACE utilities</p>
+</li>
+<li>
+<p>the text output from the DBS Etherwatch VMS utility</p>
+</li>
+<li>
+<p>Visual Networks' Visual UpTime traffic capture</p>
+</li>
+<li>
+<p>the output from CoSine L2 debug</p>
+</li>
+<li>
+<p>the output from InfoVista (formerly Accellent) 5Views LAN agents</p>
+</li>
+<li>
+<p>Endace Measurement Systems' ERF format captures</p>
+</li>
+<li>
+<p>Linux Bluez Bluetooth stack hcidump -w traces</p>
+</li>
+<li>
+<p>Catapult DCT2000 .out files</p>
+</li>
+<li>
+<p>Gammu generated text output from Nokia DCT3 phones in Netmonitor mode</p>
+</li>
+<li>
+<p>IBM Series (OS/400) Comm traces (ASCII &amp; UNICODE)</p>
+</li>
+<li>
+<p>Juniper Netscreen snoop files</p>
+</li>
+<li>
+<p>Symbian OS btsnoop files</p>
+</li>
+<li>
+<p>TamoSoft CommView files</p>
+</li>
+<li>
+<p>Tektronix K12xx 32bit .rf5 format files</p>
+</li>
+<li>
+<p>Tektronix K12 text file format captures</p>
+</li>
+<li>
+<p>Apple PacketLogger files</p>
+</li>
+<li>
+<p>Files from Aethra Telecommunications' PC108 software for their test
+instruments</p>
+</li>
+<li>
+<p>Citrix NetScaler Trace files</p>
+</li>
+<li>
+<p>Android Logcat binary and text format logs</p>
+</li>
+<li>
+<p>Colasoft Capsa and Packet Builder captures</p>
+</li>
+<li>
+<p>Micropross mplog files</p>
+</li>
+<li>
+<p>Unigraf DPA-400 DisplayPort AUX channel monitor traces</p>
+</li>
+<li>
+<p>802.15.4 traces from Daintree&#8217;s Sensor Network Analyzer</p>
+</li>
+<li>
+<p>MPEG-2 Transport Streams as defined in ISO/IEC 13818-1</p>
+</li>
+<li>
+<p>Log files from the <em>candump</em> utility</p>
+</li>
+<li>
+<p>Logs from the BUSMASTER tool</p>
+</li>
+<li>
+<p>Ixia IxVeriWave raw captures</p>
+</li>
+<li>
+<p>Rabbit Labs CAM Inspector files</p>
+</li>
+<li>
+<p>systemd journal files</p>
+</li>
+<li>
+<p>3GPP TS 32.423 trace files</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>so that it can read traces from various network types, as captured by
+other applications or equipment, even if it cannot itself capture on
+those network types.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_does_wireshark_work_on_older_versions_of_windows_such_as_windows_7">Does Wireshark work on older versions of Windows such as Windows 7?</h3>
+<div class="paragraph">
+<p>Each major release branch of Wireshark supports the versions of Windows that are within their product lifecycle at the time of the “.0” release for that branch.
+For example, Wireshark 3.2.0 was released in December 2019, shortly before Windows 7 reached the end of its extended support in January 2020. As a result, each of the Wireshark 3.2.<em>x</em> releases supports Windows 7, even after January 2020.
+See the
+<a href="https://www.wireshark.org/docs/wsug_html_chunked/ChIntroPlatforms.html">Microsoft Windows section of the User’s Guide</a>
+and the
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis/Development/LifeCycle">End Of Life Planning section of the Release Life Cycle wiki page</a>
+for more details.</p>
+</div>
+<div class="paragraph">
+<p>Npcap might not work well on Windows 8 and earlier, so you might want to install WinPcap instead.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_wireshark">Installing Wireshark</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_i_installed_the_wireshark_rpm_or_other_package_why_did_it_install_tshark_but_not_wireshark">I installed the Wireshark RPM (or other package); why did it install TShark but not Wireshark?</h3>
+<div class="paragraph">
+<p>Many distributions have separate Wireshark packages, one for non-GUI
+components such as TShark, editcap, dumpcap, etc. and one for the GUI.
+If this is the case on your system, there&#8217;s probably a separate package
+named “wireshark-qt”. Find it and install it.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_wireshark">Building Wireshark</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_why_does_building_wireshark_fail_due_to_missing_headers_h_files">Why does building Wireshark fail due to missing headers (.h files)?</h3>
+<div class="paragraph">
+<p>If this is happening on Linux, it&#8217;s likely due to missing development library packages.
+For example, Debian and Ubuntu ship the GLib library in the libglib2.0-0 package, but ship its header files and other development assets in the libglib2.0-dev package.</p>
+</div>
+<div class="paragraph">
+<p>We maintain setup scripts (<em>*-setup.sh</em>) for many major distributions in the <em>tools</em> directory of the Wireshark sources that can install the required development packages for you.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_crashes_and_other_fatal_errors">Crashes and other fatal errors</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_i_have_an_xxx_network_card_on_my_machine_if_i_try_to_capture_on_it_why_does_my_machine_crash_or_reset_itself">I have an <em>XXX</em> network card on my machine; if I try to capture on it, why does my machine crash or reset itself?</h3>
+<div class="paragraph">
+<p>This is almost certainly a problem with one or more of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using;</p>
+</li>
+<li>
+<p>the device driver for the interface you&#8217;re using;</p>
+</li>
+<li>
+<p>the libpcap/Npcap library and, if this is Windows, the Npcap device
+driver;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>so:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>if you are using Windows, see <a href="https://npcap.com/">the Npcap support page</a> - check the "Patches, Bug Reports, Questions, Suggestions,
+etc" section;</p>
+</li>
+<li>
+<p>if you are using some Linux distribution, some version of BSD, or some
+other UNIX-flavored OS, you should report the problem to the company or
+organization that produces the OS (in the case of a Linux distribution,
+report the problem to whoever produces the distribution).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_does_my_machine_crash_or_reset_itself_when_i_select_start_from_the_capture_menu_or_select_preferences_from_the_edit_menu">Why does my machine crash or reset itself when I select "Start" from the "Capture" menu or select "Preferences" from the "Edit" menu?</h3>
+<div class="paragraph">
+<p>Both of those operations cause Wireshark to try to build a list of
+the interfaces that it can open; it does so by getting a list of
+interfaces and trying to open them. There is probably an OS, driver, or,
+for Windows, Npcap bug that causes the system to crash when this
+happens; see the previous question.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_capturing_packets">Capturing packets</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="promiscsniff">When I use Wireshark to capture packets, why do I see only packets to and from my machine, or not see all the traffic I&#8217;m expecting to see from or to the machine I&#8217;m trying to monitor?</h3>
+<div class="paragraph">
+<p>This might be because the interface on which you&#8217;re capturing is
+plugged into an Ethernet or Token Ring switch; on a switched network,
+unicast traffic between two ports will not necessarily appear on other
+ports - only broadcast and multicast traffic will be sent to all ports.</p>
+</div>
+<div class="paragraph">
+<p>Note that even if your machine is plugged into a hub, the "hub" may be
+a switched hub, in which case you&#8217;re still on a switched network.</p>
+</div>
+<div class="paragraph">
+<p>Note also that on the Linksys Web site, they say that their
+auto-sensing hubs "broadcast the 10Mb packets to the port that operate
+at 10Mb only and broadcast the 100Mb packets to the ports that operate
+at 100Mb only", which would indicate that if you sniff on a 10Mb port,
+you will not see traffic coming sent to a 100Mb port, and <em>vice versa</em>.
+This problem has also been reported for Netgear dual-speed hubs, and may
+exist for other "auto-sensing" or "dual-speed" hubs.</p>
+</div>
+<div class="paragraph">
+<p>Some switches have the ability to replicate all traffic on all ports to
+a single port so that you can plug your analyzer into that single port
+to sniff all traffic. You would have to check the documentation for the
+switch to see if this is possible and, if so, to see how to do this. See
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis/SwitchReference">the switch reference page</a> on
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis">the Wireshark Wiki</a> for information on some
+switches. (Note that it&#8217;s a Wiki, so you can update or fix that
+information, or add additional information on those switches or
+information on new switches, yourself.)</p>
+</div>
+<div class="paragraph">
+<p>Note also that many firewall/NAT boxes have a switch built into them;
+this includes many of the "cable/DSL router" boxes. If you have a box of
+that sort, that has a switch with some number of Ethernet ports into
+which you plug machines on your network, and another Ethernet port used
+to connect to a cable or DSL modem, you can, at least, sniff traffic
+between the machines on your network and the Internet by plugging the
+Ethernet port on the router going to the modem, the Ethernet port on the
+modem, and the machine on which you&#8217;re running Wireshark into a hub
+(make sure it&#8217;s not a switching hub, and that, if it&#8217;s a dual-speed hub,
+all three of those ports are running at the same speed.</p>
+</div>
+<div class="paragraph">
+<p>If your machine is <em>not</em> plugged into a switched network or a
+dual-speed hub, or it is plugged into a switched network but the port is
+set up to have all traffic replicated to it, the problem might be that
+the network interface on which you&#8217;re capturing doesn&#8217;t support
+"promiscuous" mode, or because your OS can&#8217;t put the interface into
+promiscuous mode. Normally, network interfaces supply to the host only:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>packets sent to one of that host&#8217;s link-layer addresses;</p>
+</li>
+<li>
+<p>broadcast packets;</p>
+</li>
+<li>
+<p>multicast packets sent to a multicast address that the host has
+configured the interface to accept.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Most network interfaces can also be put in "promiscuous" mode, in which
+they supply to the host all network packets they see. Wireshark will try
+to put the interface on which it&#8217;s capturing into promiscuous mode
+unless the "Capture packets in promiscuous mode" option is turned off in
+the "Capture Options" dialog box, and TShark will try to put the
+interface on which it&#8217;s capturing into promiscuous mode unless the <code>-p</code>
+option was specified. However, some network interfaces don&#8217;t support
+promiscuous mode, and some OSes might not allow interfaces to be put
+into promiscuous mode.</p>
+</div>
+<div class="paragraph">
+<p>If the interface is not running in promiscuous mode, it won&#8217;t see any
+traffic that isn&#8217;t intended to be seen by your machine. It <strong>will</strong> see
+broadcast packets, and multicast packets sent to a multicast MAC address
+the interface is set up to receive.</p>
+</div>
+<div class="paragraph">
+<p>You should ask the vendor of your network interface whether it supports
+promiscuous mode. If it does, you should ask whoever supplied the driver
+for the interface (the vendor, or the supplier of the OS you&#8217;re running
+on your machine) whether it supports promiscuous mode with that network
+interface.</p>
+</div>
+<div class="paragraph">
+<p>In the case of wireless LAN interfaces, it appears that, when those
+interfaces are promiscuously sniffing, they&#8217;re running in a
+significantly different mode from the mode that they run in when they&#8217;re
+just acting as network interfaces (to the extent that it would be a
+significant effort for those drivers to support for promiscuously
+sniffing <em>and</em> acting as regular network interfaces at the same time),
+so it may be that Windows drivers for those interfaces don&#8217;t support
+promiscuous mode.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_when_i_capture_with_wireshark_why_cant_i_see_any_tcp_packets_other_than_packets_to_and_from_my_machine_even_though_another_analyzer_on_the_network_sees_those_packets">When I capture with Wireshark, why can&#8217;t I see any TCP packets other than packets to and from my machine, even though another analyzer on the network sees those packets?</h3>
+<div class="paragraph">
+<p>You&#8217;re probably not seeing <em>any</em> packets other than unicast packets
+to or from your machine, and broadcast and multicast packets; a switch
+will normally send to a port only unicast traffic sent to the MAC
+address for the interface on that port, and broadcast and multicast
+traffic - it won&#8217;t send to that port unicast traffic sent to a MAC
+address for some other interface - and a network interface not in
+promiscuous mode will receive only unicast traffic sent to the MAC
+address for that interface, broadcast traffic, and multicast traffic
+sent to a multicast MAC address the interface is set up to receive.</p>
+</div>
+<div class="paragraph">
+<p>TCP doesn&#8217;t use broadcast or multicast, so you will only see your own
+TCP traffic, but UDP services may use broadcast or multicast so you&#8217;ll
+see some UDP traffic - however, this is not a problem with TCP traffic,
+it&#8217;s a problem with unicast traffic, as you also won&#8217;t see all UDP
+traffic between other machines.</p>
+</div>
+<div class="paragraph">
+<p>I.e., this is probably <a href="#promiscsniff">the same question as this
+earlier one</a>; see the response to that question.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_am_i_only_seeing_arp_packets_when_i_try_to_capture_traffic">Why am I only seeing ARP packets when I try to capture traffic?</h3>
+<div class="paragraph">
+<p>You&#8217;re probably on a switched network, and running Wireshark on a
+machine that&#8217;s not sending traffic to the switch and not being sent any
+traffic from other machines on the switch. ARP packets are often
+broadcast packets, which are sent to all switch ports.</p>
+</div>
+<div class="paragraph">
+<p>I.e., this is probably <a href="#promiscsniff">the same question as this
+earlier one</a>; see the response to that question.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_am_i_not_seeing_any_traffic_when_i_try_to_capture_traffic">Why am I not seeing any traffic when I try to capture traffic?</h3>
+<div class="paragraph">
+<p>Is the machine running Wireshark sending out any traffic on the
+network interface on which you&#8217;re capturing, or receiving any traffic on
+that network, or is there any broadcast traffic on the network or
+multicast traffic to a multicast group to which the machine running
+Wireshark belongs?</p>
+</div>
+<div class="paragraph">
+<p>If not, this may just be a problem with promiscuous sniffing, either
+due to running on a switched network or a dual-speed hub, or due to
+problems with the interface not supporting promiscuous mode; see the
+response to <a href="#promiscsniff">this earlier question</a>.</p>
+</div>
+<div class="paragraph">
+<p>Otherwise, on Windows, see the response to <a href="#capprobwin">this
+question</a> and, on a UNIX-flavored OS, see the response to
+<a href="#capprobunix">this question</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_do_i_put_an_interface_into_promiscuous_mode">How do I put an interface into promiscuous mode?</h3>
+<div class="paragraph">
+<p>By not disabling promiscuous mode when running Wireshark or TShark.</p>
+</div>
+<div class="paragraph">
+<p>Note, however, that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the form of promiscuous mode that libpcap (the library that programs
+such as tcpdump, Wireshark, etc. use to do packet capture) turns on will
+<strong>not</strong> necessarily be shown if you run <code>ifconfig</code> on the interface on a
+UNIX system;</p>
+</li>
+<li>
+<p>some network interfaces might not support promiscuous mode, and some
+drivers might not allow promiscuous mode to be turned on - see
+<a href="#promiscsniff">this earlier question</a> for more information on that;</p>
+</li>
+<li>
+<p>the fact that you&#8217;re not seeing any traffic, or are only seeing
+broadcast traffic, or aren&#8217;t seeing any non-broadcast traffic other than
+traffic to or from the machine running Wireshark, does not mean that
+promiscuous mode isn&#8217;t on - see <a href="#promiscsniff">this earlier
+question</a> for more information on that.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>I.e., this is probably <a href="#promiscsniff">the same question as this
+earlier one</a>; see the response to that question.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_i_can_set_a_display_filter_just_fine_why_dont_capture_filters_work">I can set a display filter just fine; why don&#8217;t capture filters work?</h3>
+<div class="paragraph">
+<p>Capture filters currently use a different syntax than display
+filters. Here&#8217;s the corresponding section from the
+<a href="https://www.wireshark.org/docs/man-pages/wireshark.html">wireshark(1)</a>
+man page:</p>
+</div>
+<div class="paragraph">
+<p>"Display filters in Wireshark are very powerful; more fields are
+filterable in Wireshark than in other protocol analyzers, and the syntax
+you can use to create your filters is richer. As Wireshark progresses,
+expect more and more protocol fields to be allowed in display filters.</p>
+</div>
+<div class="paragraph">
+<p>Packet capturing is performed with the pcap library. The capture filter
+syntax follows the rules of the pcap library. This syntax is different
+from the display filter syntax."</p>
+</div>
+<div class="paragraph">
+<p>The capture filter syntax used by libpcap can be found in the
+<a href="http://www.tcpdump.org/tcpdump_man.html">tcpdump(8)</a> man page.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_can_i_capture_packets_with_crc_errors">How can I capture packets with CRC errors?</h3>
+<div class="paragraph">
+<p>Wireshark can capture only the packets that the packet capture
+library - libpcap on UNIX-flavored OSes, and the Npcap port to Windows
+of libpcap on Windows - can capture, and libpcap/Npcap can capture only
+the packets that the OS&#8217;s raw packet capture mechanism (or the Npcap
+driver, and the underlying OS networking code and network interface
+drivers, on Windows) will allow it to capture.</p>
+</div>
+<div class="paragraph">
+<p>Unless the OS always supplies packets with errors such as invalid CRCs
+to the raw packet capture mechanism, or can be configured to do so,
+invalid CRCs to the raw packet capture mechanism, Wireshark - and other
+programs that capture raw packets, such as tcpdump - cannot capture
+those packets. You will have to determine whether your OS needs to be so
+configured and, if so, can be so configured, configure it if necessary
+and possible, and make whatever changes to libpcap and the packet
+capture program you&#8217;re using are necessary, if any, to support capturing
+those packets.</p>
+</div>
+<div class="paragraph">
+<p>Most OSes probably do <strong>not</strong> support capturing packets with invalid CRCs
+on Ethernet, and probably do not support it on most other link-layer
+types. Some drivers on some OSes do support it, such as some Ethernet
+drivers on FreeBSD; in those OSes, you might always get those packets,
+or you might only get them if you capture in promiscuous mode (you&#8217;d
+have to determine which is the case).</p>
+</div>
+<div class="paragraph">
+<p>Note that libpcap does not currently supply to programs that use it an
+indication of whether the packet&#8217;s CRC was invalid (because the drivers
+themselves do not supply that information to the raw packet capture
+mechanism); therefore, Wireshark will not indicate which packets had CRC
+errors unless the FCS was captured (see the next question) and you&#8217;re
+using Wireshark 0.9.15 and later, in which case Wireshark will check the
+CRC and indicate whether it&#8217;s correct or not.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_can_i_capture_entire_frames_including_the_fcs">How can I capture entire frames, including the FCS?</h3>
+<div class="paragraph">
+<p>Wireshark can only capture data that the packet capture library -
+libpcap on UNIX-flavored OSes, and the Npcap port to Windows of libpcap
+on Windows - can capture, and libpcap/Npcap can capture only the data
+that the OS&#8217;s raw packet capture mechanism (or the Npcap driver, and the
+underlying OS networking code and network interface drivers, on Windows)
+will allow it to capture.</p>
+</div>
+<div class="paragraph">
+<p>For any particular link-layer network type, unless the OS supplies the
+FCS of a frame as part of the frame, or can be configured to do so,
+Wireshark - and other programs that capture raw packets, such as tcpdump
+- cannot capture the FCS of a frame. You will have to determine whether
+your OS needs to be so configured and, if so, can be so configured,
+configure it if necessary and possible, and make whatever changes to
+libpcap and the packet capture program you&#8217;re using are necessary, if
+any, to support capturing the FCS of a frame.</p>
+</div>
+<div class="paragraph">
+<p>Most OSes do <strong>not</strong> support capturing the FCS of a frame on Ethernet,
+and probably do not support it on most other link-layer types. Some
+drivers on some OSes do support it, such as some (all?) Ethernet drivers
+on NetBSD and possibly the driver for Apple&#8217;s gigabit Ethernet interface
+in macOS; in those OSes, you might always get the FCS, or you might only
+get the FCS if you capture in promiscuous mode (you&#8217;d have to determine
+which is the case).</p>
+</div>
+<div class="paragraph">
+<p>Versions of Wireshark prior to 0.9.15 will not treat an Ethernet FCS in
+a captured packet as an FCS. 0.9.15 and later will attempt to determine
+whether there&#8217;s an FCS at the end of the frame and, if it thinks there
+is, will display it as such, and will check whether it&#8217;s the correct
+CRC-32 value or not.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_capturing_packets_on_a_machine_on_a_vlan_why_dont_the_packets_im_capturing_have_vlan_tags">I&#8217;m capturing packets on a machine on a VLAN; why don&#8217;t the packets I&#8217;m capturing have VLAN tags?</h3>
+<div class="paragraph">
+<p>You might be capturing on what might be called a "VLAN interface" -
+the way a particular OS makes VLANs plug into the networking stack
+might, for example, be to have a network device object for the physical
+interface, which takes VLAN packets, strips off the VLAN header and
+constructs an Ethernet header, and passes that packet to an internal
+network device object for the VLAN, which then passes the packets onto
+various higher-level protocol implementations.</p>
+</div>
+<div class="paragraph">
+<p>In order to see the raw Ethernet packets, rather than "de-VLANized"
+packets, you would have to capture not on the virtual interface for the
+VLAN, but on the interface corresponding to the physical network device,
+if possible. See <a href="https://gitlab.com/wireshark/wireshark/-/wikis/CaptureSetup/VLAN">the
+Wireshark Wiki item on VLAN capturing</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_does_wireshark_hang_after_i_stop_a_capture">Why does Wireshark hang after I stop a capture?</h3>
+<div class="paragraph">
+<p>The most likely reason for this is that Wireshark is trying to look
+up an IP address in the capture to convert it to a name (so that, for
+example, it can display the name in the source address or destination
+address columns), and that lookup process is taking a very long time.</p>
+</div>
+<div class="paragraph">
+<p>Wireshark calls a routine in the OS of the machine on which it&#8217;s
+running to convert of IP addresses to the corresponding names. That
+routine probably does one or more of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a search of a system file listing IP addresses and names;</p>
+</li>
+<li>
+<p>a lookup using DNS;</p>
+</li>
+<li>
+<p>on UNIX systems, a lookup using NIS;</p>
+</li>
+<li>
+<p>on Windows systems, a NetBIOS-over-TCP query.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If a DNS server that&#8217;s used in an address lookup is not responding, the
+lookup will fail, but will only fail after a timeout while the system
+routine waits for a reply.</p>
+</div>
+<div class="paragraph">
+<p>In addition, on Windows systems, if the DNS lookup of the address
+fails, either because the server isn&#8217;t responding or because there are
+no records in the DNS that could be used to map the address to a name, a
+NetBIOS-over-TCP query will be made. That query involves sending a
+message to the NetBIOS-over-TCP name service on that machine, asking for
+the name and other information about the machine. If the machine isn&#8217;t
+running software that responds to those queries - for example, many
+non-Windows machines wouldn&#8217;t be running that software - the lookup will
+only fail after a timeout. Those timeouts can cause the lookup to take a
+long time.</p>
+</div>
+<div class="paragraph">
+<p>If you disable network address-to-name translation - for example, by
+turning off the "Enable network name resolution" option in the "Capture
+Options" dialog box for starting a network capture - the lookups of the
+address won&#8217;t be done, which may speed up the process of reading the
+capture file after the capture is stopped. You can make that setting the
+default by selecting "Preferences" from the "Edit" menu, turning off the
+"Enable network name resolution" option in the "Name resolution" options
+in the preferences dialog box, and using the "Save" button in that
+dialog box; note that this will save <em>all</em> your current preference
+settings.</p>
+</div>
+<div class="paragraph">
+<p>If Wireshark hangs when reading a capture even with network name
+resolution turned off, there might, for example, be a bug in one of
+Wireshark&#8217;s dissectors for a protocol causing it to loop infinitely. If
+you&#8217;re not running the most recent release of Wireshark, you should
+first upgrade to that release, as, if there&#8217;s a bug of that sort, it
+might&#8217;ve been fixed in a release after the one you&#8217;re running. If the
+hang occurs in the most recent release of Wireshark, the bug should be
+reported to <a href="mailto:wireshark-dev@wireshark.org">the Wireshark developers'
+mailing list</a> at <code>wireshark-dev@wireshark.org</code>.</p>
+</div>
+<div class="paragraph">
+<p>On UNIX-flavored OSes, please try to force Wireshark to dump core, by
+sending it a <code>SIGABRT</code> signal (usually signal 6) with the <code>kill</code>
+command, and then get a stack trace if you have a debugger installed. A
+stack trace can be obtained by using your debugger (<code>gdb</code> in this
+example), the Wireshark binary, and the resulting core file. Here&#8217;s an
+example of how to use the gdb command <code>backtrace</code> to do so.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ gdb wireshark core
+(gdb) backtrace
+..... prints the stack trace
+(gdb) quit
+$</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The core dump file may be named "wireshark.core" rather than "core" on
+some platforms (e.g., BSD systems).</p>
+</div>
+<div class="paragraph">
+<p>Also, if at all possible, please send a copy of the capture file that
+caused the problem. When capturing packets, Wireshark normally writes
+captured packets to a temporary file, which will probably be in <code>/tmp</code>
+or <code>/var/tmp</code> on UNIX-flavored OSes, <code>\TEMP</code> on the main system disk
+(normally <code>\Documents and Settings\`your login name
+`\Local Settings\Temp</code> on the main system disk on Windows XP and
+Server 2003, and <code>\Users\your login name\AppData\Local\Temp</code> on the main
+system disk on Windows Vista and later, so the capture file will
+probably be there. If you are capturing on a single interface, it will
+have a name of the form,
+<code>wireshark_&lt;iface&gt;_YYYYmmddHHMMSS_XXXXXX.&lt;fmt&gt;</code>, where &lt;fmt&gt; is the
+capture file format (pcap or pcapng), and &lt;iface&gt; is the actual name of
+the interface you are capturing on; otherwise, if you are capturing on
+multiple interfaces, it will have a name of the form,
+<code>wireshark_&lt;N&gt;_interfaces_YYYYmmddHHMMSS_XXXXXX.&lt;fmt&gt;</code>, where &lt;N&gt; is the
+number of simultaneous interfaces you are capturing on. Please don&#8217;t
+send a trace file greater than 1 MB when compressed; instead, make it
+available via FTP or HTTP, or say it&#8217;s available but leave it up to a
+developer to ask for it. If the trace file contains sensitive
+information (e.g., passwords), then please do not send it.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_capturing_packets_on_windows">Capturing packets on Windows</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="capprobwin">I&#8217;m running Wireshark on Windows; why does some network interface on my machine not show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start", and/or why does Wireshark give me an error if I try to capture on that interface?</h3>
+<div class="paragraph">
+<p>Wireshark relies on the Npcap library, the Npcap device driver,
+and the facilities that come with the OS on which it&#8217;s running in
+order to do captures.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, if the OS, the Npcap library, or the Npcap driver don&#8217;t
+support capturing on a particular network interface device, Wireshark
+won&#8217;t be able to capture on that device.</p>
+</div>
+<div class="paragraph">
+<p>If an interface doesn&#8217;t show up in the list of interfaces in the
+"Interface:" field, and you know the name of the interface, try entering
+that name in the "Interface:" field and capturing on that device.</p>
+</div>
+<div class="paragraph">
+<p>If the attempt to capture on it succeeds, the interface is somehow not
+being reported by the mechanism Wireshark uses to get a list of
+interfaces. Try listing the interfaces with WinDump; see
+<a href="https://www.windump.org/">the WinDump Web site</a> for information on using
+WinDump.</p>
+</div>
+<div class="paragraph">
+<p>You would run WinDump with the <code>-D</code> flag; if it lists the interface,
+please report this to
+<a href="mailto:wireshark-dev@wireshark.org">wireshark-dev@wireshark.org</a> giving
+full details of the problem, including</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using, and the version of that operating
+system;</p>
+</li>
+<li>
+<p>the type of network device you&#8217;re using;</p>
+</li>
+<li>
+<p>the output of WinDump.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If WinDump does <em>not</em> list the interface, this is almost certainly a
+problem with one or more of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using;</p>
+</li>
+<li>
+<p>the device driver for the interface you&#8217;re using;</p>
+</li>
+<li>
+<p>the Npcap library and/or the Npcap device driver;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>so first check <a href="https://npcap.com/guide/npcap-users-guide.html">the Npcap User&#8217;s Guide</a> to see if your problem is mentioned there.
+If not, then see <a href="https://npcap.com/">the main Npcap page</a> - check the "Patches, Bug Reports, Questions, Suggestions, etc" section.</p>
+</div>
+<div class="paragraph">
+<p>If you are having trouble capturing on a particular network interface,
+first try capturing on that device with WinDump; see
+<a href="https://www.windump.org/">the WinDump Web site</a> for information on using
+WinDump.</p>
+</div>
+<div class="paragraph">
+<p>If you can capture on the interface with WinDump, send mail to
+<a href="mailto:wireshark-users@wireshark.org">wireshark-users@wireshark.org</a>
+giving full details of the problem, including</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using, and the version of that operating
+system;</p>
+</li>
+<li>
+<p>the type of network device you&#8217;re using;</p>
+</li>
+<li>
+<p>the error message you get from Wireshark.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you <em>cannot</em> capture on the interface with WinDump, this is almost
+certainly a problem with one or more of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using;</p>
+</li>
+<li>
+<p>the device driver for the interface you&#8217;re using;</p>
+</li>
+<li>
+<p>the Npcap library and/or the Npcap device driver;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>so first check <a href="https://npcap.com/guide/npcap-users-guide.html">the Npcap User&#8217;s Guide</a> to see if your problem is mentioned there.
+If not, then see <a href="https://npcap.com/">the main Npcap page</a> - check the "Patches, Bug Reports, Questions, Suggestions, etc" section.</p>
+</div>
+<div class="paragraph">
+<p>You may also want to ask the
+<a href="mailto:wireshark-users@wireshark.org">wireshark-users@wireshark.org</a> and
+the <a href="mailto:dev@nmap.org">dev@nmap.org</a> mailing
+lists to see if anybody happens to know about the problem and know a
+workaround or fix for the problem. (Note that you will have to subscribe
+to that list in order to be allowed to mail to it; see
+<a href="https://npcap.com/">the Npcap support page</a> for information on the
+mailing list.) In your mail, please give full details of the problem, as
+described above, and also indicate that the problem occurs with WinDump,
+not just with Wireshark.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_running_wireshark_on_windows_why_do_no_network_interfaces_show_up_in_the_list_of_interfaces_in_the_interface_field_in_the_dialog_box_popped_up_by_capturestart">I&#8217;m running Wireshark on Windows; why do no network interfaces show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start"?</h3>
+<div class="paragraph">
+<p>This is really <a href="#capprobwin">the same question as a previous one</a>;
+see the response to that question.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_running_wireshark_on_windows_why_am_i_not_seeing_any_traffic_being_sent_by_the_machine_running_wireshark">I&#8217;m running Wireshark on Windows; why am I not seeing any traffic being sent by the machine running Wireshark?</h3>
+<div class="paragraph">
+<p>If you are running some form of VPN client software, it might be
+causing this problem; people have seen this problem when they have Check
+Point&#8217;s VPN software installed on their machine. If that&#8217;s the cause of
+the problem, you will have to remove the VPN software in order to have
+Wireshark (or any other application using Npcap) see outgoing packets;
+unfortunately, neither we nor the Npcap developers know any way to make
+Npcap and the VPN software work well together.</p>
+</div>
+<div class="paragraph">
+<p>Also, some drivers for Windows (especially some wireless network
+interface drivers) apparently do not, when running in promiscuous mode,
+arrange that outgoing packets are delivered to the software that
+requested that the interface run promiscuously; try turning promiscuous
+mode off.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_when_i_capture_on_windows_in_promiscuous_mode_i_can_see_packets_other_than_those_sent_to_or_from_my_machine_however_those_packets_show_up_with_a_short_frame_indication_unlike_packets_to_or_from_my_machine_what_should_i_do_to_arrange_that_i_see_those_packets_in_their_entirety">When I capture on Windows in promiscuous mode, I can see packets other than those sent to or from my machine; however, those packets show up with a "Short Frame" indication, unlike packets to or from my machine. What should I do to arrange that I see those packets in their entirety?</h3>
+<div class="paragraph">
+<p>In at least some cases, this appears to be the result of PGPnet
+running on the network interface on which you&#8217;re capturing; turn it off
+on that interface.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_trying_to_capture_802_11_traffic_on_windows_why_am_i_not_seeing_any_packets">I&#8217;m trying to capture 802.11 traffic on Windows; why am I not seeing any packets?</h3>
+<div class="paragraph">
+<p>You should first ensure that Npcap was installed with <a href="https://npcap.com//guide/npcap-devguide.html#npcap-feature-dot11">raw 802.11 support</a> and that monitor mode is enabled.</p>
+</div>
+<div class="paragraph">
+<p>At least some 802.11 card drivers on Windows appear not to see any
+packets if they&#8217;re running in promiscuous mode. Try turning promiscuous
+mode off; you&#8217;ll only be able to see packets sent by and received by
+your machine, not third-party traffic, and it&#8217;ll look like Ethernet
+traffic and won&#8217;t include any management or control frames, but that&#8217;s a
+limitation of the card drivers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_trying_to_capture_802_11_traffic_on_windows_why_am_i_seeing_packets_received_by_the_machine_on_which_im_capturing_traffic_but_not_packets_sent_by_that_machine">I&#8217;m trying to capture 802.11 traffic on Windows; why am I seeing packets received by the machine on which I&#8217;m capturing traffic, but not packets sent by that machine?</h3>
+<div class="paragraph">
+<p>This appears to be another problem with promiscuous mode; try turning
+it off.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_trying_to_capture_ethernet_vlan_traffic_on_windows_and_im_capturing_on_a_raw_ethernet_device_rather_than_a_vlan_interface_so_that_i_can_see_the_vlan_headers_why_am_i_seeing_packets_received_by_the_machine_on_which_im_capturing_traffic_but_not_packets_sent_by_that_machine">I&#8217;m trying to capture Ethernet VLAN traffic on Windows, and I&#8217;m capturing on a "raw" Ethernet device rather than a "VLAN interface", so that I can see the VLAN headers; why am I seeing packets received by the machine on which I&#8217;m capturing traffic, but not packets sent by that machine?</h3>
+<div class="paragraph">
+<p>The way the Windows networking code works probably means that packets
+are sent on a "VLAN interface" rather than the "raw" device, so packets
+sent by the machine will only be seen when you capture on the "VLAN
+interface". If so, you will be unable to see outgoing packets when
+capturing on the "raw" device, so you are stuck with a choice between
+seeing VLAN headers and seeing outgoing packets.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_capturing_packets_on_unxes">Capturing packets on UN*Xes</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="capprobunix">I&#8217;m running Wireshark on a UNIX-flavored OS; why does some network interface on my machine not show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start", and/or why does Wireshark give me an error if I try to capture on that interface?</h3>
+<div class="paragraph">
+<p>You may need to run Wireshark from an account with sufficient
+privileges to capture packets, such as the super-user account, or may
+need to give your account sufficient privileges to capture packets. Only
+those interfaces that Wireshark can open for capturing show up in that
+list; if you don&#8217;t have sufficient privileges to capture on any
+interfaces, no interfaces will show up in the list. See
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis/CaptureSetup/CapturePrivileges">the Wireshark
+Wiki item on capture privileges</a> for details on how to give a particular
+account or account group capture privileges on platforms where that can
+be done.</p>
+</div>
+<div class="paragraph">
+<p>If you are running Wireshark from an account with sufficient
+privileges, then note that Wireshark relies on the libpcap library, and
+on the facilities that come with the OS on which it&#8217;s running in order
+to do captures. On some OSes, those facilities aren&#8217;t present by
+default; see <a href="https://gitlab.com/wireshark/wireshark/-/wikis/CaptureSetup/CaptureSupport">the
+Wireshark Wiki item on adding capture support</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>And, even if you&#8217;re running with an account that has sufficient
+privileges to capture, and capture support is present in your OS, if the
+OS or the libpcap library don&#8217;t support capturing on a particular
+network interface device or particular types of devices, Wireshark won&#8217;t
+be able to capture on that device.</p>
+</div>
+<div class="paragraph">
+<p>On Solaris, note that libpcap 0.6.2 and earlier didn&#8217;t support Token
+Ring interfaces; the current version, 0.7.2, does support Token Ring,
+and the current version of Wireshark works with libpcap 0.7.2 and later.</p>
+</div>
+<div class="paragraph">
+<p>If an interface doesn&#8217;t show up in the list of interfaces in the
+"Interface:" field, and you know the name of the interface, try entering
+that name in the "Interface:" field and capturing on that device.</p>
+</div>
+<div class="paragraph">
+<p>If the attempt to capture on it succeeds, the interface is somehow not
+being reported by the mechanism Wireshark uses to get a list of
+interfaces; please report this to
+<a href="mailto:wireshark-dev@wireshark.org">wireshark-dev@wireshark.org</a> giving
+full details of the problem, including</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using, and the version of that operating
+system (for Linux, give both the version number of the kernel and the
+name and version number of the distribution you&#8217;re using);</p>
+</li>
+<li>
+<p>the type of network device you&#8217;re using.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you are having trouble capturing on a particular network interface,
+and you&#8217;ve made sure that (on platforms that require it) you&#8217;ve arranged
+that packet capture support is present, as per the above, first try
+capturing on that device with <code>tcpdump</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you can capture on the interface with <code>tcpdump</code>, send mail to
+<a href="mailto:wireshark-users@wireshark.org">wireshark-users@wireshark.org</a>
+giving full details of the problem, including</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using, and the version of that operating
+system (for Linux, give both the version number of the kernel and the
+name and version number of the distribution you&#8217;re using);</p>
+</li>
+<li>
+<p>the type of network device you&#8217;re using;</p>
+</li>
+<li>
+<p>the error message you get from Wireshark.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you <em>cannot</em> capture on the interface with <code>tcpdump</code>, this is almost
+certainly a problem with one or more of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the operating system you&#8217;re using;</p>
+</li>
+<li>
+<p>the device driver for the interface you&#8217;re using;</p>
+</li>
+<li>
+<p>the libpcap library;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>so you should report the problem to the company or organization that
+produces the OS (in the case of a Linux distribution, report the problem
+to whoever produces the distribution).</p>
+</div>
+<div class="paragraph">
+<p>You may also want to ask the
+<a href="mailto:wireshark-users@wireshark.org">wireshark-users@wireshark.org</a> and
+the
+<a href="mailto:tcpdump-workers@lists.tcpdump.org">tcpdump-workers@lists.tcpdump.org</a>
+mailing lists to see if anybody happens to know about the problem and
+know a workaround or fix for the problem. In your mail, please give full
+details of the problem, as described above, and also indicate that the
+problem occurs with <code>tcpdump</code> not just with Wireshark.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_running_wireshark_on_a_unix_flavored_os_why_do_no_network_interfaces_show_up_in_the_list_of_interfaces_in_the_interface_field_in_the_dialog_box_popped_up_by_capturestart">I&#8217;m running Wireshark on a UNIX-flavored OS; why do no network interfaces show up in the list of interfaces in the "Interface:" field in the dialog box popped up by "Capture&#8594;Start"?</h3>
+<div class="paragraph">
+<p>This is really <a href="#capprobunix">the same question as the previous
+one</a>; see the response to that question.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_im_capturing_packets_on_linux_why_do_the_time_stamps_have_only_100ms_resolution_rather_than_1us_resolution">I&#8217;m capturing packets on Linux; why do the time stamps have only 100ms resolution, rather than 1us resolution?</h3>
+<div class="paragraph">
+<p>Wireshark gets time stamps from libpcap/Npcap, and libpcap/Npcap get
+them from the OS kernel, so Wireshark - and any other program using
+libpcap, such as tcpdump - is at the mercy of the time stamping code in
+the OS for time stamps.</p>
+</div>
+<div class="paragraph">
+<p>At least on x86-based machines, Linux can get high-resolution time
+stamps on newer processors with the Time Stamp Counter (TSC) register;
+for example, Intel x86 processors, starting with the Pentium Pro, and
+including all x86 processors since then, have had a TSC, and other
+vendors probably added the TSC at some point to their families of x86
+processors. The Linux kernel must be configured with the CONFIG_X86_TSC
+option enabled in order to use the TSC. Make sure this option is enabled
+in your kernel.</p>
+</div>
+<div class="paragraph">
+<p>In addition, some Linux distributions may have bugs in their versions
+of the kernel that cause packets not to be given high-resolution time
+stamps even if the TSC is enabled. See, for example, bug 61111 for Red
+Hat Linux 7.2. If your distribution has a bug such as this, you may have
+to run a standard kernel from kernel.org in order to get high-resolution
+time stamps.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_capturing_packets_on_wireless_lans">Capturing packets on wireless LANs</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_how_can_i_capture_raw_802_11_frames_including_non_data_management_beacon_frames">How can I capture raw 802.11 frames, including non-data (management, beacon) frames?</h3>
+<div class="paragraph">
+<p>That depends on the operating system on which you&#8217;re running, and on
+the 802.11 interface on which you&#8217;re capturing.</p>
+</div>
+<div class="paragraph">
+<p>This would probably require that you capture in promiscuous mode or in
+the mode called "monitor mode" or "RFMON mode". On some platforms, or
+with some cards, this might require that you capture in monitor mode -
+promiscuous mode might not be sufficient. If you want to capture traffic
+on networks other than the one with which you&#8217;re associated, you will
+have to capture in monitor mode.</p>
+</div>
+<div class="paragraph">
+<p>Not all operating systems support capturing non-data packets and, even
+on operating systems that do support it, not all drivers, and thus not
+all interfaces, support it. Even on those that do, monitor mode might
+not be supported by the operating system or by the drivers for all
+interfaces.</p>
+</div>
+<div class="paragraph">
+<p><strong>NOTE:</strong> an interface running in monitor mode will, on most if not all
+platforms, not be able to act as a regular network interface; putting it
+into monitor mode will, in effect, take your machine off of whatever
+network it&#8217;s on as long as the interface is in monitor mode, allowing it
+only to passively capture packets.</p>
+</div>
+<div class="paragraph">
+<p>This means that you should disable name resolution when capturing in
+monitor mode; otherwise, when Wireshark (or TShark, or tcpdump) tries to
+display IP addresses as host names, it will probably block for a long
+time trying to resolve the name because it will not be able to
+communicate with any DNS or NIS servers.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://gitlab.com/wireshark/wireshark/-/wikis/CaptureSetup/WLAN">the Wireshark Wiki
+item on 802.11 capturing</a> for details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_do_i_capture_on_an_802_11_device_in_monitor_mode">How do I capture on an 802.11 device in monitor mode?</h3>
+<div class="paragraph">
+<p>Whether you will be able to capture in monitor mode depends on the
+operating system, adapter, and driver you&#8217;re using. See
+<a href="#raw_80211_sniff">the previous question</a> for information on monitor
+mode, including a link to the Wireshark Wiki page that gives details on
+802.11 capturing.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_viewing_traffic">Viewing traffic</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_why_am_i_seeing_lots_of_packets_with_incorrect_tcp_checksums">Why am I seeing lots of packets with incorrect TCP checksums?</h3>
+<div class="paragraph">
+<p>If the packets that have incorrect TCP checksums are all being sent
+by the machine on which Wireshark is running, this is probably because
+the network interface on which you&#8217;re capturing does TCP checksum
+offloading. That means that the TCP checksum is added to the packet by
+the network interface, not by the OS&#8217;s TCP/IP stack; when capturing on
+an interface, packets being sent by the host on which you&#8217;re capturing
+are directly handed to the capture interface by the OS, which means that
+they are handed to the capture interface without a TCP checksum being
+added to them.</p>
+</div>
+<div class="paragraph">
+<p>The only way to prevent this from happening would be to disable TCP
+checksum offloading, but</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>that might not even be possible on some OSes;</p>
+</li>
+<li>
+<p>that could reduce networking performance significantly.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>However, you can disable the check that Wireshark does of the TCP
+checksum, so that it won&#8217;t report any packets as having TCP checksum
+errors, and so that it won&#8217;t refuse to do TCP reassembly due to a packet
+having an incorrect TCP checksum. That can be set as an Wireshark
+preference by selecting "Preferences" from the "Edit" menu, opening up
+the "Protocols" list in the left-hand pane of the "Preferences" dialog
+box, selecting "TCP", from that list, turning off the "Check the
+validity of the TCP checksum when possible" option, clicking "Save" if
+you want to save that setting in your preference file, and clicking
+"OK".</p>
+</div>
+<div class="paragraph">
+<p>It can also be set on the Wireshark or TShark command line with a
+<code>-o tcp.check_checksum:false</code> command-line flag, or manually set in your
+preferences file by adding a <code>tcp.check_checksum:false</code> line.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_ive_just_installed_wireshark_and_the_traffic_on_my_local_lan_is_boring_where_can_i_find_more_interesting_captures">I&#8217;ve just installed Wireshark, and the traffic on my local LAN is boring. Where can I find more interesting captures?</h3>
+<div class="paragraph">
+<p>We have a collection of strange and exotic sample capture files at
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis/SampleCaptures">https://gitlab.com/wireshark/wireshark/-/wikis/SampleCaptures</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_doesnt_wireshark_correctly_identify_rtp_packets_it_shows_them_only_as_udp">Why doesn&#8217;t Wireshark correctly identify RTP packets? It shows them only as UDP.</h3>
+<div class="paragraph">
+<p>Wireshark can identify a UDP datagram as containing a packet of a
+particular protocol running atop UDP only if</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The protocol in question has a particular standard port number, and
+the UDP source or destination port number is that port</p>
+</li>
+<li>
+<p>Packets of that protocol can be identified by looking for a
+"signature" of some type in the packet - i.e., some data that, if
+Wireshark finds it in some particular part of a packet, means that the
+packet is almost certainly a packet of that type.</p>
+</li>
+<li>
+<p>Some <em>other</em> traffic earlier in the capture indicated that, for
+example, UDP traffic between two particular addresses and ports will be
+RTP traffic.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>RTP doesn&#8217;t have a standard port number, so 1) doesn&#8217;t work; it doesn&#8217;t,
+as far as I know, have any "signature", so 2) doesn&#8217;t work.</p>
+</div>
+<div class="paragraph">
+<p>That leaves 3). If there&#8217;s RTSP traffic that sets up an RTP session,
+then, at least in some cases, the RTSP dissector will set things up so
+that subsequent RTP traffic will be identified. Currently, that&#8217;s the
+only place we do that; there may be other places.</p>
+</div>
+<div class="paragraph">
+<p>However, there will always be places where Wireshark is simply
+<strong>incapable</strong> of deducing that a given UDP flow is RTP; a mechanism would
+be needed to allow the user to specify that a given conversation should
+be treated as RTP. As of Wireshark 0.8.16, such a mechanism exists; if
+you select a UDP or TCP packet, the right mouse button menu will have a
+"Decode As&#8230;&#8203;" menu item, which will pop up a dialog box letting you
+specify that the source port, the destination port, or both the source
+and destination ports of the packet should be dissected as some
+particular protocol.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_why_doesnt_wireshark_show_yahoo_messenger_packets_in_captures_that_contain_yahoo_messenger_traffic">Why doesn&#8217;t Wireshark show Yahoo Messenger packets in captures that contain Yahoo Messenger traffic?</h3>
+<div class="paragraph">
+<p>Wireshark only recognizes as Yahoo Messenger traffic packets to or
+from TCP port 3050 that begin with "YPNS", "YHOO", or "YMSG". TCP
+segments that start with the middle of a Yahoo Messenger packet that
+takes more than one TCP segment will not be recognized as Yahoo
+Messenger packets (even if the TCP segment also contains the beginning
+of another Yahoo Messenger packet).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_filtering_traffic">Filtering traffic</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_i_saved_a_filter_and_tried_to_use_its_name_to_filter_the_display_why_do_i_get_an_unexpected_end_of_filter_string_error">I saved a filter and tried to use its name to filter the display; why do I get an "Unexpected end of filter string" error?</h3>
+<div class="paragraph">
+<p>You cannot use the name of a saved display filter as a filter. To
+filter the display, you can enter a display filter expression - <strong>not</strong>
+the name of a saved display filter - in the "Filter:" box at the bottom
+of the display, and type the &lt;Enter&gt; key or press the "Apply" button
+(that does not require you to have a saved filter), or, if you want to
+use a saved filter, you can press the "Filter:" button, select the
+filter in the dialog box that pops up, and press the "OK" button.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_can_i_search_for_or_filter_packets_that_have_a_particular_string_anywhere_in_them">How can I search for, or filter, packets that have a particular string anywhere in them?</h3>
+<div class="paragraph">
+<p>If you want to do this when capturing, you can&#8217;t. That&#8217;s a feature
+that would be hard to implement in capture filters without changes to
+the capture filter code, which, on many platforms, is in the OS kernel
+and, on other platforms, is in the libpcap library.</p>
+</div>
+<div class="paragraph">
+<p>After capture, you can search for text by selecting <em>Edit→Find
+Packet&#8230;&#8203;</em> and making sure <em>String</em> is selected. Alternately, you can
+use the "contains" display filter operator or "matches" operator if it&#8217;s
+supported on your system.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_do_i_filter_a_capture_to_see_traffic_for_virus_xxx">How do I filter a capture to see traffic for virus XXX?</h3>
+<div class="paragraph">
+<p>For some viruses/worms there might be a capture filter to recognize
+the virus traffic. Check the
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis/CaptureFilters">CaptureFilters</a> page on the
+<a href="https://gitlab.com/wireshark/wireshark/-/wikis">Wireshark Wiki</a> to see if anybody&#8217;s added
+such a filter.</p>
+</div>
+<div class="paragraph">
+<p>Note that Wireshark was not designed to be an intrusion detection
+system; you might be able to use it as an IDS, but in most cases
+software designed to be an IDS, such as <a href="https://www.snort.org/">Snort</a> or
+<a href="https://www.prelude-siem.org/">Prelude</a>, will probably work better.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_questions_which_are_still_notable_even_though_they_arent_asked_much_any_more">Questions Which Are Still Notable Even Though They Aren’t Asked Much Any More</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_whats_up_with_the_name_change_is_wireshark_a_fork">What&#8217;s up with the name change? Is Wireshark a fork?</h3>
+<div class="paragraph">
+<p>In May of 2006, Gerald Combs (the original author of Ethereal) went
+to work for CACE Technologies (best known for WinPcap). Unfortunately,
+he had to leave the Ethereal trademarks behind.</p>
+</div>
+<div class="paragraph">
+<p>This left the project in an awkward position. The only reasonable way
+to ensure the continued success of the project was to change the name.
+This is how Wireshark was born.</p>
+</div>
+<div class="paragraph">
+<p>Wireshark is almost (but not quite) a fork. Normally a "fork" of an
+open source project results in two names, web sites, development teams,
+support infrastructures, etc. This is the case with Wireshark except for
+one notable exception&#8201;&#8212;&#8201;every member of the core development team is
+now working on Wireshark. There has been no active development on
+Ethereal since the name change. Several parts of the Ethereal web site`
+(such as the mailing lists, source code repository, and build farm) have
+gone offline.</p>
+</div>
+<div class="paragraph">
+<p>More information on the name change can be found here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.prweb.com/releases/2006/6/prweb396098.htm">Original press
+release</a></p>
+</li>
+<li>
+<p><a href="https://www.linux.com/news/ethereal-changes-name-wireshark">NewsForge article</a></p>
+</li>
+<li>
+<p>Many other articles in <a href="https://www.wireshark.org/bibliography.html">our
+bibliography</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

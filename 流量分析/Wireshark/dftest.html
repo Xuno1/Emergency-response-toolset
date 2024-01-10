@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<title>dftest(1)</title>
+<link rel="stylesheet" href="./ws.css">
+</head>
+<body class="manpage">
+<div id="header">
+<h1>dftest(1) Manual Page</h1>
+<h2 id="_name">NAME</h2>
+<div class="sectionbody">
+<p>dftest - Shows display filter byte-code, for debugging dfilter routines.</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_synopsis">SYNOPSIS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="nowrap"><strong>dftest</strong></span>
+<span class="nowrap">[ &lt;filter&gt; ]</span></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description">DESCRIPTION</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>dftest</strong> is a simple tool which compiles a display filter and shows its bytecode.
+Please refer to doc/README.display_filter for a description of the
+DFVM (Display Filter Virtual Machine) Byte Codes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">OPTIONS</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">filter</dt>
+<dd>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The display filter expression. If needed it has to be quoted.</p>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_diagnostic_options">DIAGNOSTIC OPTIONS</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">--log-level &lt;level&gt;</dt>
+<dd>
+<p>Set the active log level.
+Supported levels in lowest to highest order are "noisy", "debug", "info", "message", "warning", "critical", and "error".
+Messages at each level and higher will be printed, for example "warning" prints "warning", "critical", and "error" messages and "noisy" prints all messages.
+Levels are case insensitive.</p>
+</dd>
+<dt class="hdlist1">--log-fatal &lt;level&gt;</dt>
+<dd>
+<p>Abort the program if any messages are logged at the specified level or higher.
+For example, "warning" aborts on any "warning", "critical", or "error" messages.</p>
+</dd>
+</dl>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">--log-domains &lt;list&gt;</dt>
+<dd>
+<p>Only print messages for the specified log domains, e.g. "GUI,Epan,sshdump".
+List of domains must be comma-separated.</p>
+</dd>
+<dt class="hdlist1">--log-debug &lt;list&gt;</dt>
+<dd>
+<p>Force the specified domains to log at the "debug" level.
+List of domains must be comma-separated.</p>
+</dd>
+<dt class="hdlist1">--log-noisy &lt;list&gt;</dt>
+<dd>
+<p>Force the specified domains to log at the "noisy" level.
+List of domains must be comma-separated.</p>
+</dd>
+<dt class="hdlist1">--log-file &lt;path&gt;</dt>
+<dd>
+<p>Write log messages and stderr output to the specified file.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples">EXAMPLES</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Show how the IP protocol is filtered:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>dftest ip</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Shows how frame 150 is filtered:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>dftest "frame.number == 150"</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also">SEE ALSO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="wireshark-filter.html">wireshark-filter</a>(4)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authors">AUTHORS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="title">Original Author</div>
+<p>Jan Šafránek</p>
+</div>
+<div class="paragraph">
+<div class="title">Contributors</div>
+<p>Jaap Keuter</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
