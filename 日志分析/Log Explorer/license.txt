@@ -1,0 +1,126 @@
+FSPRO LABS
+Event Log Explorer Standard Edition
+Event Log Explorer Forensic Edition
+Event Log Explorer Enterprise Edition
+
+
+END USER LICENSE AGREEMENT
+
+LICENSE AGREEMENT
+
+This End User License Agreement ("EULA") is a legal agreement 
+between you (either an individual or a single entity) and 
+FSPro Labs ("FSPRO") for the SOFTWARE(s) identified 
+above, which includes the User's Guide, any associated SOFTWARE 
+components, any media, any printed materials other than the User's Guide,
+and any "online" or electronic documentation. By installing, copying, 
+or otherwise using the SOFTWARE, you agree to be bound by the terms 
+of this EULA. If you do not agree to the terms of this EULA, do not 
+install or use the SOFTWARE.
+
+FSPRO and/or its licensors reserve All rights not expressly granted herein.
+
+The SOFTWARE is licensed, not sold. 
+
+The SOFTWARE is protected by copyright laws and international copyright 
+treaties, as well as other intellectual property laws and treaties. 
+
+
+1. DEFINITIONS
+
+"Event Log Explorer Viewer" ("Event Log Explorer", "Viewer")  is the 
+SOFTWARE component which provides the user with a user interface to 
+view, manage and analyze Windows event logs.
+
+"Elodea" ("Event Collector") is the SOFTWARE component intended to 
+automatically collect events from Windows event logs.
+
+"Node" means a device on a network including but not limited to
+computer running Microsoft Windows operating system, computer running
+other operating systems, networking device, virtual computer.
+
+"Personal use", "Personal user" mean the non-commercial use of the SOFTWARE 
+in your ("Personal user") home.
+
+"Licensed version" means a version of the SOFTWARE that has been licensed 
+for any use (commercial or noncommercial).
+
+"Unlicensed version" means the free version of the SOFTWARE during the 
+evaluation period.
+
+
+2. GRANT OF LICENSE
+
+2.1 Unlicensed version
+Anyone may use this software during a test period. Following this test 
+period, if you wish to continue to use this software, you must get 
+the license(s). To get the license you should pay the license fee or 
+if you fall under "Personal user" definition, get the free license for 
+Personal use. The free license is available only for Event Log Explorer 
+STANDARD EDITION software.
+
+2.2 Licensed version.
+
+a) Event Log Explorer STANDARD EDITION and FORENSIC EDITION
+The SOFTWARE is licensed on per-user basis for any use.
+You are granted to install this SOFTWARE for a number of users that 
+does not exceed the number of users for which license fees are paid.
+
+b) Event Log Explorer ENTERPRISE EDITION
+The SOFTWARE is licensed on per-user AND per-node basis. 
+You are granted to install Event Log Explorer Viewer for a number 
+of users that does not exceed the number of users for which license 
+fees are paid.
+You are granted to setup Elodea to collect events from a number of 
+nodes that does not exceed the number of nodes for which license fees 
+are paid.
+
+
+3. RESTRICTIONS
+
+You may not use, copy, emulate, clone, rent, lease, sell, modify,
+decompile, disassemble, otherwise reverse engineer, or transfer
+the licensed program, or any subset of the licensed program,
+except as provided for in this agreement.
+Any such unauthorized use shall result in immediate and automatic
+termination of this license and may result in criminal and/or civil
+prosecution.
+
+
+4. TERMINATION
+
+Without prejudice to any other rights, FSPRO may terminate this 
+EULA if you fail to comply with the terms and conditions of this
+EULA. In such event, you must destroy all copies of the SOFTWARE.
+
+
+5. NO WARRANTIES
+
+FSPRO EXPRESSLY DISCLAIMS ANY WARRANTY FOR THE SOFTWARE.
+THE SOFTWARE AND ANY RELATED DOCUMENTATION IS PROVIDED "AS IS" WITHOUT
+WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT 
+LIMITATION, THE IMPLIED WARRANTIES OR MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE, OR NON INFRINGEMENT. THE ENTIRE RISK ARISING OUT 
+OF USE OR PERFORMANCE OF THE SOFTWARE REMAINS WITH YOU.
+
+
+6. LIMITATION OF LIABILITY. NO LIABILITY FOR CONSEQUENTIAL DAMAGES
+
+IN NO EVENT SHALL FSPRO BE LIABLE TO YOU FOR ANY DAMAGES OF ANY KIND 
+ARISING OUT OF THE DELIVERY, PERFORMANCE, OR USE OF THE SOFTWARE, EVEN 
+IF FSPRO HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+IN ANY EVENT, OUR LIABILITY FOR ANY CLAIM, WHETHER IN CONTRACT, TORT, 
+OR ANY OTHER THEORY OF LIABILITY SHALL NOT EXCEED THE LICENSE FEE PAID BY YOU.
+
+
+7. SEVERABILITY
+
+If any provision or part of this EULA is held to be invalid, illegal or 
+unenforceable, the validity, legality or enforceability of the remainder 
+of this Agreement will not in any way be affected or impaired, unless 
+the invalidity, illegality or unenforceability completely nullifies 
+this EULA.
+
+
+
+--------------------------------------------------------------------------------

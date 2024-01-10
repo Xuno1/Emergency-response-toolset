@@ -1,0 +1,480 @@
+What's new in Event Log Explorer
+
+Legend: 
++ Added feature 
+* Improved/changed feature 
+- Bug fixed (we hope) 
+--------------------------- 
+
+5.2.0 (2022-Sep-14)
++ Added import computers from Active Directory (via LDAP).
++ Time correction now works with DST.
++ Added system time zones for time correction.
+* Improved browse for computers.
+* Multiple delete from the tree.
+- Filter by custom fields didn't work in some cases - fixed.
+- File didn't work correctly in some cases - fixed.
+- Fixed and improved import of computers list.
+- Fixed several minor bugs.
+[Enterprise edition]
+- Minor DB improvements in Elodea settings.
+[Scripts]
++ Added new functions.
+
+5.1.5 (2022-Jul-20)
++ Returned filter by description parameters. 
++ Added a new function in scripting.
+* Objects tree now displays events number in subfolders.
+- Fixed several minor bugs.
+[Enterprise edition]
+- Fixed Unquoted Service Path vulnerability for Elodea service.
+
+
+5.1 (2022-Jun-21)
+[Forensic edition - New!]
++ Added working with imaged disks.
++ Added forensic opening.
++ Added searching for removed events feature.
++ Added deep scan feature.
++ Added snapshot features.
++ Added scripting.
+[Enterprise edition]
++ Added scripting.
+[All editions]
+* Optimized filtering and sorting.
+* UX improvements.
+- Fixed bugs.
+
+
+5.0.9 (2022-Mar-3)
++ Filter by custom fileds - In list/not in list operators added.
+* Improved Add computers wizard
+* Removed EventID.net knowledgebase support since it doesn't work anymore.
+- Fixed incorrect event description rendering for some events.
+- Fixed several minor bugs.
+
+
+5.0.8 (2021-Dec-29)
++ Copy cell contents to clipboard added (in the log drop-down menu).
+* Improved filtering by description content.
+- Fixed incorrect event description rendering for some events.
+
+
+5.0.7 (2021-Oct-20)
++ Color coding by event description added.
++ Event description could be highlighted depending on search, filter or color-coding conditions.
+* Improved compatibility with Windows 11.
+* New task template added.
+- Fixed several bugs.
+
+5.0.6 (2021-Sep-10)
+- Fixed a bug linked with event rendering description from remote servers.
+
+5.0.5 (2021-Aug-23)
+* You can now filter in the most of popup lists, e.g. list of sources or list of logs.
+* UTC timezone option added in the Timezone dialog.
+* Added several task templates.
+- Fixed a bug with regular expression filtering.
+- Minor bugs fixed.
+
+5.0 (2021-Jul-16)
++ New entity – Task. You can form a task as a set of different event logs, files (or XML query) with your own presets – filter, display options etc.
++ Predefined task templates to perform standard administrative tasks.
++ Temporary log storage is now always on the disk.
++ Search and filter by custom columns.
++ Custom columns are now based on XML values.
++ Full UNICODE support.
++ Application windows now can be scaled (manually or automatically depending on DPI).
++ Database tables (logs) are in the tree.
++ Query Builder added to the XML query filter.
++ Added fine-tune settings to get events from the database.
+* A lot of minor improvements and options.
+* Logs in the tree are now displayed in standard hierarchy.
+* Improved performance and memory consumption.
+* Redesigned time correction option.
+* Improved diplaying on High DPI monitors.
+- Bugs fixed.
+! Support of Pre-Vista OS is discontinued (evt files are supported anyway).
+
+
+4.9.3 (2021-Feb-24)
+* Improved handling of inconsistent event details.
+- Fixed minor bugs.
+
+
+4.9.2 (2020-May-2)
++ Added merged log view properties dialog - it lets you remove a log from a merger.
++ Added description param filter by regular expression.
+* Some minor improvements.
+
+
+4.9 (2019-Nov-13)
++ Added Statistics panel option for log view.
++ Added support of new event type (level: verbose).
++ Added option to display time in UTC for new log windows.
++ Added options to display date and time in different formats.
+* Changed default storage to disk (you can switch it back to memory in Preferences).
+* Improved Eldbx utility.
+- Fixed several bugs.
+
+4.8.4 (2019-Sep-3)
++ New batch backup utility ElbackX.
+- Fixed several minor bugs.
+
+4.8.3 (2019-Aug-9)
+* Event Log Readers group now can access remote Security logs (no admin rights required).
+- Event logs are now sorted in the tree and some lists.
+- The program could fail to authenticate user names in legacy (domain\user) format. Fixed.
+
+4.8.2 (2019-May-18)
++ Added a new filed (usertag) in DB export.
+- Fixed a vulnerability which may lead to XML injection attack.
+- Color coding by type bug fixed.
+- Fixed a minor bug with event descriptions.
+
+
+4.8 (2019-Mar-18)
++ Integration with Elodea (COM server).
+* Clear log command now clears SQL table when required.
+* Improved Elback utility.
+* Improved Eldbx utility.
+- Fixed minor bugs in event filter.
+
+
+4.7 (2018-Dec-18)
++ Export to database added.
++ Reading logs from a database added.
++ Utility for unattended event log export added.
+* Improved some informational dialogs.
+- A lot of minor bugs fixed.
+
+4.6 (2017-Oct-3)
++ Merge into a new view command added (available in computer tree popup menu).
++ Refresh all event views command added.
++ Quick filter by custom columns (works with Memory data storage only).
++ New analytical report on a custom column.
+- Fixed minor bugs and some typos.
+
+4.5.4 (2016-Nov-16)
++ New smartcopy to clipboard option.
+* Showing number of selected events in status bar.
+- Some event descriptions displayed incorrectly in Windows 10/2016. Fixed.
+- Minor bugs fixed.
+
+4.5.3 (2016-Feb-12)
+- Fixed bug preventing log loading if they have invalid dates in event description
+- Minor bugs fixed
+
+4.5 (2015-Jul-23)
++ XPath queries (New API).
++ Show time in UTC.
+* Improved time correction options (1-minute resolution).
+* Improved color coding (added color code by type and source).
+* Improved credential management.
+* Minor fixes and improvements.
+- Some event descriptions displayed incorrectly (NewAPI). Fixed.
+- Fixed memory leak in event alerter.
+
+4.4  (2015-Jan-13)
++ Export custom columns.
++ Print custom columns (Up to 2 custom columns, horizontal layout).
++ Custom columns sorting (for in-memory storage only).
++ Smart event(s) copy (Excel compatible).
++ Rename computer in the tree.
++ Option to store event alerter.
+* Improved scheduled export.
+* You can pre-filter events in log loading options by source.
+* Multiple and exceptional filters in log loading options (using comma and exclamation mark).
+* No select API dialog by default - it will use New API when possible.
+- Fixed bug with layout of Filter/Search dialog.
+- Fixed serious memory leak bug (New API).
+* Minor bug fixes and improvements.
+
+4.3.7  (2014-Oct-06)
+* Minor fixes and improvements.
+
+4.3  (2014-Aug-13)
++ Added Custom columns - you can extract information from description and display it in event list.
++ Added alerts by event type.
+* NewAPI: Event description could be missing for some events. Fixed.
+* NewAPI: Event category could be miscalculated for some events. Fixed.
+* Filter window improvements.
+* Added new analytical reports.
++ Added import tree options (when you import from a text file).
++ Option to show Record number.
++ Tooltips on tabs to display helpful information.
+* Minor fixes and improvements.
+
+
+4.2 (2013-Oct-9)
++ Filtering by description params (for security logs).
+* Alerter may compare events by source (not only by source+event id).
+- Lots of UI bugs fixed.
+
+
+4.1 (2013-Apr-29)
++ Direct access to evtx files. You can now open evtx files even from Windows XP.
++ Displaying number of events in the tree (for New API only).
++ Drag and drop in the tree.
++ Event Alerter handles Event Description. (Use [Description] field).
++ Search for event in Google added.
+* Open All Logs In Merger View now works with subfolders.
+* Multiple log file open.
+- Event descriptions from Windows 2008+ servers were inaccessible sometimes - fixed.
+- Lots of minor bugs fixed.
+
+
+4.0 (2012-May-15)
++ Event Alerter.
++ Option to display only new events after refresh.
++ Option to autofit columns after load.
++ Friendly view XML view of event (for new event api only).
++ Pivot charts in analytical reports.
++ Several UI improvement options.
+* Updated visual styles.
+* Improved export options.
+- Fixed some bugs.
+
+
+3.4 beta 2 (2011-Nov-24)
++ Load filter popup on the main toolbar added.
+* Improved credentials manager behavior.
+
+
+3.4 beta (2011-Nov-16)
++ Support of new event API to access more event logs on Vista, 7, 2008.
++ Credentials manager to store credentials and use them on log opens.
++ Advanced filtering on linked events.
++ Analytical reports - different summary tables.
++ XML view of event (for new event api only).
++ Command to disable filter temporarily.
++ Command to disable log loading options temporarily.
++ Combined quickfilter: Source+EventID.
+- Lots of minor bugs fixed.
+
+
+3.3  (2010-Jul-06)
++ Task Scheduler
++ Taskbar tabs in Windows 7/2008 R2
++ Column configuration
+* Improved Data Execution Protection (DEP) compatibility
+* Improved export to XLSX
+* Memory consumption optimized
+- Fixed problem with incorrect margins on printed documents
+- Memory leaks fixed
+- Minor bugs fixed
+
+
+3.2 (2009-Dec-23)
++ Export to Excel 2007
++ Option to store temporary data on disk instead of memory.
+* Significantly decreased memory consumption.
+* User interface improvements.
+* Default log files location is stored in the workspace.
+- Minor bugs fixed.
+
+
+3.1 (2009-Jul-10)
++ Added event log and event log file merging.
++ Time correction for any log views.
++ Added default prefilter by Event ID (see Log Window Defaults).
++ Added default description server option.
++ Added default color coding (see  Log Window Defaults->Appearance).
+* Improved description and category reading.
+- Date-time in Event Properties displayed incorrectly - fixed.
+- Date-time exported incorrectly during raw export - fixed.
+- Fixed bug with long data truncation.
+- Some long regular expressions in filter work incorrectly - fixed.
+- Fixed Windows 2000 compatibility issue.
+- Other minor bugs fixed.
+
+
+3.0 (2008-May-13)
++ Totaly rewritten event log caching - it's database compatible now.
+* Improved compatibility with Windows Vista x64.
++ You can specify a server where Event Log Explorer will look for descriptions.
+* Visual styles support (MS Office-like, Whidbey).
+* Filtering is up to 10 times faster than in version 2.x.
+* User interface improvements.
+- Minor bugs fixed.
+
+2.2.5 (2007-Nov-13)
+- Fixed a bug which could extremely slow down event log loading process.
+
+2.2 (2007-Aug-09)
+! Free license doesn't expire anymore.
++ Save displayed or selected events to EVT file added.
++ Bookmarking by criteria added.
++ Export and print binary data.
++ Support of 3GB address space (/3GB switch in boot.ini).
++ Event description dialog added.
++ Added languages (Russian, Polish).
++ Localizing module added.
+* Improved filter/search by user and computer.
+* Memory consumption optimized.
+* Some internal improvements.
+- Fixed compatibility issue with data execution protection on Vista.
+- Minor bugs fixed.
+
+
+2.1  (2007-Mar-01)
++ Direct access to .evt files added.
++ Batch backup utility and backup integration option added.
++ Added Event ID color coding options.
+* Imporved Vista compatibility.
+* Log files can be added to the tree.
+- Minor bugs fixed.
+
+
+2.0 (2006-Nov-25)
+* Documentation updated.
+* EULA modified.
+- Minor bugs fixed.
+
+
+2.0 beta (2006-Nov-08)
++ 2 user interface models added (MDI and TDI).
++ Event log backup to any computer.
++ You can display event description in the event list.
++ You can filter several event logs at once.
+* New memory manager - improved performance.
+* Connect with different credential can now disconnect previous sessions.
+- Time correction didn't work correctly on some systems - fixed.
+- A lot of minor bugs fixed.
+
+
+1.4 beta 2 (2006-08-30)
++ Added regular expressions search/filter by description.
+* Highly improved performance of large logs loading.
+- Filter by source might work incorrectly for log files. Fixed.
+
+
+1.4 beta (2006-08-16)
++ Document-oriented concept. Workspace files to store program state.
++ Computers can grouped in the tree.
++ Property pages for computers and groups.
++ Wizard to search and bulk add computers to the tree.
++ Select font option added.
++ Time correction property added.
++ New filter/search criteria to perform more advanced filtering.
++ Support of Windows Vista logs added.
+* Highly improved performance of date/time sort.
+* Computers tree is now multi-selectable.
+* Different user interface improvements.
+- Popup menu appears again in the description box.
+- Minor bugs fixed.
+
+1.3 beta 6 (2006-05-29)
+* Improved performance of large logs loading.
+- A lot of minor bugs fixed.
+
+1.3 beta 5 (2006-05-08)
+* Some user interface improvements.
+- Fixed a bug with an exception in mshtml.dll.
+- A lot of minor bugs fixed.
+
+1.3 beta 4 (2006-04-13)
++ Export to Excel format
++ Added option to open new window maximized.
++ Auto backup of event log. 
++ New log loading options - prefiltering by event type.
+- Fixed a bug with reading Windows NT 4.0. event logs.	
+- Some minor bugs fixed.
+
+1.3 beta 3 (2006-03-15)
++ You can view event data in binary format.
++ Export/Import Computers Tree (into/from XML file).
++ Print events with descriptions added.
++ Print selected events added.
++ You can sort computers in the Computers Tree.
++ New Quick Filter options: select events older or younger then specified.
++ Multiply events selection (you can e.g. copy them into clipboard at once).
++ Save all logs from one computer by one command.
++ Clear all logs from one computer by one command.
++ Added events bookmarks.
+* Improved preferences dialog.
+* Improved partial load logics.
+- Some minor bugs fixed.
+
+
+1.3 beta 2 (2006-02-22)
++ Options to load logs partially (only fresh events).
++ New log window defaults (sort order, dimensions).
++ You can associate Event Log Explorer with EVT files.
++ Option to poll for program updates automatically.
++ Added exception catching.
+* Event logs are loaded in background - you don't have to wait until 
+  a log will be loaded.
+* URLs in event descriptions are now clickable.
+- Some descriptions were displayed incompletely - fixed.
+- Fixed a bug with date/time filtering.
+- Some minor bugs fixed.
+
+
+1.3 beta (2006-01-03)
++ Export event description along with the event data.
++ Option to lookup event information in public event knowledge bases.
++ Added inverted quick filter (NOT EQUAL).
++ Option to open items by a single-click, select by point.
++ Drag and drop of EVT file on Event Log Explorer main window.
++ You can copy current event to a clipboard.
++ Added a command to Computers Tree popup menu that closes all related event logs.
+* Computers tree now can save its state.
+* Some user interface improvements.
+- Date and time in report were displayed as UTC date/time - time zone corrected.
+- Sort order problem is fixed in report.
+- Fixed a bug with incorrect date and time export.
+- Export text file could contain extra paragraph breaks - fixed.
+- After filter clearing, the last selected event went away - fixed.
+
+
+1.2  (2005-06-11)
++ Logon As dialog appears if the access denied failure occurs when 
+  connecting remote computers.
+- Minor bugs fixed.
+
+
+1.2 beta 2 (2005-05-28)
++ Added command line options.
+* Computer tree now works asynchronously.
+* Minimal refresh interval changed to 1 second.
+- Fixed a bug with event id search/filter criteria.
+- Fixed a bug with incorrect description displaying from remote computers 
+  when administrative shares were disabled.
+- Saving the remote event logs now works correctly.
+- Fixed minor bugs.
+
+
+1.2 beta 1 (2005-05-17)
++ Added auto-refresh commands.
++ Added new "!" operator for event ID filter/search criteria.
++ Added event list navigator.
++ Added new event log window preferences.
+* Totally changed filter behavior - no cascaded filters anymore (except 
+  quick filters).
+- Refresh command does remember filter condition.
+- Fixed minor bugs.
+
+
+1.1 beta 2 (2005-04-19)
++ New report preferences added
+* Improved autosave options (log window keeps position, sorting modes, etc).
+* Improved user interface.
+- Minor bugs fixed.
+
+
+1.1 beta (2005-03-26)
++ Event ID exception criteria added.
++ Set of confirmations options added.
++ Set of autosave options added  (it is possible to keep 
+  window size, position and opened logs).
++ Event Log Window options added.
+
+* Highly improved performance on getting event descriptions.
+
+- Fixed a problem with getting event descriptions from remote computers.
+- Minor bugs fixed.
+
+
+1.0 beta (2005-03-10)
+first beta version.
